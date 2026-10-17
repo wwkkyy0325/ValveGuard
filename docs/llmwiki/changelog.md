@@ -335,3 +335,12 @@
 - Status: shrinkage adopted as the player-level scoring rule for reporting,
   dev-validated only. The holdout was already spent, so it is not re-used and
   no holdout claim is made.
+
+## 2026-10-18 (Q4 correction commits)
+
+- Commit `105eb62`: player-level FPR threshold fix, empirical-Bayes shrinkage,
+  and the corrected Q4 numbers. 13 files.
+- Commit `d3eea64`: reconciled the corrected Q4 FPR across `REPORT.md`, the
+  experiment log, and the session plan so no living document repeats the old
+  4.76% figure without a note.
+- Working tree clean; no holdout re-evaluation was performed.
