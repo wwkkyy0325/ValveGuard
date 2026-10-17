@@ -24,5 +24,9 @@ dependencies = [
 dev = ["pytest"]
 gpu = ["torch"]
 
+[project.scripts]
+valveguard-train = "valveguard.scripts.train_final:main"
+valveguard-score = "valveguard.scripts.score_demo:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -42,7 +42,17 @@ PYTHONPATH=src .venv/Scripts/python -m valveguard.scripts.run_baseline \
 
 # Tests.
 python -I -m pytest -q tests
+
+# Build the deployment artifact (1.2 MB) and score a demo.
+PYTHONPATH=src python -m valveguard.scripts.train_final \
+  --features reports/baseline_clean/summary_features.parquet \
+  --cache data/processed/cw256 --out artifacts/valveguard_gbdt_v1.joblib
+PYTHONPATH=src python -m valveguard.scripts.score_demo \
+  --demo match.dem --model artifacts/valveguard_gbdt_v1.joblib \
+  --out result.json
 ```
+
+Model card: `docs/llmwiki/model-card.md`.
 
 ## Layout
 

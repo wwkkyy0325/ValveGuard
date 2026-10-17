@@ -17,3 +17,6 @@ experiments/**/oof/
 
 # Packaging
 *.egg-info/
+
+# Model artifacts
+artifacts/

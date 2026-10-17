@@ -1,0 +1,110 @@
+{
+  "demo": "data\\raw\\pro_demos\\xet\\demos\\shard-europe-020c2c03\\2393178\\mouz-nxt-vs-ursa-m1-dust2.dem",
+  "map": "de_dust2",
+  "model_version": "valveguard-gbdt-2026-10-18",
+  "threshold": 0.7916080822111738,
+  "prior": 0.29009510119538684,
+  "k0": 5.0,
+  "players": [
+    {
+      "steamid": "76561198966656353",
+      "name": "Flierax",
+      "kills": 23,
+      "mean_score": 0.388305,
+      "max_kill_score": 0.723806,
+      "shrunk_score": 0.370768,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198254835598",
+      "name": "ay0k",
+      "kills": 14,
+      "mean_score": 0.336923,
+      "max_kill_score": 0.636251,
+      "shrunk_score": 0.3246,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198036066702",
+      "name": "Alv",
+      "kills": 23,
+      "mean_score": 0.330792,
+      "max_kill_score": 0.793379,
+      "shrunk_score": 0.323525,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198843946848",
+      "name": "karnez",
+      "kills": 10,
+      "mean_score": 0.271341,
+      "max_kill_score": 0.614423,
+      "shrunk_score": 0.277592,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198998266210",
+      "name": "xelex",
+      "kills": 28,
+      "mean_score": 0.270835,
+      "max_kill_score": 0.787764,
+      "shrunk_score": 0.273753,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198295739416",
+      "name": "opdust",
+      "kills": 17,
+      "mean_score": 0.249014,
+      "max_kill_score": 0.63103,
+      "shrunk_score": 0.25835,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198407480534",
+      "name": "Nikodeon",
+      "kills": 34,
+      "mean_score": 0.251832,
+      "max_kill_score": 0.64254,
+      "shrunk_score": 0.256738,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198193739570",
+      "name": "k0s",
+      "kills": 27,
+      "mean_score": 0.249271,
+      "max_kill_score": 0.855323,
+      "shrunk_score": 0.25565,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198420829570",
+      "name": "Salazar",
+      "kills": 14,
+      "mean_score": 0.239364,
+      "max_kill_score": 0.513851,
+      "shrunk_score": 0.252714,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198069567550",
+      "name": "4X1s",
+      "kills": 17,
+      "mean_score": 0.201739,
+      "max_kill_score": 0.461929,
+      "shrunk_score": 0.22182,
+      "flagged": false,
+      "reliable": true
+    }
+  ]
+}
