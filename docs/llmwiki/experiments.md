@@ -194,3 +194,20 @@ Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,020 kill windows,
 - Conclusion: elite human aim is not confused with aim assist; adding pro
   negatives does not move the detector. The Q4 FPR is not a generic
   high-skill effect.
+
+## 12. Player-score shrinkage and the Q4 threshold fix (2026-10-18)
+
+- **Correction**: the earlier Q4 FPR applied a kill-level threshold to player
+  means. At a player-level 1% threshold the champion's Q4 FPR is 19.05%
+  (8/42, full OOF) or 13.16% (5/38, dev80), not 4.76%.
+- 5 of the 8 false positives had one or two kills; Q4 clean players have a
+  median of 9.5 kills but a 25th percentile of 2.
+- Empirical-Bayes shrinkage `(sum + k0*prior)/(n+k0)`, prior = training-fold
+  human mean, k0=5:
+  - full OOF: AUC 0.9339, recall@FPR=1% 0.2288, Q4 FPR 4.76%, Q4 AUC 0.797.
+  - dev80: AUC 0.9316, recall 0.2386, Q4 FPR 5.26%, Q4 AUC 0.791.
+  - paired dev80: ΔAUC [-0.0015, +0.0058], Δrecall [+0.0068, +0.1404].
+- The k0 grid [1..20] is a plateau (AUC 0.928-0.936, recall 0.21-0.25,
+  Q4 FPR 4.8-7.9%), so the result is not knife-edge on k0.
+- Status: adopted as the player-level scoring rule for reporting; dev-validated
+  only. The holdout was already spent and is not re-used.

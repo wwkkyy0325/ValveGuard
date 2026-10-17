@@ -101,7 +101,13 @@ Detector v1 remains the champion; the v2 hypotheses did not beat it:
 - H1 43-channel Transformer on dev 80%: 0.9251 / 0.2297; paired ΔAUC
   [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809] — not promoted.
 - H2 1024-tick context: no gain (ΔAUC [-0.0055, 0.0078]) — rejected.
-- H3 rank-group DRO: Q4 FPR stays 4.76% — rejected.
-- High-rank Q4 FPR 4.76% is still the main blocker; the remaining lever is
-  new information (raw mouse/view at high rate or high-skill human negatives).
-- Reports: `reports/REPORT.md` (v2 in section 11); figures: `reports/figures/`.
+- H3 rank-group DRO: no change — rejected.
+- Professional demos (7 HLTV demos, 1,020 windows, 70 players): 0/70 players
+  flagged at the 1% operating point; adding them as negatives changes nothing.
+- Q4 false positives were understated by a threshold error. At the correct
+  player-level 1% cut the champion's Q4 FPR is 19.05%; empirical-Bayes
+  shrinkage of player scores by kill count (k0=5) reduces it to 4.76% and
+  raises recall@FPR=1% from 0.1735 to 0.2288 (dev80: 13.16% -> 5.26%,
+  0.1475 -> 0.2386). The holdout was already spent, so this is dev-validated
+  only.
+- Reports: `reports/REPORT.md` (sections 11-14); figures: `reports/figures/`.

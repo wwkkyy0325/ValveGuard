@@ -106,3 +106,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
       not promoted.
 - [x] Professional-demo specificity: 7 HLTV demos, 1,020 windows, 70 players;
       0/70 players flagged at 1% FPR; pro-negative augmentation has no effect.
+- [x] Q4 false-positive audit: fixed the player-level threshold, found the
+      low-kill concentration, and added empirical-Bayes player shrinkage
+      (dev80 recall 0.1475 -> 0.2386, Q4 FPR 13.2% -> 5.3%).

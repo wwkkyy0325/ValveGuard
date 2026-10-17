@@ -312,3 +312,26 @@
   +682/-3.
 - Demos and processed windows stay outside the repository; only code and small
   result files are committed.
+
+## 2026-10-18 (Q4 threshold correction and player-score shrinkage)
+
+- **Correction**: the previously reported Q4 FPR (4.76%) applied a kill-level
+  threshold to player mean scores. Player-level FPR must use a player-level
+  threshold. Corrected: champion full OOF 19.05% (8/42), dev80 13.16% (5/38);
+  the mouse-residual rank-strata table is 7.14% (3/42).
+- Root cause of most false positives: low evidence. 5 of 8 champion Q4 false
+  positives had one or two kills; the Q4 clean group has median 9.5 kills and
+  25th percentile 2.
+- Added `scripts/analyze_player_shrinkage.py`: empirical-Bayes shrinkage
+  `(sum + k0*prior)/(n+k0)` with the prior from other training folds.
+  - k0=5, full OOF: AUC 0.9339, recall@FPR=1% 0.2288, Q4 FPR 4.76%,
+    Q4 AUC 0.797.
+  - k0=5, dev80: AUC 0.9316, recall 0.2386, Q4 FPR 5.26%, Q4 AUC 0.791.
+  - Paired dev80: ΔAUC [-0.0015, +0.0058], Δrecall [+0.0068, +0.1404].
+- The k0 grid 1-20 is a broad plateau; the result is not knife-edge.
+- The two remaining Q4 false positives have extremely straight trajectories
+  (0.88 and 0.98 vs human median 0.61), consistent with unusual style or
+  undetected cheating; 64 Hz view data cannot distinguish them.
+- Status: shrinkage adopted as the player-level scoring rule for reporting,
+  dev-validated only. The holdout was already spent, so it is not re-used and
+  no holdout claim is made.

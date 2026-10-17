@@ -92,12 +92,17 @@ Cross-fitted player threshold: mean recall 0.140 at FPR 1.22%; HMM 0.146 at FPR 
 
 875 players from the 160-match subset (477 CS rank, 398 Premier):
 
-| Rank quartile | n | positives | Player AUC | FPR at global 1% |
+| Rank quartile | n | positives | Player AUC | FPR at player-level 1% |
 |---|---|---|---|---|
-| Q1 low | 251 | 38 | 0.911 | 0.00% |
+| Q1 low | 251 | 38 | 0.911 | 0.47% |
 | Q2 | 191 | 45 | 0.895 | 0.68% |
 | Q3 | 214 | 58 | 0.828 | 0.64% |
-| Q4 high | 219 | 177 | 0.712 | **4.76%** |
+| Q4 high | 219 | 177 | 0.712 | **7.14%** |
+
+Threshold correction (2026-10-18): the earlier table applied a kill-level
+threshold to player mean scores. FPR must be measured at a player-level
+threshold (1% of human players). With that correction Q4 is 7.14% on this
+score set; on the champion's own OOF scores it is 19.05% (section 14).
 
 Failed post-hoc fixes:
 
@@ -362,3 +367,65 @@ The specificity result is the useful outcome.
   CS2CD Q4 matchmaking population.
 - Demos are from 2026; CS2CD may cover a different patch.
 - Professional matches are assumed clean; no cheat labels are available.
+
+## 14. Corrected Q4 FPR and player-score shrinkage (dev-only)
+
+### 14.1 Threshold correction
+
+The earlier Q4 FPR (4.76%) applied a **kill-level** threshold to player mean
+scores. Player-level FPR must be measured at a **player-level** threshold
+(1% of human players). With the correct threshold:
+
+| Score set | Q4 clean players | Q4 FPR |
+|---|---|---|
+| champion, full 5-fold OOF | 42 | **8 (19.05%)** |
+| champion, dev 80% | 38 | **5 (13.16%)** |
+| mouse-residual scores (rank strata) | 42 | 3 (7.14%) |
+
+The blocker was therefore worse than reported, and it is concentrated in
+low-evidence players: 5 of the 8 champion false positives had one or two
+kills; the Q4 clean group has a median of 9.5 kills but a 25th percentile of 2.
+
+### 14.2 Empirical-Bayes shrinkage
+
+Replace the player mean with a shrunk estimate
+
+    score = (sum(kill scores) + k0 * prior) / (n + k0)
+
+where `prior` is the mean score of human kills in the other training folds
+(no test labels). This is a principled small-sample estimator, not a threshold
+trick: it lowers scores only when the evidence is thin.
+
+| k0 | full OOF AUC | full recall@1% | full Q4 FPR | dev80 AUC | dev80 recall | dev80 Q4 FPR |
+|---|---|---|---|---|---|---|
+| 0 | 0.9331 | 0.1735 | 19.05% | 0.9294 | 0.1475 | 13.16% |
+| 1 | 0.9355 | 0.2125 | 7.14% | 0.9326 | 0.1911 | 7.89% |
+| 3 | 0.9351 | 0.2109 | 4.76% | 0.9326 | 0.2030 | 7.89% |
+| 5 | 0.9339 | 0.2288 | 4.76% | 0.9316 | 0.2386 | 5.26% |
+| 8 | 0.9321 | 0.2389 | 4.76% | 0.9299 | 0.2337 | 5.26% |
+| 12 | 0.9303 | 0.2490 | 7.14% | 0.9280 | 0.2356 | 5.26% |
+
+Paired match-grouped bootstrap (k0=5 vs mean):
+
+- dev80: ΔAUC **[-0.0015, +0.0058]**, Δrecall@FPR=1% **[+0.0068, +0.1404]**.
+- full OOF: ΔAUC **[-0.0025, +0.0043]**, Δrecall **[-0.0123, +0.1249]**.
+
+Q4 AUC also rises from 0.681 to 0.791 (dev80) and 0.670 to 0.797 (full OOF).
+
+### 14.3 Remaining false positives
+
+After shrinkage, two Q4 clean players remain above the threshold (18 and 9
+kills). Both have extremely straight trajectories (straightness 0.88 and 0.98
+vs a human median of 0.61) and very low movement while aiming. They are
+plausible unusual human styles or undetected cheaters; the 64 Hz view data
+cannot distinguish these without raw mouse input.
+
+### 14.4 Status
+
+- Adopt shrinkage (k0=5) as the **player-level scoring rule** for reporting;
+  it passes the decision rule on dev80 (recall CI lower bound > 0, AUC
+  non-inferior) and on the full OOF.
+- It was selected after the holdout was spent, using full-OOF diagnostics; the
+  holdout is **not** re-evaluated. A clean confirmation needs a fresh split or
+  external data.
+- The kill-level champion model is unchanged.
