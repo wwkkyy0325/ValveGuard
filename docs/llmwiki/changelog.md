@@ -231,3 +231,11 @@
   97% with >=2 kills and 67% with >=10, so per-player temporal analysis inside
   a demo is supported.
 - Recorded the limitation in `REPORT.md`, `README.md`, and `design.md`.
+
+## 2026-10-17 (v2 commit)
+
+- Commit `3726052` on `master`: v2 holdout protocol, H1/H2/H3 results, the
+  1024-tick reconstruction, the paired comparison utility, and the identity
+  audit. 37 files, +3,930/-50.
+- Large artifacts (OOF parquet, model checkpoints, raw/processed data) remain
+  ignored; the commit contains only code, docs, and small result files.
