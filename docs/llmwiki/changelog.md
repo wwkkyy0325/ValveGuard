@@ -344,3 +344,23 @@
   experiment log, and the session plan so no living document repeats the old
   4.76% figure without a note.
 - Working tree clean; no holdout re-evaluation was performed.
+
+## 2026-10-18 (label-noise audit)
+
+- Added `scripts/analyze_label_noise.py` and `scripts/audit_q4_fps.py`, plus
+  `docs/llmwiki/label-noise-audit.md`.
+- Out-of-match scoring on dev 80 (no holdout use), groups:
+  - clean: 49,164 windows / 3,668 players, mean score 0.304.
+  - uncertain (cdata label 0): 9,137 / 1,171, mean 0.323, but only 0.34% of
+    kills and 0.68% of players above the clean 1% cut.
+  - cheater: 14,746 / 1,010, mean 0.657, 15.5% of kills above the cut.
+- Estimated uncertain cheater fraction: 5.5% by first-moment decomposition;
+  the KDE likelihood ratio gives 33.6% but is inconsistent with the mean and
+  tail, so it is reported as an unstable cross-check.
+- Interpretation: the excluded windows look human at the window level; the
+  dataset card's 55.6% precision is not corroborated by behaviour. The model's
+  15.5% cheater recall means this is weak evidence of absence.
+- Residual Q4 false positives after shrinkage: two players with 67% and 78% of
+  kills closer to cheater windows; the second is extremely straight (0.945),
+  accurate (2.06 deg) and slow (8.3). Unusual style or undetected smooth aim;
+  64 Hz cannot separate them.

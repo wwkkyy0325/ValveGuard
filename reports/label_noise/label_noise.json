@@ -1,0 +1,62 @@
+{
+  "kill_threshold_clean_1pct": 0.9137566387514046,
+  "player_threshold_clean_1pct": 0.8217307772518527,
+  "groups": [
+    {
+      "group": "clean",
+      "windows": 49164,
+      "players": 3668,
+      "kill_mean": 0.30366596826106673,
+      "kill_median": 0.24051872307084482,
+      "kill_p95": 0.751119126585695,
+      "frac_kills_above_human1": 0.010007322431047107,
+      "player_mean": 0.3087483149817262,
+      "frac_players_above_human1": 0.010087241003271538
+    },
+    {
+      "group": "uncertain",
+      "windows": 9137,
+      "players": 1171,
+      "kill_mean": 0.3230999024568395,
+      "kill_median": 0.2740196941882871,
+      "kill_p95": 0.7341527690200732,
+      "frac_kills_above_human1": 0.0033927985115464595,
+      "player_mean": 0.3409066517097814,
+      "frac_players_above_human1": 0.006831767719897523
+    },
+    {
+      "group": "cheater",
+      "windows": 14746,
+      "players": 1010,
+      "kill_mean": 0.657479071470193,
+      "kill_median": 0.7204842150727377,
+      "kill_p95": 0.9522540082268155,
+      "frac_kills_above_human1": 0.1550250915502509,
+      "player_mean": 0.6546046350626401,
+      "frac_players_above_human1": 0.14752475247524752
+    }
+  ],
+  "mixture": {
+    "uncertain_windows": 9137,
+    "estimated_cheater_fraction": 0.33638178527090545,
+    "posterior_quantiles": [
+      0.11068972028154937,
+      0.1527749908623422,
+      0.2684963951249808,
+      0.47260185527888615,
+      0.6816508722304014
+    ]
+  },
+  "mean_decomposition": {
+    "mean_clean": 0.30366596826106673,
+    "mean_uncertain": 0.3230999024568395,
+    "mean_cheater": 0.657479071470193,
+    "estimated_cheater_fraction": 0.05492711835572146
+  },
+  "nearest_neighbour": {
+    "sampled_uncertain": 3000,
+    "fraction_closer_to_cheater": 0.2723333333333333,
+    "median_dist_human": 2.493034200207421,
+    "median_dist_cheater": 2.734884020393201
+  }
+}

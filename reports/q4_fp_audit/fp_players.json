@@ -1,0 +1,29 @@
+{
+  "threshold": 0.6480066524332166,
+  "players": [
+    {
+      "match_key": "ncdata:66",
+      "player_name": "Player_1",
+      "kills": 18,
+      "shrunk_score": 0.686891662798253,
+      "mean_kill_score": 0.7945731403594022,
+      "max_kill_score": 0.9705890878523646,
+      "frac_closer_to_cheater": 0.6666666666666666,
+      "mean_straightness": 0.7843436115440494,
+      "mean_final_err": 5.78463766641087,
+      "mean_speed": 21.65089528531664
+    },
+    {
+      "match_key": "ncdata:79",
+      "player_name": "Player_6",
+      "kills": 9,
+      "shrunk_score": 0.6920310317225127,
+      "mean_kill_score": 0.910249191802733,
+      "max_kill_score": 0.9637449409013118,
+      "frac_closer_to_cheater": 0.7777777777777778,
+      "mean_straightness": 0.9446714044308623,
+      "mean_final_err": 2.0622349116537304,
+      "mean_speed": 8.308230237828361
+    }
+  ]
+}

@@ -236,6 +236,13 @@ Remaining:
 - The remaining Q4 false positives have extremely straight trajectories; with
   64 Hz view data they cannot be separated from silent aim without raw mouse
   input or better labels.
+- Label-noise audit: the excluded `cdata` label-0 windows score like clean
+  humans (first-moment estimate 5.5% cheater admixture; 0.34% above the clean
+  1% cut). The dataset card's 55.6% precision is not corroborated at the
+  window level. The two residual Q4 false positives have 67-78% of kills
+  closer to cheater windows in feature space; the 64 Hz data cannot say
+  whether they are unusual styles or undetected cheats.
+  Details: `docs/llmwiki/label-noise-audit.md`.
 - The conditional generator remains deferred.
 
 ## 11. Player Identity and Temporal Scope (verified 2026-10-17)

@@ -109,3 +109,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [x] Q4 false-positive audit: fixed the player-level threshold, found the
       low-kill concentration, and added empirical-Bayes player shrinkage
       (dev80 recall 0.1475 -> 0.2386, Q4 FPR 13.2% -> 5.3%).
+- [x] Label-noise audit: out-of-match scoring of the excluded cdata label-0
+      windows (5.5% estimated cheater admixture, human-like tail) and a
+      per-kill audit of the two residual Q4 false positives.

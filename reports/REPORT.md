@@ -435,3 +435,32 @@ cannot distinguish these without raw mouse input.
   holdout is **not** re-evaluated. A clean confirmation needs a fresh split or
   external data.
 - The kill-level champion model is unchanged.
+
+## 15. Label-noise audit (dev 80% only)
+
+The excluded `cdata` label-0 windows were scored out-of-match and compared with
+confident clean windows and labeled cheaters.
+
+| Group | Windows | Players | Kill mean | Kills above clean 1% | Players above clean 1% |
+|---|---|---|---|---|---|
+| clean | 49,164 | 3,668 | 0.304 | 1.00% | 1.01% |
+| uncertain | 9,137 | 1,171 | 0.323 | **0.34%** | **0.68%** |
+| cheater | 14,746 | 1,010 | 0.657 | 15.50% | 14.75% |
+
+- First-moment decomposition: **5.5%** estimated cheater fraction in the
+  uncertain group. The KDE likelihood ratio (33.6%) is inconsistent with the
+  mean and tail and is treated as an unstable cross-check.
+- The excluded windows look human at the window level. The dataset card's
+  55.6% precision is not corroborated by behaviour; it may refer to
+  player-level label assignment rather than to the other players' aim.
+- Recall is only 15.5% of cheater windows at this point, so this is weak
+  evidence of absence for undetectable cheaters.
+
+After shrinkage, two Q4 clean players remain. Both have a majority of kills
+closer to cheater windows in feature space (66.7% and 77.8%); the second is
+extremely straight (0.945), accurate (2.06 deg) and slow (8.3). This is
+consistent with an unusual disciplined style or an undetected smooth-aim
+cheat; 64 Hz view data cannot separate them.
+
+Full method, tables, and reproduction commands:
+`docs/llmwiki/label-noise-audit.md`.

@@ -78,6 +78,10 @@ docs/llmwiki/           design, detailed model spec, task plan, changelog
   seven professional HLTV demos (70 player-maps), the champion flags 0/70
   players and 0.29% of kills at its 1% FPR operating point. Pros score below
   average CS2CD humans despite being more accurate.
+- The excluded `cdata` label-0 windows score like clean humans (5.5% estimated
+  cheater admixture by first-moment decomposition), so the dataset card's
+  55.6% precision is not corroborated at the window level. Details:
+  `docs/llmwiki/label-noise-audit.md`.
 
 ## Limitations
 
