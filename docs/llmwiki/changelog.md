@@ -476,3 +476,10 @@
   Q4 unchanged. Conclusions hold.
 - Added `desktop/README.md`; updated `windows-app.md` and all pro-demo numbers
   in the living docs.
+
+## 2026-10-18 (Rust core commit)
+
+- Commit `f3815de`: pure-Rust desktop core, parity validation, warm-up fix,
+  and refreshed pro-demo results. 22 files, +2,177/-100.
+- Working tree clean; `desktop/target`, demos, zips, and model artifacts stay
+  outside the repository.
