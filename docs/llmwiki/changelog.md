@@ -270,3 +270,10 @@
   negative). The kill-level signal does not convert to player-level decisions.
 - Decision: **not promoted**. The stated target (Q4 false positives) is not
   moved; the result is recorded as an exploratory diagnostic.
+
+## 2026-10-17 (self-baseline commit)
+
+- Commit `b788912` on `master`: within-player self-baseline experiment,
+  count/shortcut ablation, shuffled-label audit, aggregation check, and the
+  recorded negative result. 21 files, +848.
+- Working tree clean at commit; parquet OOF files remain ignored.
