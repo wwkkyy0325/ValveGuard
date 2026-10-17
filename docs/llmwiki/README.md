@@ -10,6 +10,7 @@ Start here when resuming work.
 | `label-noise-audit.md` | Audit of the excluded cdata label-0 windows and the residual Q4 false positives. |
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
+| `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |
 | `next-session.md` | Frozen-state record, executed v2 protocol, and remaining work. |
 | `changelog.md` | Append-only dated record of changes, results, and corrections. |
 | `tasks/aimbot-detection-and-synthesis.md` | Task breakdown with checkboxes and verify steps. |

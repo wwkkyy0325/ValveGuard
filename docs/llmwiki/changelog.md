@@ -414,3 +414,15 @@
   avoids catastrophic forgetting; increments apply to data ingestion and
   versioned batch retraining, not to model fitting.
 - Artifacts are gitignored; they are rebuilt with one command.
+
+## 2026-10-18 (model I/O contract)
+
+- Added `docs/llmwiki/io-contract.md`: exact shapes and dtypes for
+  demo -> window (256x44) -> features (59,) -> kill score (N,) -> player
+  table; window column order, kill row 223, 64 Hz, versioning rules, and the
+  Windows application boundary.
+- Clarified that the raw model is a 59-feature tabular GBDT; the 256x44 window
+  is an upstream extractor artifact, not the model input.
+- ONNX export attempted; `skl2onnx` 1.20 fails on this HGB model (boolean
+  attribute in TreeEnsembleClassifier). The raw artifact stays joblib, which
+  is sufficient for a Python/PyInstaller Windows app.
