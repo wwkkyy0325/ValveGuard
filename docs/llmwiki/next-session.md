@@ -14,7 +14,8 @@ Champion: **aim-only GBDT**, 5-fold match-disjoint OOF:
 - player AUC **0.9331**
 - player recall@FPR=1% **0.1735**
 - kill AUC **0.8497**
-- High-rank Q4 FPR **4.76%** (release blocker)
+- High-rank Q4 FPR **4.76%** (release blocker; corrected on 2026-10-18 to
+  19.05% at the player-level threshold, see the changelog)
 
 Full 43-channel Transformer 5-fold (exploratory, not promoted):
 - player AUC 0.9288, recall@FPR=1% 0.2350, AP 0.7882.

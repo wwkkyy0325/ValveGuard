@@ -107,7 +107,8 @@ score set; on the champion's own OOF scores it is 19.05% (section 14).
 Failed post-hoc fixes:
 
 - Rank-conditional residual: AUC 0.846 vs raw 0.882; recall@FPR=1% 0.006 vs 0.016.
-- Cross-fitted rank-quartile thresholds: Q4 FPR stays 4.76%; Q4 recall 0.
+- Cross-fitted rank-quartile thresholds: Q4 FPR stays 4.76% under the old
+  kill-level cut (see the correction in section 14); Q4 recall 0.
 - Rank as a feature: overall recall rises to 0.229, but Q4 FPR rises to 14.3% — a shortcut.
 - Upweighting Q4 clean negatives ×3/×5: no meaningful improvement.
 
@@ -248,11 +249,13 @@ unknown, four adaptive reweighting iterations with inner 2-fold loss estimates:
 | player AUC | 0.8771 | 0.8800 |
 | recall@FPR=1% | 0.0374 | 0.0299 |
 | Q4 AUC | 0.6749 | 0.6645 |
-| Q4 FPR at global 1% | 4.76% | 4.76% |
+| Q4 FPR (old kill-level cut) | 4.76% | 4.76% |
 
 Weights stayed in 0.93–1.11, i.e. the group losses are nearly identical.
-Decision: **rejected**. Q4 false positives are feature overlap, not loss
-weighting. Like H2, this pilot uses the 160-match subset for diagnosis only.
+Decision: **rejected**. Loss weighting does not fix Q4 false positives; the
+section 14 audit shows most of them were low-evidence players, not a
+worst-group loss problem. Like H2, this pilot uses the 160-match subset for
+diagnosis only.
 
 ### 11.6 Final holdout evaluation (one shot)
 
@@ -274,12 +277,15 @@ consistent with the frozen estimate and shows no collapse.
 
 ### 11.7 v2 conclusion
 
-- No pre-registered hypothesis passed; the frozen champion stands.
-- The remaining blocker is unchanged: top-rank humans overlap with cheat-like
-  aim features (Q4 AUC 0.71), and neither longer context nor loss reweighting
-  separates them.
-- The credible next lever is new information, not a new loss: raw mouse/view
-  consistency at 1000 Hz or high-skill human negatives.
+- No pre-registered hypothesis passed; the frozen kill-level champion stands.
+- Q4 ranking is still weak (AUC 0.67-0.71), but the apparent false-positive
+  rate was mostly a low-evidence problem: at the correct player-level
+  threshold it was 19.05%, and shrinkage by kill count reduces it to 4.76%
+  (section 14).
+- High-skill human negatives do not help: pros are not flagged in the first
+  place (section 13).
+- The remaining lever is new information, not a new loss: raw mouse/view
+  consistency at 1000 Hz or better labels.
 
 ## 12. Exploratory: within-player self-baseline (dev 80% only)
 

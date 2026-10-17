@@ -18,7 +18,9 @@ Status: active (2026-10-17)
 
 Current champion: **aim-only GBDT**, 5-fold OOF:
 - player AUC 0.9331, player recall@FPR1 0.1735, kill AUC 0.8497.
-- High-rank Q4 FPR 4.76% (release blocker).
+- High-rank Q4 FPR **19.05%** at the player-level 1% cut (corrected
+  2026-10-18; the older 4.76% applied a kill-level threshold to player means).
+  Player-score shrinkage reduces it to 4.76% (section 12).
 
 ## 2. Verified ablations (existing)
 
