@@ -432,3 +432,22 @@
 - Commit `cd69f31`: frozen model I/O contract of 3 files.
 - Working tree clean; the joblib artifact and experimental ONNX deps stay
   outside version control.
+
+## 2026-10-18 (Windows app feasibility: 5E demo, Rust parser, Rust model)
+
+- Validated the target input on a real 5E file:
+  `D:\5EDemocache\g161-...zip` contains one 189 MB `.dem`. The Python
+  reference pipeline parses 10 players (Chinese UTF-8 names) / 145 kills and
+  scores the demo in 6 s.
+- Rust parser spike: the `awpy` 3.0 crate parsed the same demo (map de_dust2,
+  145 kills, 11 roster entries including a GOTV spectator), so a pure-Rust
+  Tauri backend is viable without Python.
+- Model export: added `scripts/export_model_json.py`; the 300-tree ensemble is
+  931 KB JSON. A Rust traversal matched sklearn on 200 real rows with NaNs:
+  max abs diff 3.3e-16. ONNX is not needed.
+- Added `docs/llmwiki/windows-app.md`: zip->dem handling, player/kill review
+  UX, tick-range video mapping, CS2 playback/capture options, Rust architecture
+  and feature-port estimate.
+- Note: demos contain no video. Clips require CS2 playback + capture
+  (OBS/FFmpeg) or HLAE; the app always provides 2D trajectory previews and
+  tick ranges for review.

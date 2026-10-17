@@ -163,8 +163,19 @@ folder/exe is feasible.
 
 ONNX export was attempted on 2026-10-18. `skl2onnx` 1.20 fails to convert
 this `HistGradientBoostingClassifier` (boolean attribute in
-`TreeEnsembleClassifier`), so the raw artifact is joblib. ONNX is optional
-and only needed if a C#/C++ front end is chosen later.
+`TreeEnsembleClassifier`), so ONNX is not the export path.
+
+The chosen portable format is a plain JSON tree ensemble
+(`valveguard_gbdt_v1.model.json`, ~931 KB, 300 trees).  A Rust traversal was
+verified against sklearn on 200 real feature rows containing 204 NaNs:
+**max absolute difference 3.3e-16**.  This makes a pure-Rust Tauri backend
+viable without Python at inference time.  The export is produced by
+
+```bash
+python -m valveguard.scripts.export_model_json \
+  --model artifacts/valveguard_gbdt_v1.joblib \
+  --out artifacts/valveguard_gbdt_v1.model.json
+```
 
 ## 9. Open decisions for the Windows app
 

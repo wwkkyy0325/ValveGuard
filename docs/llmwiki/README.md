@@ -11,6 +11,7 @@ Start here when resuming work.
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
 | `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |
+| `windows-app.md` | Windows/Tauri app plan, 5E demo handling, review UX, and video rendering options. |
 | `next-session.md` | Frozen-state record, executed v2 protocol, and remaining work. |
 | `changelog.md` | Append-only dated record of changes, results, and corrections. |
 | `tasks/aimbot-detection-and-synthesis.md` | Task breakdown with checkboxes and verify steps. |
