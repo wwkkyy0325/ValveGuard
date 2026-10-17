@@ -304,3 +304,11 @@
   Q4 AUC 0.685 -> 0.677.
 - Decision: **high-skill-negative hypothesis rejected**, but the specificity
   result is recorded as a positive validity check.
+
+## 2026-10-18 (pro-demo commit)
+
+- Commit `1877510` on `master`: pro-demo download/build pipeline, specificity
+  evaluation, pro-negative augmentation pilot, and documentation. 14 files,
+  +682/-3.
+- Demos and processed windows stay outside the repository; only code and small
+  result files are committed.
