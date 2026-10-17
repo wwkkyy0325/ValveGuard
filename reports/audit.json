@@ -1,0 +1,102 @@
+{
+  "n_windows": 90707,
+  "shape": [
+    90707,
+    256,
+    44
+  ],
+  "n_features": 44,
+  "label_counts": {
+    "0": 72284,
+    "1": 18423
+  },
+  "source_counts": {
+    "cdata": 29597,
+    "ncdata": 61110
+  },
+  "label_by_source": {
+    "0-cdata": 11174,
+    "0-ncdata": 61110,
+    "1-cdata": 18423
+  },
+  "n_matches": 794,
+  "n_players": 10,
+  "augmented_counts": {
+    "false": 90707
+  },
+  "matches_per_source": {
+    "cdata": 317,
+    "ncdata": 477
+  },
+  "windows_per_match": {
+    "count": 794.0,
+    "mean": 114.24055415617129,
+    "std": 46.75507072265174,
+    "min": 5.0,
+    "25%": 80.0,
+    "50%": 119.0,
+    "75%": 151.0,
+    "max": 234.0
+  },
+  "windows_per_player": {
+    "count": 7307.0,
+    "mean": 12.413712878062132,
+    "std": 7.973319404968427,
+    "min": 1.0,
+    "25%": 6.0,
+    "50%": 12.0,
+    "75%": 17.0,
+    "max": 92.0
+  },
+  "duplicate_paths": 0,
+  "feature_names": [
+    "attacker_X",
+    "attacker_Y",
+    "attacker_Z",
+    "attacker_vel",
+    "attacker_pitch",
+    "attacker_yaw",
+    "attacker_pitch_delta",
+    "attacker_yaw_delta",
+    "attacker_pitch_head_delta",
+    "attacker_yaw_head_delta",
+    "attacker_flashed",
+    "attacker_shot",
+    "attacker_kill",
+    "is_kill_headshot",
+    "is_kill_through_smoke",
+    "is_kill_wallbang",
+    "attacker_midair",
+    "attacker_weapon_knife",
+    "attacker_weapon_auto_rifle",
+    "attacker_weapon_semi_rifle",
+    "attacker_weapon_pistol",
+    "attacker_weapon_grenade",
+    "attacker_weapon_smg",
+    "attacker_weapon_shotgun",
+    "victim_X",
+    "victim_Y",
+    "victim_Z",
+    "victim_health",
+    "victim_noise",
+    "map_dust2",
+    "map_mirage",
+    "map_inferno",
+    "map_train",
+    "map_nuke",
+    "map_ancient",
+    "map_vertigo",
+    "map_anubis",
+    "map_office",
+    "map_overpass",
+    "map_basalt",
+    "map_edin",
+    "map_italy",
+    "map_thera",
+    "map_mills"
+  ],
+  "matches_with_mixed_labels": 278,
+  "sample_nonfinite": 0,
+  "sample_min": 0.0,
+  "sample_max": 1.765625
+}

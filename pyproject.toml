@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "valveguard"
+version = "0.1.0"
+description = "CS2 aim-assist detection from kill-centred view trajectories"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "scikit-learn",
+  "scipy",
+  "matplotlib",
+  "seaborn",
+  "tqdm",
+  "pyyaml",
+  "huggingface_hub",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+gpu = ["torch"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

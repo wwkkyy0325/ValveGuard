@@ -1,0 +1,205 @@
+{
+  "val": {
+    "n": 8,
+    "positives": 4,
+    "auc": 0.5,
+    "ap": 0.5,
+    "f1": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fpr_at_tpr95": 1.0,
+    "recall_at_fpr1": 0.0,
+    "recall_at_fpr01": 0.0,
+    "brier": 0.25056689342403626,
+    "ece": 0.023809523809523836,
+    "player_auc_mean": 0.5,
+    "player_auc_max": 0.5
+  },
+  "test": {
+    "n": 8,
+    "positives": 4,
+    "auc": 0.5,
+    "ap": 0.5,
+    "f1": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "fpr_at_tpr95": 1.0,
+    "recall_at_fpr1": 0.0,
+    "recall_at_fpr01": 0.0,
+    "brier": 0.25056689342403626,
+    "ece": 0.023809523809523836,
+    "player_auc_mean": 0.5,
+    "player_auc_max": 0.5
+  },
+  "top_features": [
+    {
+      "feature": "time_to_target",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "reached_target",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "overshoot",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "settling_time",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "final_err",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "min_err",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "mean_err",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "std_err",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "final_err_yaw",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "final_err_pitch",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "final_err_head",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "mean_err_head",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "lock_ratio",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_dps_mean",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_dps_std",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_dps_min",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_dps_max",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_dps_p95",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_last16_mean",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_last16_std",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_last16_min",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_last16_max",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "speed_last16_p95",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "accel_mean",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "accel_std",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "accel_min",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "accel_max",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "accel_p95",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "jerk_mean",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "jerk_std",
+      "importance_mean": 0.0,
+      "importance_std": 0.0
+    }
+  ],
+  "n_features": 79,
+  "n_rows": 40,
+  "split_counts": {
+    "test": 8,
+    "train": 24,
+    "val": 8
+  },
+  "label_counts": {
+    "0": {
+      "test": 4,
+      "train": 12,
+      "val": 4
+    },
+    "1": {
+      "test": 4,
+      "train": 12,
+      "val": 4
+    }
+  }
+}

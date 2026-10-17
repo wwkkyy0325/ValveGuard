@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Data and caches (large / reproducible)
+data/raw/
+data/processed/
+
+# Large binary artifacts
+reports/**/*.parquet
+reports/**/*.pt
+experiments/**/oof/
+*.log
+
+# Packaging
+*.egg-info/

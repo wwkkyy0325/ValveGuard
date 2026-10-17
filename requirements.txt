@@ -1,0 +1,11 @@
+numpy
+pandas
+pyarrow
+scikit-learn
+scipy
+matplotlib
+seaborn
+tqdm
+pyyaml
+huggingface_hub
+pytest

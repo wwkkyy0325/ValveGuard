@@ -1,0 +1,77 @@
+{
+  "n_players": 875,
+  "by_type": {
+    "cs": 477,
+    "premier": 398
+  },
+  "by_rank_quartile": [
+    {
+      "quartile": "Q1 low",
+      "n": 251,
+      "pos": 38,
+      "auc": 0.911045218680504,
+      "recall_at_fpr1": 0.2894736842105263
+    },
+    {
+      "quartile": "Q2",
+      "n": 191,
+      "pos": 45,
+      "auc": 0.8952815829528158,
+      "recall_at_fpr1": 0.022222222222222223
+    },
+    {
+      "quartile": "Q3",
+      "n": 214,
+      "pos": 58,
+      "auc": 0.8282493368700264,
+      "recall_at_fpr1": 0.10344827586206896
+    },
+    {
+      "quartile": "Q4 high",
+      "n": 219,
+      "pos": 177,
+      "auc": 0.7117298896959914,
+      "recall_at_fpr1": 0.0
+    }
+  ],
+  "fpr_by_rank_quartile_at_global_1pct": [
+    {
+      "quartile": "Q1 low",
+      "n": 251,
+      "fpr": 0.0,
+      "recall": 0.02631578947368421
+    },
+    {
+      "quartile": "Q2",
+      "n": 191,
+      "fpr": 0.00684931506849315,
+      "recall": 0.0
+    },
+    {
+      "quartile": "Q3",
+      "n": 214,
+      "fpr": 0.00641025641025641,
+      "recall": 0.05172413793103448
+    },
+    {
+      "quartile": "Q4 high",
+      "n": 219,
+      "fpr": 0.047619047619047616,
+      "recall": 0.005649717514124294
+    }
+  ],
+  "conditional": {
+    "score": {
+      "auc": 0.8816379300610865,
+      "recall_at_fpr1": 0.015723270440251572
+    },
+    "residual": {
+      "auc": 0.8463127942820364,
+      "recall_at_fpr1": 0.006289308176100629
+    },
+    "residual_pos": {
+      "auc": 0.8417059042715356,
+      "recall_at_fpr1": 0.006289308176100629
+    }
+  }
+}

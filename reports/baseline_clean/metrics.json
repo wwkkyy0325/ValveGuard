@@ -1,0 +1,206 @@
+{
+  "val": {
+    "n": 11909,
+    "positives": 2690,
+    "auc": 0.8809564133551566,
+    "ap": 0.7567510085272181,
+    "f1": 0.685620377978636,
+    "precision": 0.6144329896907217,
+    "recall": 0.7754646840148699,
+    "fpr_at_tpr95": 0.6385725132877752,
+    "recall_at_fpr1": 0.283271375464684,
+    "recall_at_fpr01": 0.05947955390334572,
+    "brier": 0.12306117498700958,
+    "ece": 0.13845139223325975,
+    "player_auc_mean": 0.9257121467340448,
+    "player_auc_max": 0.9043458731049971
+  },
+  "test": {
+    "n": 11818,
+    "positives": 2647,
+    "auc": 0.9006176851301575,
+    "ap": 0.7596360599377106,
+    "f1": 0.7019712662880053,
+    "precision": 0.6292303084755915,
+    "recall": 0.7937287495277673,
+    "fpr_at_tpr95": 0.49634718133246103,
+    "recall_at_fpr1": 0.26256139025311676,
+    "recall_at_fpr01": 0.053645636569701546,
+    "brier": 0.11680313560303668,
+    "ece": 0.13787190677733813,
+    "player_auc_mean": 0.9429504900728826,
+    "player_auc_max": 0.8907860015079165
+  },
+  "top_features": [
+    {
+      "feature": "weapon_2",
+      "importance_mean": 0.017702225439955626,
+      "importance_std": 0.0006478452489351328
+    },
+    {
+      "feature": "shot_count",
+      "importance_mean": 0.014839660814170985,
+      "importance_std": 0.0011342263905447882
+    },
+    {
+      "feature": "attacker_vel_max",
+      "importance_mean": 0.010845997542372698,
+      "importance_std": 0.0007817242074320485
+    },
+    {
+      "feature": "final_err_pitch",
+      "importance_mean": 0.009247139513223424,
+      "importance_std": 0.0016400299957793237
+    },
+    {
+      "feature": "headshot",
+      "importance_mean": 0.007325260197240779,
+      "importance_std": 0.000529342921935116
+    },
+    {
+      "feature": "wallbang",
+      "importance_mean": 0.00731732318833848,
+      "importance_std": 0.0006947974438780004
+    },
+    {
+      "feature": "psd_slope",
+      "importance_mean": 0.0070857272587660685,
+      "importance_std": 0.0007656953574759979
+    },
+    {
+      "feature": "weapon_3",
+      "importance_mean": 0.003888685097449699,
+      "importance_std": 0.00021004474635512952
+    },
+    {
+      "feature": "final_err_yaw",
+      "importance_mean": 0.0038369447847001656,
+      "importance_std": 8.072545372778555e-05
+    },
+    {
+      "feature": "final_err",
+      "importance_mean": 0.003583409764482829,
+      "importance_std": 0.00013249427506253355
+    },
+    {
+      "feature": "attacker_vel_mean",
+      "importance_mean": 0.0029762285834603977,
+      "importance_std": 0.00019909305096589262
+    },
+    {
+      "feature": "weapon_1",
+      "importance_mean": 0.002594578259169903,
+      "importance_std": 0.00031934787672245873
+    },
+    {
+      "feature": "accel_mean",
+      "importance_mean": 0.0019689772272989035,
+      "importance_std": 0.0005229062750718385
+    },
+    {
+      "feature": "straightness",
+      "importance_mean": 0.0018866120405773474,
+      "importance_std": 0.0005800279092284568
+    },
+    {
+      "feature": "accel_max",
+      "importance_mean": 0.0018805469677368736,
+      "importance_std": 0.0002583331232553767
+    },
+    {
+      "feature": "victim_speed_max",
+      "importance_mean": 0.001863999052950242,
+      "importance_std": 0.00036465666576291896
+    },
+    {
+      "feature": "victim_speed_p95",
+      "importance_mean": 0.0015074326718885385,
+      "importance_std": 0.00031054362884963457
+    },
+    {
+      "feature": "attacker_vel_p95",
+      "importance_mean": 0.0014839211549516247,
+      "importance_std": 0.000414818774164479
+    },
+    {
+      "feature": "weapon_6",
+      "importance_mean": 0.001233231477548354,
+      "importance_std": 0.00047659996216681234
+    },
+    {
+      "feature": "time_to_target",
+      "importance_mean": 0.0010828775730603961,
+      "importance_std": 0.0006168472516438756
+    },
+    {
+      "feature": "attacker_vel_std",
+      "importance_mean": 0.001009722311763106,
+      "importance_std": 0.00013300017062382126
+    },
+    {
+      "feature": "lead_lag_corr",
+      "importance_mean": 0.000977300379171912,
+      "importance_std": 5.972976918420081e-05
+    },
+    {
+      "feature": "dist_std",
+      "importance_mean": 0.0009526657005979692,
+      "importance_std": 0.0007885648879371935
+    },
+    {
+      "feature": "lead_lag_ticks",
+      "importance_mean": 0.0009179974447324953,
+      "importance_std": 0.00012602979107804085
+    },
+    {
+      "feature": "dist_p95",
+      "importance_mean": 0.0008407239240992478,
+      "importance_std": 0.00018503535661543595
+    },
+    {
+      "feature": "min_err",
+      "importance_mean": 0.000788983611349566,
+      "importance_std": 0.00041271483143568376
+    },
+    {
+      "feature": "speed_last16_mean",
+      "importance_mean": 0.0007763293235714489,
+      "importance_std": 0.00024469180625975693
+    },
+    {
+      "feature": "attacker_vel_min",
+      "importance_mean": 0.0006795127904524559,
+      "importance_std": 0.00023859386570612958
+    },
+    {
+      "feature": "victim_speed_mean",
+      "importance_mean": 0.0006755442860013616,
+      "importance_std": 0.0004195480990610021
+    },
+    {
+      "feature": "speed_last16_max",
+      "importance_mean": 0.0006659599733646789,
+      "importance_std": 0.0004425544314515448
+    }
+  ],
+  "n_features": 79,
+  "n_rows": 79533,
+  "clean_labels": true,
+  "split_counts": {
+    "test": 11818,
+    "train": 55806,
+    "val": 11909
+  },
+  "label_counts": {
+    "0": {
+      "test": 9171,
+      "train": 42720,
+      "val": 9219
+    },
+    "1": {
+      "test": 2647,
+      "train": 13086,
+      "val": 2690
+    }
+  }
+}

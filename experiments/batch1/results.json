@@ -1,0 +1,618 @@
+[
+  {
+    "name": "base__gbdt",
+    "model": "gbdt",
+    "n_features": 59,
+    "kill_auc": 0.8496754228857365,
+    "kill_ap": 0.6589372324909848,
+    "kill_recall_fpr1": 0.15719481083428324,
+    "player_auc": 0.9330557609708015,
+    "player_ap": 0.7681729266169262,
+    "player_recall_fpr1": 0.1735408560311284,
+    "player_fpr_tpr95": 0.2917303076587388,
+    "player_ece": 0.18185310916654568,
+    "player_auc_ci": [
+      0.9176660681017946,
+      0.9446829681818644
+    ],
+    "player_recall_ci": [
+      0.09845349076078688,
+      0.2670142369231911
+    ],
+    "seconds": 50.07978677749634
+  },
+  {
+    "name": "base__logreg",
+    "model": "logreg",
+    "n_features": 59,
+    "kill_auc": 0.7788834469460043,
+    "kill_ap": 0.5106955842820063,
+    "kill_recall_fpr1": 0.056939694946534225,
+    "player_auc": 0.8935424521854154,
+    "player_ap": 0.681402722511155,
+    "player_recall_fpr1": 0.09494163424124513,
+    "player_fpr_tpr95": 0.5387300894610517,
+    "player_ece": 0.24850388910206872,
+    "player_auc_ci": [
+      0.8758562166462825,
+      0.9078360477531099
+    ],
+    "player_recall_ci": [
+      0.04641228701703864,
+      0.1776022812038332
+    ],
+    "seconds": 8.458426475524902
+  },
+  {
+    "name": "base__logreg_pca32",
+    "model": "logreg_pca32",
+    "n_features": 59,
+    "kill_auc": 0.7561558258291555,
+    "kill_ap": 0.4795085547106447,
+    "kill_recall_fpr1": 0.05764533463605276,
+    "player_auc": 0.8863928696052321,
+    "player_ap": 0.6543685175286204,
+    "player_recall_fpr1": 0.05603112840466926,
+    "player_fpr_tpr95": 0.5374209033384246,
+    "player_ece": 0.25887048071398966,
+    "player_auc_ci": [
+      0.868863401174539,
+      0.9025284201560223
+    ],
+    "player_recall_ci": [
+      0.02490901787996446,
+      0.1515371376811594
+    ],
+    "seconds": 3.954294443130493
+  },
+  {
+    "name": "base__logreg_rff",
+    "model": "logreg_rff",
+    "n_features": 59,
+    "kill_auc": 0.818020235265991,
+    "kill_ap": 0.5867227297108858,
+    "kill_recall_fpr1": 0.10128643543396841,
+    "player_auc": 0.921390420187616,
+    "player_ap": 0.7353213779462453,
+    "player_recall_fpr1": 0.12840466926070038,
+    "player_fpr_tpr95": 0.33275147283438794,
+    "player_ece": 0.22296135157448774,
+    "player_auc_ci": [
+      0.9056521288372523,
+      0.9345951490833042
+    ],
+    "player_recall_ci": [
+      0.08320481927710843,
+      0.22115671319303398
+    ],
+    "seconds": 8.530639410018921
+  },
+  {
+    "name": "base__extratrees",
+    "model": "extratrees",
+    "n_features": 59,
+    "kill_auc": 0.8299123576017765,
+    "kill_ap": 0.6185812265564274,
+    "kill_recall_fpr1": 0.1353742604353254,
+    "player_auc": 0.9273802438550185,
+    "player_ap": 0.747876113359814,
+    "player_recall_fpr1": 0.13151750972762646,
+    "player_fpr_tpr95": 0.30896792493999564,
+    "player_ece": 0.1787191351589189,
+    "player_auc_ci": [
+      0.9120751500666668,
+      0.9400601517946946
+    ],
+    "player_recall_ci": [
+      0.08162738342998391,
+      0.2583219232984982
+    ],
+    "seconds": 31.528940439224243
+  },
+  {
+    "name": "base_weapon__gbdt",
+    "model": "gbdt",
+    "n_features": 67,
+    "kill_auc": 0.8697437284310708,
+    "kill_ap": 0.6913531026538257,
+    "kill_recall_fpr1": 0.16245996851761385,
+    "player_auc": 0.9254339544467755,
+    "player_ap": 0.7579819529327161,
+    "player_recall_fpr1": 0.17898832684824903,
+    "player_fpr_tpr95": 0.35413484617063057,
+    "player_ece": 0.15143922806567472,
+    "player_auc_ci": [
+      0.9099740947664076,
+      0.9368049641406565
+    ],
+    "player_recall_ci": [
+      0.08855626977267197,
+      0.2759365611340686
+    ],
+    "seconds": 46.41823410987854
+  },
+  {
+    "name": "base_weapon__logreg",
+    "model": "logreg",
+    "n_features": 67,
+    "kill_auc": 0.8288577760968838,
+    "kill_ap": 0.5888854126153727,
+    "kill_recall_fpr1": 0.09097323997177441,
+    "player_auc": 0.890075231506048,
+    "player_ap": 0.6853778508794467,
+    "player_recall_fpr1": 0.10894941634241245,
+    "player_fpr_tpr95": 0.5108007855116736,
+    "player_ece": 0.18923103838624733,
+    "player_auc_ci": [
+      0.8719582137535192,
+      0.9037018911113858
+    ],
+    "player_recall_ci": [
+      0.04814331049963234,
+      0.20708052501474564
+    ],
+    "seconds": 7.578311204910278
+  },
+  {
+    "name": "base_weapon__logreg_pca32",
+    "model": "logreg_pca32",
+    "n_features": 67,
+    "kill_auc": 0.8162831143716758,
+    "kill_ap": 0.5669254126435768,
+    "kill_recall_fpr1": 0.08532812245562613,
+    "player_auc": 0.8782078243822756,
+    "player_ap": 0.6605739711728298,
+    "player_recall_fpr1": 0.07704280155642024,
+    "player_fpr_tpr95": 0.5760418939559241,
+    "player_ece": 0.19324469802730695,
+    "player_auc_ci": [
+      0.8588950445031196,
+      0.8927750368434114
+    ],
+    "player_recall_ci": [
+      0.04192685822597611,
+      0.18055287128277425
+    ],
+    "seconds": 3.8096678256988525
+  },
+  {
+    "name": "base_weapon__logreg_rff",
+    "model": "logreg_rff",
+    "n_features": 67,
+    "kill_auc": 0.8489333851457956,
+    "kill_ap": 0.6441439197367901,
+    "kill_recall_fpr1": 0.13390870108017153,
+    "player_auc": 0.9129684988763245,
+    "player_ap": 0.726717606872743,
+    "player_recall_fpr1": 0.133852140077821,
+    "player_fpr_tpr95": 0.42003054767619463,
+    "player_ece": 0.17882752646719538,
+    "player_auc_ci": [
+      0.8960829940216476,
+      0.925261845586265
+    ],
+    "player_recall_ci": [
+      0.07639633789044276,
+      0.24996715839898628
+    ],
+    "seconds": 8.21035122871399
+  },
+  {
+    "name": "base_weapon__extratrees",
+    "model": "extratrees",
+    "n_features": 67,
+    "kill_auc": 0.8568662237878945,
+    "kill_ap": 0.6694873776893205,
+    "kill_recall_fpr1": 0.14959561417792977,
+    "player_auc": 0.911101677575136,
+    "player_ap": 0.7336774660164155,
+    "player_recall_fpr1": 0.14552529182879378,
+    "player_fpr_tpr95": 0.42504909447959854,
+    "player_ece": 0.1121731094937921,
+    "player_auc_ci": [
+      0.8945365379353901,
+      0.9237380010478488
+    ],
+    "player_recall_ci": [
+      0.09336996383732629,
+      0.24955884208628762
+    ],
+    "seconds": 30.748905181884766
+  },
+  {
+    "name": "base_outcome__gbdt",
+    "model": "gbdt",
+    "n_features": 67,
+    "kill_auc": 0.8759490204525014,
+    "kill_ap": 0.7145860856958176,
+    "kill_recall_fpr1": 0.18661455788959452,
+    "player_auc": 0.9338078213258101,
+    "player_ap": 0.7756436294453889,
+    "player_recall_fpr1": 0.2171206225680934,
+    "player_fpr_tpr95": 0.2902029238490072,
+    "player_ece": 0.15312191224909505,
+    "player_auc_ci": [
+      0.9186181283422993,
+      0.9459625592139713
+    ],
+    "player_recall_ci": [
+      0.07941935548255752,
+      0.3378074817518248
+    ],
+    "seconds": 46.33360767364502
+  },
+  {
+    "name": "base_outcome__logreg",
+    "model": "logreg",
+    "n_features": 67,
+    "kill_auc": 0.8429786918984085,
+    "kill_ap": 0.6436900095102088,
+    "kill_recall_fpr1": 0.13982521847690388,
+    "player_auc": 0.9158712922312284,
+    "player_ap": 0.7296579418252793,
+    "player_recall_fpr1": 0.1431906614785992,
+    "player_fpr_tpr95": 0.3988653720270565,
+    "player_ece": 0.1915434106380638,
+    "player_auc_ci": [
+      0.8989951992561376,
+      0.9290483163202885
+    ],
+    "player_recall_ci": [
+      0.06626952964605404,
+      0.2721195664920709
+    ],
+    "seconds": 7.501183271408081
+  },
+  {
+    "name": "base_outcome__logreg_pca32",
+    "model": "logreg_pca32",
+    "n_features": 67,
+    "kill_auc": 0.8329457213651166,
+    "kill_ap": 0.6184163276794058,
+    "kill_recall_fpr1": 0.11599630896162405,
+    "player_auc": 0.9130423634630096,
+    "player_ap": 0.7162321068516929,
+    "player_recall_fpr1": 0.12295719844357976,
+    "player_fpr_tpr95": 0.4091206633209688,
+    "player_ece": 0.1993954225716794,
+    "player_auc_ci": [
+      0.8949739772416817,
+      0.9260460549297767
+    ],
+    "player_recall_ci": [
+      0.05170981600141403,
+      0.21581739249538975
+    ],
+    "seconds": 3.7462615966796875
+  },
+  {
+    "name": "base_outcome__logreg_rff",
+    "model": "logreg_rff",
+    "n_features": 67,
+    "kill_auc": 0.8566067981890652,
+    "kill_ap": 0.6720435758129705,
+    "kill_recall_fpr1": 0.160125929544591,
+    "player_auc": 0.9275902909670403,
+    "player_ap": 0.760236152280366,
+    "player_recall_fpr1": 0.1992217898832685,
+    "player_fpr_tpr95": 0.3203142046694305,
+    "player_ece": 0.17884815531334755,
+    "player_auc_ci": [
+      0.9121463911499809,
+      0.9397323620980095
+    ],
+    "player_recall_ci": [
+      0.10881395454908266,
+      0.3143132172915071
+    ],
+    "seconds": 8.577436685562134
+  },
+  {
+    "name": "base_outcome__extratrees",
+    "model": "extratrees",
+    "n_features": 67,
+    "kill_auc": 0.8673955492178287,
+    "kill_ap": 0.6975949324004432,
+    "kill_recall_fpr1": 0.17119904467242034,
+    "player_auc": 0.9324178086669481,
+    "player_ap": 0.7693060317187427,
+    "player_recall_fpr1": 0.18054474708171206,
+    "player_fpr_tpr95": 0.31551385555313116,
+    "player_ece": 0.12956002752601792,
+    "player_auc_ci": [
+      0.9169359088829806,
+      0.9450169544790745
+    ],
+    "player_recall_ci": [
+      0.09444019243385088,
+      0.32750344410003446
+    ],
+    "seconds": 31.998332262039185
+  },
+  {
+    "name": "base_context__gbdt",
+    "model": "gbdt",
+    "n_features": 75,
+    "kill_auc": 0.8801956482701248,
+    "kill_ap": 0.7189496178980023,
+    "kill_recall_fpr1": 0.17689844216468545,
+    "player_auc": 0.931673898887022,
+    "player_ap": 0.7696139136124669,
+    "player_recall_fpr1": 0.2046692607003891,
+    "player_fpr_tpr95": 0.314204669430504,
+    "player_ece": 0.13924138190154534,
+    "player_auc_ci": [
+      0.9162699707800133,
+      0.9436651671513069
+    ],
+    "player_recall_ci": [
+      0.09428982682020129,
+      0.35173566224546976
+    ],
+    "seconds": 53.42641854286194
+  },
+  {
+    "name": "base_context__logreg",
+    "model": "logreg",
+    "n_features": 75,
+    "kill_auc": 0.8540969262016072,
+    "kill_ap": 0.6653613915068405,
+    "kill_recall_fpr1": 0.137491179503881,
+    "player_auc": 0.9082960119066318,
+    "player_ap": 0.7256346523050136,
+    "player_recall_fpr1": 0.15330739299610896,
+    "player_fpr_tpr95": 0.4366135718961379,
+    "player_ece": 0.1713353399262336,
+    "player_auc_ci": [
+      0.8921028626167172,
+      0.9217390488141435
+    ],
+    "player_recall_ci": [
+      0.053922290139583835,
+      0.293697301181731
+    ],
+    "seconds": 8.437516927719116
+  },
+  {
+    "name": "base_context__logreg_pca32",
+    "model": "logreg_pca32",
+    "n_features": 75,
+    "kill_auc": 0.8452725009797886,
+    "kill_ap": 0.6528715736279593,
+    "kill_recall_fpr1": 0.13401726103240513,
+    "player_auc": 0.8997187202578298,
+    "player_ap": 0.7145821778463023,
+    "player_recall_fpr1": 0.15019455252918287,
+    "player_fpr_tpr95": 0.48461706305913155,
+    "player_ece": 0.17698547834890463,
+    "player_auc_ci": [
+      0.8826525471063067,
+      0.9141215420160904
+    ],
+    "player_recall_ci": [
+      0.08171852453102454,
+      0.27172753103635505
+    ],
+    "seconds": 4.013662099838257
+  },
+  {
+    "name": "base_context__logreg_rff",
+    "model": "logreg_rff",
+    "n_features": 75,
+    "kill_auc": 0.8645403189948304,
+    "kill_ap": 0.6870992505292007,
+    "kill_recall_fpr1": 0.16028876947294143,
+    "player_auc": 0.9224520325921122,
+    "player_ap": 0.7561334283403314,
+    "player_recall_fpr1": 0.21245136186770427,
+    "player_fpr_tpr95": 0.3554440322932577,
+    "player_ece": 0.16719904650704182,
+    "player_auc_ci": [
+      0.9063904296051247,
+      0.9356289056540017
+    ],
+    "player_recall_ci": [
+      0.10363867572569019,
+      0.33108499607049363
+    ],
+    "seconds": 8.27712082862854
+  },
+  {
+    "name": "base_context__extratrees",
+    "model": "extratrees",
+    "n_features": 75,
+    "kill_auc": 0.8721146633096397,
+    "kill_ap": 0.7047100264307171,
+    "kill_recall_fpr1": 0.15746621071486727,
+    "player_auc": 0.9224724090298184,
+    "player_ap": 0.7594131533350934,
+    "player_recall_fpr1": 0.1867704280155642,
+    "player_fpr_tpr95": 0.36526292821296097,
+    "player_ece": 0.0995330342261532,
+    "player_auc_ci": [
+      0.906556915253518,
+      0.935025011793259
+    ],
+    "player_recall_ci": [
+      0.10579485325663801,
+      0.33520321338872844
+    ],
+    "seconds": 31.775160789489746
+  },
+  {
+    "name": "base_motion__gbdt",
+    "model": "gbdt",
+    "n_features": 64,
+    "kill_auc": 0.8637522369838709,
+    "kill_ap": 0.6844062279054869,
+    "kill_recall_fpr1": 0.1653368072518048,
+    "player_auc": 0.9340304339077509,
+    "player_ap": 0.7660785178800694,
+    "player_recall_fpr1": 0.17042801556420234,
+    "player_fpr_tpr95": 0.26991053894828715,
+    "player_ece": 0.1670141991750411,
+    "player_auc_ci": [
+      0.9178960699463224,
+      0.9451578059329749
+    ],
+    "player_recall_ci": [
+      0.09198013915596058,
+      0.29916626750577385
+    ],
+    "seconds": 57.32424235343933
+  },
+  {
+    "name": "base_motion__logreg",
+    "model": "logreg",
+    "n_features": 64,
+    "kill_auc": 0.7950076038598846,
+    "kill_ap": 0.5491815744960525,
+    "kill_recall_fpr1": 0.07414644737556315,
+    "player_auc": 0.9005111938809558,
+    "player_ap": 0.7043936333498304,
+    "player_recall_fpr1": 0.10194552529182879,
+    "player_fpr_tpr95": 0.5051276456469561,
+    "player_ece": 0.2347223705336101,
+    "player_auc_ci": [
+      0.8839975593287537,
+      0.9144355450318278
+    ],
+    "player_recall_ci": [
+      0.06946834825264668,
+      0.2100644073196996
+    ],
+    "seconds": 8.532756805419922
+  },
+  {
+    "name": "base_motion__logreg_pca32",
+    "model": "logreg_pca32",
+    "n_features": 64,
+    "kill_auc": 0.7716911653578673,
+    "kill_ap": 0.5145224141097421,
+    "kill_recall_fpr1": 0.07392932747109592,
+    "player_auc": 0.8911847285391538,
+    "player_ap": 0.672586594890923,
+    "player_recall_fpr1": 0.0840466926070039,
+    "player_fpr_tpr95": 0.48439886537202703,
+    "player_ece": 0.24822181235227272,
+    "player_auc_ci": [
+      0.8725200130950642,
+      0.9060616955048013
+    ],
+    "player_recall_ci": [
+      0.0503076045232908,
+      0.17053252351097173
+    ],
+    "seconds": 4.002204656600952
+  },
+  {
+    "name": "base_motion__logreg_rff",
+    "model": "logreg_rff",
+    "n_features": 64,
+    "kill_auc": 0.8302988153099874,
+    "kill_ap": 0.6146318244517033,
+    "kill_recall_fpr1": 0.11925310752863269,
+    "player_auc": 0.9255524773927669,
+    "player_ap": 0.7473691264729233,
+    "player_recall_fpr1": 0.14785992217898833,
+    "player_fpr_tpr95": 0.31355007636919047,
+    "player_ece": 0.2103905144781132,
+    "player_auc_ci": [
+      0.9090363962435756,
+      0.9385869310114573
+    ],
+    "player_recall_ci": [
+      0.08690311063163032,
+      0.25575688121225076
+    ],
+    "seconds": 8.385973453521729
+  },
+  {
+    "name": "base_motion__extratrees",
+    "model": "extratrees",
+    "n_features": 64,
+    "kill_auc": 0.8449692796741617,
+    "kill_ap": 0.6470690228737801,
+    "kill_recall_fpr1": 0.15458937198067632,
+    "player_auc": 0.930634700564003,
+    "player_ap": 0.7515193690335733,
+    "player_recall_fpr1": 0.12140077821011673,
+    "player_fpr_tpr95": 0.29238490072005235,
+    "player_ece": 0.16514599513946002,
+    "player_auc_ci": [
+      0.9146353301156928,
+      0.9441043823364272
+    ],
+    "player_recall_ci": [
+      0.0634260072899568,
+      0.27028976748695305
+    ],
+    "seconds": 32.915125608444214
+  },
+  {
+    "name": "base__gbdt15",
+    "model": "gbdt15",
+    "n_features": 59,
+    "kill_auc": 0.8463416570712974,
+    "kill_ap": 0.6529766914490476,
+    "kill_recall_fpr1": 0.15268957281658796,
+    "player_auc": 0.9310892649284999,
+    "player_ap": 0.7654568744387367,
+    "player_recall_fpr1": 0.17665369649805449,
+    "player_fpr_tpr95": 0.29849443595897884,
+    "player_ece": 0.19274454535102314,
+    "player_auc_ci": [
+      0.9148370086608136,
+      0.9429283713935969
+    ],
+    "player_recall_ci": [
+      0.10179168663497704,
+      0.27909097409193556
+    ],
+    "seconds": 54.263010025024414
+  },
+  {
+    "name": "base__gbdt63",
+    "model": "gbdt63",
+    "n_features": 59,
+    "kill_auc": 0.8513856489445609,
+    "kill_ap": 0.6620339722048549,
+    "kill_recall_fpr1": 0.16034304944905825,
+    "player_auc": 0.9336636580290382,
+    "player_ap": 0.7693400232493494,
+    "player_recall_fpr1": 0.18054474708171206,
+    "player_fpr_tpr95": 0.2694741435740781,
+    "player_ece": 0.17341495311245908,
+    "player_auc_ci": [
+      0.9183111209224809,
+      0.945348008319252
+    ],
+    "player_recall_ci": [
+      0.10712932862845341,
+      0.28200175971871333
+    ],
+    "seconds": 62.06906223297119
+  },
+  {
+    "name": "base__logreg_poly2_top20",
+    "model": "logreg_poly2",
+    "n_features": 10,
+    "kill_auc": 0.7818875642744956,
+    "kill_ap": 0.5177018539950736,
+    "kill_recall_fpr1": 0.06964120935786788,
+    "player_auc": 0.9059313263108204,
+    "player_ap": 0.7090653774002689,
+    "player_recall_fpr1": 0.15408560311284047,
+    "player_fpr_tpr95": 0.4298494435958979,
+    "player_ece": 0.24450993391448766,
+    "player_auc_ci": [
+      0.8900530757694121,
+      0.920275454297728
+    ],
+    "player_recall_ci": [
+      0.0691527806980656,
+      0.2181963473556688
+    ],
+    "seconds": 10.224273681640625
+  }
+]

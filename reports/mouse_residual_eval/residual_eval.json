@@ -1,0 +1,286 @@
+{
+  "base": {
+    "kill": {
+      "n": 14558,
+      "positives": 5344,
+      "auc": 0.8210569513783372,
+      "ap": 0.7031864591639164,
+      "f1": 0.6841593780369291,
+      "precision": 0.6480334728033473,
+      "recall": 0.7245508982035929,
+      "fpr_at_tpr95": 0.6328413284132841,
+      "recall_at_fpr1": 0.08869760479041916,
+      "recall_at_fpr01": 0.002245508982035928,
+      "brier": 0.1693360635570882,
+      "ece": 0.07332497194315313
+    },
+    "player": {
+      "n": 1123,
+      "positives": 401,
+      "auc": 0.8832558492964266,
+      "ap": 0.7338368058384929,
+      "f1": 0.7587878787878788,
+      "precision": 0.7382075471698113,
+      "recall": 0.7805486284289277,
+      "fpr_at_tpr95": 0.3407202216066482,
+      "recall_at_fpr1": 0.02493765586034913,
+      "recall_at_fpr01": 0.0,
+      "brier": 0.15105762124489827,
+      "ece": 0.1497023641836097
+    },
+    "player_auc_ci95": [
+      0.8422091463895284,
+      0.915829296827792
+    ],
+    "player_recall_fpr1_ci95": [
+      0.0,
+      0.15236102579852578
+    ],
+    "n_matches": 160,
+    "n_features": 59,
+    "top_features": [
+      {
+        "feature": "final_err_pitch",
+        "importance": 0.11416190026411988
+      },
+      {
+        "feature": "final_err_yaw",
+        "importance": 0.024069604053337062
+      },
+      {
+        "feature": "straightness",
+        "importance": 0.02053342895290733
+      },
+      {
+        "feature": "final_err",
+        "importance": 0.014649035350089953
+      },
+      {
+        "feature": "final_err_head",
+        "importance": 0.012923218648149085
+      },
+      {
+        "feature": "victim_speed_max",
+        "importance": 0.010744083538857066
+      },
+      {
+        "feature": "accel_mean",
+        "importance": 0.008911860908502564
+      },
+      {
+        "feature": "time_to_target",
+        "importance": 0.008177222717811405
+      },
+      {
+        "feature": "lead_lag_ticks",
+        "importance": 0.0060534769959127805
+      },
+      {
+        "feature": "lock_ratio",
+        "importance": 0.005699276439686744
+      },
+      {
+        "feature": "jerk_min",
+        "importance": 0.0055593453557455375
+      },
+      {
+        "feature": "psd_slope",
+        "importance": 0.005505413583810033
+      },
+      {
+        "feature": "speed_last16_max",
+        "importance": 0.004499658917982911
+      },
+      {
+        "feature": "min_err",
+        "importance": 0.0035449207931759577
+      },
+      {
+        "feature": "settling_time",
+        "importance": 0.003456006250255069
+      },
+      {
+        "feature": "accel_max",
+        "importance": 0.0030799414621632084
+      },
+      {
+        "feature": "sparc",
+        "importance": 0.0029414679936797436
+      },
+      {
+        "feature": "jerk_std",
+        "importance": 0.002122288106440847
+      },
+      {
+        "feature": "victim_speed_mean",
+        "importance": 0.0020056788698232797
+      },
+      {
+        "feature": "speed_dps_mean",
+        "importance": 0.0018089007830310126
+      }
+    ]
+  },
+  "base_mr": {
+    "kill": {
+      "n": 14558,
+      "positives": 5344,
+      "auc": 0.7873608315710666,
+      "ap": 0.703911386489396,
+      "f1": 0.6327694728560189,
+      "precision": 0.6668739635157546,
+      "recall": 0.6019835329341318,
+      "fpr_at_tpr95": 0.7348599956587801,
+      "recall_at_fpr1": 0.1405314371257485,
+      "recall_at_fpr01": 0.07335329341317365,
+      "brier": 0.18590760199846665,
+      "ece": 0.09862845410987657
+    },
+    "player": {
+      "n": 1123,
+      "positives": 401,
+      "auc": 0.7740137191646922,
+      "ap": 0.6603245841550537,
+      "f1": 0.6202365308804205,
+      "precision": 0.6555555555555556,
+      "recall": 0.5885286783042394,
+      "fpr_at_tpr95": 0.7382271468144044,
+      "recall_at_fpr1": 0.12219451371571072,
+      "recall_at_fpr01": 0.004987531172069825,
+      "brier": 0.18720076602569546,
+      "ece": 0.08609685331475014
+    },
+    "player_auc_ci95": [
+      0.7372634923889062,
+      0.8076573777145187
+    ],
+    "player_recall_fpr1_ci95": [
+      0.03671377021545594,
+      0.17241786907964457
+    ],
+    "n_matches": 160,
+    "n_features": 78,
+    "top_features": [
+      {
+        "feature": "mr_slope_pitch",
+        "importance": 0.08803560079993937
+      },
+      {
+        "feature": "mr_scale",
+        "importance": 0.06547025589896971
+      },
+      {
+        "feature": "mr_slope_yaw",
+        "importance": 0.043947106050270225
+      },
+      {
+        "feature": "mr_r2_pitch",
+        "importance": 0.03309515896754178
+      },
+      {
+        "feature": "final_err_pitch",
+        "importance": 0.029206240926343757
+      },
+      {
+        "feature": "mr_r2_yaw",
+        "importance": 0.028563432509489117
+      },
+      {
+        "feature": "final_err_yaw",
+        "importance": 0.007839055931620301
+      },
+      {
+        "feature": "final_err_head",
+        "importance": 0.005961647222076409
+      },
+      {
+        "feature": "mr_shot",
+        "importance": 0.0035245141767679864
+      },
+      {
+        "feature": "final_err",
+        "importance": 0.0033831254773690755
+      },
+      {
+        "feature": "straightness",
+        "importance": 0.0029983149965309153
+      },
+      {
+        "feature": "accel_mean",
+        "importance": 0.0025858098219960026
+      },
+      {
+        "feature": "mr_last8_max",
+        "importance": 0.0023613370415069834
+      },
+      {
+        "feature": "time_to_target",
+        "importance": 0.0021441523383067076
+      },
+      {
+        "feature": "lead_lag_ticks",
+        "importance": 0.001431378379481485
+      },
+      {
+        "feature": "min_err",
+        "importance": 0.0010319917440660964
+      },
+      {
+        "feature": "victim_speed_max",
+        "importance": 0.0006981978042480316
+      },
+      {
+        "feature": "speed_last16_std",
+        "importance": 0.000664672648720499
+      },
+      {
+        "feature": "lock_ratio",
+        "importance": 0.0006355203395660795
+      },
+      {
+        "feature": "mr_win_p95",
+        "importance": 0.0004839283319631645
+      }
+    ]
+  },
+  "mr_only": {
+    "kill": {
+      "n": 14558,
+      "positives": 5344,
+      "auc": 0.692268233773391,
+      "ap": 0.5654851633810006,
+      "f1": 0.5376152245019328,
+      "precision": 0.5715489989462592,
+      "recall": 0.5074850299401198,
+      "fpr_at_tpr95": 0.854352072932494,
+      "recall_at_fpr1": 0.04116766467065868,
+      "recall_at_fpr01": 0.008233532934131737,
+      "brier": 0.23615274680679305,
+      "ece": 0.15660206388816553
+    },
+    "player": {
+      "n": 1123,
+      "positives": 401,
+      "auc": 0.6783905886253895,
+      "ap": 0.5303503012449082,
+      "f1": 0.5136186770428015,
+      "precision": 0.5351351351351351,
+      "recall": 0.4937655860349127,
+      "fpr_at_tpr95": 0.8393351800554016,
+      "recall_at_fpr1": 0.03740648379052369,
+      "recall_at_fpr01": 0.004987531172069825,
+      "brier": 0.2424523149514053,
+      "ece": 0.16466611086560184
+    },
+    "player_auc_ci95": [
+      0.6413924737298118,
+      0.7114238926161446
+    ],
+    "player_recall_fpr1_ci95": [
+      0.008241193737769081,
+      0.06928780806873606
+    ],
+    "n_matches": 160,
+    "n_features": 19
+  }
+}

@@ -1,0 +1,139 @@
+# Changelog
+
+## 2026-10-17
+
+- Initialized the project knowledge base.
+- Researched prior work and datasets: GAN-Aimbots (generation + detection, ViZDoom), XGuardian (CS2 pitch/yaw detection, USENIX Security '26), AntiCheatPT + CS2CD (795 CS2 matches, 48.9 GB, CC-BY-4.0), Same-Player Verification, HAWK, Kaggle CS:GO cheating dataset, RekaCS2-10k, OpenCS2, PureSkill.gg.
+- Drafted `design.md`: two-model architecture (discriminative detector + conditional generator), shared preprocessing, skill-aware one-sided suspicion scoring, evaluation protocol, chart deliverables, risks, open decisions.
+- Inspected raw CS2CD samples: confirmed per-tick `usercmd_mouse_dx/dy`, `usercmd_input_history`, `rank`, `cheaters` labels, and `player_death`/`weapon_fire` events. Mouse–view robust regression reaches R^2 0.75–0.89 on normal players in the sample; a labeled cheater shows a lower fit, motivating a physical-consistency feature.
+- Added `model-design.md`: multi-scale 64/256/1024/match window pyramid, hierarchical bottom-up/top-down detector, HMM aggregation, smoothness/motor-control metrics, attacker–victim cross-attention, skill-conditioned likelihood ratio, strict person-disjoint protocol, leakage audits, reproducibility and compute plan.
+- Rewrote the phased task plan to match the raw-CS2CD pipeline and the stricter evaluation protocol.
+
+
+## 2026-10-17 (implementation start)
+
+- Created project `.venv` with torch 2.6.0+cu124; CUDA is available on the RTX 3060 Laptop 6 GB.
+- Selected `CS2CD/Context_window_256` (9.4 GB tar, 256 x 44 per kill) for the detector-first phase; no raw `.dem` or 48.9 GB dataset download.
+- Verified one window maps to the raw match: `cdata-cheater-file_0-Player_3-kill_0` -> row 223 is the kill tick; recovered pitch/yaw/distance match the raw parquet exactly.
+- Found and documented a pitch-sign bug in the published geometry: CS2 pitch is opposite to `atan2(dz, horizontal)`. Inverting it reduces the sample kill-tick target error from 6.38 deg to 0.24 deg (mean absolute error over the window from 6.64 deg to 2.59 deg).
+- Implemented: tar index/cache builder (float16 memmap), match-disjoint split, geometry reconstruction, motor-control feature extraction, GBDT baseline, audit script, and tests.
+- Tests: 4 pass (geometry, angle wrap, summary/channels, split disjointness).
+- Pilot cache built from a truncated tar (15 windows); full cache awaits the 9.4 GB download.
+
+## 2026-10-17 (detector v1 results)
+
+- Full cache: 90,707 unaugmented windows; 794 matches; labels 18,423 cheater / 72,284 non-cheater.
+- Label audit: 278 matches mix cheater/non-cheater windows; 11,174 negatives come from `cdata` (cheater-present) matches with ~55.6% label precision. The clean run excludes them, keeping 79,533 windows.
+- GBDT (clean labels, match-disjoint): test kill AUC 0.9006, AP 0.7596; player-level mean AUC 0.9430; recall@FPR=1% 0.2626 kill / 0.3967 player; FPR@TPR=95% 0.4963 kill / 0.1864 player; ECE 0.138.
+- Feature ablations: no weapon 0.9443 player AUC; no outcome flags 0.9370; no motion 0.9359. Aim features carry the signal; weapon is not the shortcut.
+- Transformer (43 channels, d=128, 4 layers, 0.59M params, best epoch 9): test kill AUC 0.8970, AP 0.7639; player AUC 0.9406; recall@FPR=1% 0.2769 kill / 0.4293 player; ECE 0.132.
+- Calibrated probability ensemble (GBDT + Transformer): test kill AUC 0.9114, AP 0.7899; player AUC 0.9497; recall@FPR=1% 0.4457 player; FPR@TPR=95% 0.2009 player. The transductive rank ensemble reaches 0.9518 AUC but is diagnostic only.
+- Low-FPR kill-level detection remains the weak point; player-level aggregation over kills is the stronger deployment unit.
+- Caveats: single split/seed, no subgroup-by-rank analysis yet, no aim-only Transformer yet, test numbers used for model comparison; next runs must select on validation only.
+
+## 2026-10-17 (ablations and leakage audit)
+
+- Aim-only Transformer (26 channels; dropped weapon, kill-outcome, attacker-motion): test player AUC 0.9469, kill AUC 0.8909, AP 0.7441, recall@FPR=1% 0.2777, ECE 0.1120. It matches/beats the full model at player level and is the more defensible primary model.
+- Metadata-only GBDT (map one-hot + weapon group + kill-outcome flags only): test kill AUC 0.8775, player AUC 0.8873, recall@FPR=1% 0.2788. This is a strong dataset shortcut/confound; the full model's headline number must not be attributed to aim alone.
+- Shuffled-label audit: test kill AUC 0.4944, player AUC 0.4499; no label leakage.
+- Next: relative-only Transformer (also drops absolute positions) to test whether aim dynamics alone survive; then map-matched/map-holdout evaluation.
+
+## 2026-10-17 (5-fold CV and honest estimate)
+
+- Relative-only Transformer (20 channels; no absolute positions, weapon, outcome, or attacker motion): test player AUC 0.9480, kill AUC 0.8872, AP 0.7478, recall@FPR=1% 0.2614, ECE 0.0999. Aim dynamics alone remain predictive at player level.
+- Calibrated ensemble of GBDT + relative-only Transformer: test player AUC 0.9528, AP 0.8632, recall@FPR=1% 0.4402; kill AUC 0.9124, AP 0.7957. Transductive rank ensemble reaches 0.9534 (diagnostic only).
+- Match-grouped bootstrap on the single split: player AUC 0.9528 [0.9254, 0.9747]; recall@FPR=1% 0.4402 [0.2419, 0.6605]. The low-FPR recall interval is wide (119 test matches, 184 positive players).
+- 5-fold match-disjoint CV, aim-only GBDT (59 features): OOF kill AUC 0.8497, AP 0.6589, recall@FPR=1% 0.1572; OOF player AUC 0.9331, AP 0.7682, recall@FPR=1% 0.1735, CI [0.1046, 0.2656]. The single-split numbers were optimistic; the CV estimate is the honest primary result.
+- Metadata-only, shuffled-label, per-map, and map-holdout audits are recorded in `reports/`. Map-holdout aim-only GBDT player AUC ranges from 0.846 (de_anubis) to 0.956 (de_dust2); map-specific variance is material.
+- Next: 5-fold CV for the relative-only Transformer, calibration/risk-coverage, and charts. Do not report the single-split 0.95 as the headline.
+
+## 2026-10-17 (5-fold Transformer CV complete)
+
+- 5-fold match-disjoint CV, relative-only Transformer (20 channels): OOF kill AUC 0.8628, AP 0.6746, recall@FPR=1% 0.1307, ECE 0.1110; OOF player AUC 0.9292, AP 0.7407, recall@FPR=1% 0.0911, FPR@TPR=95% 0.2730, ECE 0.1263.
+- Match-grouped bootstrap: player AUC 95% CI [0.9150, 0.9423]; recall@FPR=1% 95% CI [0.0538, 0.2134].
+- Comparison with aim-only GBDT 5-fold CV: player AUC 0.9331 vs 0.9292, player recall@FPR=1% 0.1735 vs 0.0911. The Transformer has higher kill-level AUC but worse player-level low-FPR recall.
+- Conclusion: the single-split 0.95 player AUC / 0.44 recall was optimistic. The honest OOF estimate is ~0.93 player AUC and ~0.09-0.17 recall at 1% FPR. The aim signal is real but low-FPR ranking is the bottleneck.
+- Primary model decision for now: keep the aim-only GBDT as the low-FPR baseline; the Transformer is an ablation/ensemble member, not a clear winner.
+- Next candidates: player-level aggregation beyond mean, calibration/risk-coverage, feature engineering for low-FPR ranking, 1024 context, skill stratification, raw-mouse residual subset.
+
+## 2026-10-17 (cascade, calibration, residual audits)
+
+- Player aggregators on OOF scores: mean AUC 0.9367 / recall@FPR=1% 0.1183; HMM 0.9187 / 0.1518 / ECE 0.081; top-3 0.9122 / 0.1058; noisy-OR 0.8529 / 0.2008 but Brier 0.49 (over-triggers); max 0.8972 / 0.1128.
+- Cross-fitted player threshold (cutoff chosen on other folds): mean recall 0.1401 at FPR 0.0122; HMM 0.1455 at FPR 0.0124. Per-fold recall ranges ~0.025–0.427, so the low-FPR estimate is unstable even after cross-fitting. The global-threshold diagnostic was optimistic.
+- Per-weapon isotonic calibration: ECE improves (kill 0.033 -> 0.009, player 0.110 -> 0.078) but recall@FPR=1% collapses (kill 0.131 -> 0.069, player 0.118 -> 0.098). Weapon-2 FPR only drops 4.8% -> 3.7%; weapon-4 worsens. Calibration is not the low-FPR fix.
+- Calibration residuals by decile: mid bins under-predicted by 2–3 points; top decile over-predicted by ~10 points.
+- Conclusion: the bottleneck is low-FPR ranking, not calibration or the mean aggregator. Next: mouse–view residual features from a raw subset, then re-evaluate. Downloaded subset: 80 cheater + 80 clean matches (parquet + JSON).
+
+## 2026-10-17 (mouse-view residual pilot)
+
+- Downloaded 80 cheater + 80 clean raw matches (8.7 GB) and built mouse-view residual features for 16,357 windows. Fit uses per-player robust yaw/pitch slopes on non-zero mouse movement; invalid fits are flagged.
+- 5-fold match-disjoint CV on the 160-match subset (base = aim-only summary features, 59):
+  - base: player AUC 0.8833, recall@FPR=1% 0.0249; kill AUC 0.8211.
+  - base + all 19 residual features: player AUC 0.7740, recall@FPR=1% 0.1222; kill AUC 0.7874. The full set trades AUC for low-FPR recall.
+  - base + 4 tail residual features: player AUC 0.8817, recall@FPR=1% 0.0648.
+  - residual only: player AUC 0.6784, recall@FPR=1% 0.0374.
+  - Bootstrap CIs overlap; the subset is small (160 matches) and its base AUC is lower than the full 793-match CV.
+- Conclusion: mouse-view residual is not a clear win at 64 Hz. Do not download the full 48.9 GB raw dataset for it. Keep the tail variant only as an optional ablation. The next real lever is more data/longer context or skill-conditioned evaluation, not residual features.
+
+## 2026-10-17 (skill/rank analysis and figures)
+
+- Skill pilot on 875 players (160 raw matches): rank quartiles Q1 low -> Q4 high.
+  - Player AUC falls 0.911 -> 0.895 -> 0.828 -> 0.712.
+  - At the global 1% cutoff, Q4-high FPR is 4.76%; Q1/Q2/Q3 are 0%, 0.68%, 0.64%.
+  - Two FPs out of 42 Q4 clean players; the sample is small, but the direction is consistent with the user's concern.
+- Post-hoc skill corrections failed:
+  - rank-conditional residual (score minus expected human score at rank): AUC 0.846 vs raw 0.882; recall@FPR1 0.006 vs 0.016.
+  - Cross-fitted rank-quartile thresholds: pooled recall 0.050 vs 0.013, FPR 1.08% vs 0.72%, but Q4 FPR stays 4.76%, Q4 recall 0.
+  - Adding rank as a feature: overall recall@FPR1 jumps to 0.229 but Q4 FPR rises to 14.3% — a shortcut, not skill conditioning.
+  - Upweighting Q4 clean negatives x3/x5: no meaningful improvement (Q4 FPR 7.1%/4.8%).
+- Conclusion: high-rank false positives are a ranking/data problem, not a calibration or threshold problem. Post-hoc skill weighting should not be shipped.
+- Generated 10 figures in `reports/figures/`: ROC, risk-coverage, calibration, subgroup FPR, fold variability, residual comparison, map holdout, trajectory deviation, feature percentiles, rank strata.
+
+## 2026-10-17 (systematic experiment harness and math analysis)
+
+- Added `docs/llmwiki/experiments.md`: fixed folds, champion/challenger rule, experiment queue, and mathematical analysis plan.
+- Added `run_cpu_experiments.py`: one runner for 5 feature sets x {GBDT, logistic, PCA-logistic, Nystroem-RBF-logistic, ExtraTrees}, plus GBDT hyperparameters and a top-20 polynomial-logistic variant. All use the same 5 match-disjoint folds.
+- Pilot results: GBDT baseline reproduces 0.9331 player AUC / 0.1735 recall@FPR1; logistic 0.8935 / 0.0949; ExtraTrees 0.9274 / 0.1315. GBDT remains champion.
+- Math analysis (`reports/math/math_analysis.json`):
+  - PCA participation ratio 9.61 (effective dimension ~10 for 59 features).
+  - Principal angles between human/cheater top-10 subspaces: first five 3.6–10 deg, later 19–25 deg, last two 73/89.8 deg; substantial overlap in the leading directions.
+  - PCA-whitened Mahalanobis one-class score: player AUC 0.714, recall@FPR1 0.026; not competitive alone.
+  - EVT/GPD tail p-values are monotone transforms of the same score: AUC 0.897, recall@FPR1 0.1735 (no ranking gain).
+  - Cross-fitted conformal p-values: AUC 0.932, recall@FPR1 0.160; gives FPR control but does not improve ranking.
+- Conclusion: low-FPR is a ranking problem; tail/calibration/conformal methods cannot create separation. Nonlinear models are needed (GBDT > logistic), but the effective dimension and subspace overlap show the headroom is in features/data, not a new decision rule.
+- Batch 1 (full grid) is running in the background.
+
+## 2026-10-17 (batch 1 complete, no champion change)
+
+- Batch 1: 28 variants (5 feature sets x 5 model families + GBDT hyperparameters + top-20 polynomial logistic), same 5 match-disjoint folds.
+- Best recall@FPR=1%: base_outcome__gbdt 0.2171 (AUC 0.9338); base_context__gbdt 0.2047; base__gbdt63 0.1805; baseline base__gbdt 0.1735.
+- Paired match-grouped bootstrap vs baseline:
+  - base__gbdt63: dAUC +0.0006 [-0.0006, 0.0018], dRecall +0.0027 [-0.0257, 0.0283].
+  - base_motion__gbdt: dAUC +0.0010 [-0.0017, 0.0036], dRecall +0.0048 [-0.0386, 0.0537].
+  - base_outcome__gbdt: dAUC +0.0009 [-0.0031, 0.0046], dRecall +0.0384 [-0.0374, 0.1102].
+  - base_context__gbdt: dAUC -0.0014 [-0.0055, 0.0027], dRecall +0.0399 [-0.0235, 0.1102].
+  - base_context__logreg_rff: dAUC -0.0106 [-0.0159, -0.0054] (significantly worse).
+- Decision: **no challenger passes**. The apparent 0.217 is outcome-driven and its CI crosses zero; the clean champion remains base__gbdt (player AUC 0.9331, recall@FPR1 0.1735).
+- Interpretation: handcrafted feature/model space is near its ceiling. The next batch must add new information (target-coupling/OU/Fitts features, 1024 context, high-rank negatives) or a better architecture, not more hyperparameter search.
+
+## 2026-10-17 (batch 2: motor-control features)
+
+- Added 20 parametric motor-control features per window: exponential error-decay slope/tau/R2, AR(1)/OU velocity phi/R2/sigma/half-life, four FFT band energies, constant-velocity target-tracking residual, Fitts/profile ratios, velocity skew/kurtosis.
+- 5-fold GBDT with base+motor: player AUC 0.9325, recall@FPR1 0.1805 (baseline 0.9331 / 0.1735).
+- Paired match-grouped bootstrap vs baseline: dAUC -0.0005 [-0.0027, 0.0016]; dRecall +0.0052 [-0.0239, 0.0314].
+- gbdt63+motor: 0.9323 / 0.1899; dRecall +0.0067 [-0.0235, 0.0367].
+- Decision: not promoted. The parametric motor features add no significant signal beyond the existing smoothness/dynamics features.
+- Started the full 43-channel Transformer 5-fold run (`reports/cv_transformer_full`) as the architecture baseline; architecture screening will follow (d_model, layers, dropout, pooling).
+
+## 2026-10-17 (freeze before Monday)
+
+- Experiments paused until Monday 2026-10-20. Frozen champion: aim-only GBDT, 5-fold OOF player AUC 0.9331 / recall@FPR1 0.1735.
+- Batch 1 (28 variants) and motor-control features produced no challenger passing the paired-bootstrap rule; all recall deltas had CIs crossing zero.
+- Added `docs/llmwiki/next-session.md` with the Monday holdout/nested-CV protocol, three pre-registered hypotheses, RTX 5070 Ti notes, timebox, stop rules, and commands.
+- Git repository initialized and detector-v1 snapshot committed after the full 43-channel Transformer run completed.
+
+## 2026-10-17 (full 43-channel Transformer 5-fold)
+
+- Full 43-channel Transformer, 5-fold match-disjoint: player AUC 0.9288, AP 0.7882, recall@FPR=1% 0.2350, FPR@TPR=95% 0.3400, ECE 0.1154; kill AUC 0.8774, kill recall@FPR=1% 0.2236.
+- Paired match-grouped bootstrap vs aim-only GBDT: ΔAUC [-0.0125, 0.0039], Δrecall@FPR=1% [-0.0146, 0.1847].
+- Decision: not promoted. The recall point estimate is higher, but the CI crosses zero and the model uses context/outcome/position channels that the metadata-only audit showed to be confounded. It remains H1 for Monday under the locked-holdout protocol.

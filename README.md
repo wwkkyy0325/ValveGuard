@@ -1,0 +1,99 @@
+# ValveGuard
+
+CS2 aim-assist detection from kill-centred view trajectories. Detector-first;
+the conditional trajectory generator is deferred.
+
+## Data
+
+Primary dataset: [`CS2CD/Context_window_256`](https://huggingface.co/datasets/CS2CD/Context_window_256)
+(CC-BY-4.0).
+
+- `context_windows_256.tar` (9.4 GB), one parquet per kill window.
+- Each window is `256 x 44`: 223 ticks before the kill, the kill tick at row
+  223, and 32 ticks after it.
+- Label is the directory (`cheater/`, `not_cheater/`).
+- Filename: `cdata-cheater-file_{match}-Player_{k}-kill_{i}.parquet`; `_augN`
+  files are augmented copies.
+- `file_{match}` maps to `with_cheater_present/{match}` (or
+  `no_cheater_present/{match}`) in the raw CS2CD dataset. To inspect the
+  original event, download only that match's parquet + JSON; the full 48.9 GB
+  raw dataset is not needed.
+- `Player_{k}` is a per-match pseudonym, not a stable Steam identity. Splits are
+  match-disjoint; a true person-disjoint claim is not possible on this dataset.
+
+## Quickstart
+
+```bash
+python -m venv .venv
+.venv/Scripts/pip install -r requirements.txt
+.venv/Scripts/pip install --index-url https://download.pytorch.org/whl/cu124 torch
+
+# Build a float16 memmap cache + index.
+PYTHONPATH=src .venv/Scripts/python -m valveguard.scripts.build_cache \
+  --tar data/raw/context_windows_256.tar --out data/processed/cw256
+
+# Audit labels, matches, shapes, non-finite values.
+PYTHONPATH=src .venv/Scripts/python -m valveguard.scripts.audit \
+  --cache data/processed/cw256 --out reports/audit.json
+
+# Handcrafted-feature baseline.
+PYTHONPATH=src .venv/Scripts/python -m valveguard.scripts.run_baseline \
+  --cache data/processed/cw256 --out reports/baseline
+
+# Tests.
+python -I -m pytest -q tests
+```
+
+## Layout
+
+```
+src/valveguard/
+  data/tar_index.py     tar -> memmap cache + metadata
+  data/split.py         match-disjoint splits
+  features/geometry.py  angles, world positions, target-relative errors
+  features/dynamics.py  smoothness / submovement / spectral metrics
+  features/summarize.py flat features and per-tick channels
+  models/baseline.py    HistGradientBoosting baseline
+  metrics.py            AUC/AP/FPR/ECE
+  scripts/              CLIs
+tests/                  geometry, features, split
+docs/llmwiki/           design, detailed model spec, task plan, changelog
+```
+
+## Findings so far
+
+- Window mapping is exact: row 223 is the kill tick; recovered pitch, yaw, and
+  distance match the raw parquet (sample: distance 1470.8 units).
+- CS2's stored pitch has the opposite sign of `atan2(dz, horizontal)`. Correcting
+  it reduces the sample kill-tick target error from 6.38 deg to 0.24 deg. The
+  published `attacker_pitch_head_delta` uses the uncorrected sign; the pipeline
+  drops the published absolute deltas and recomputes signed, corrected channels.
+- `not_cheater` negatives come from clean matches (`ncdata`); non-cheater
+  players inside cheater matches are not used as negatives (their label
+  precision is only ~55.6% according to the dataset card).
+- The dataset does not contain raw mouse deltas. Mouse–view consistency
+  (`dyaw ~ usercmd_mouse_dx`) is available only if a small raw parquet subset is
+  fetched later.
+
+## Limitations
+
+- 64 Hz view angles, not 1000 Hz raw mouse input.
+- Match-disjoint evaluation only; per-match pseudonyms prevent a verifiable
+  person-disjoint split.
+- No target visibility/raycast in v1; FOV, distance, and smoke/wallbang flags
+  are proxies.
+- Reported metrics must include the low-FPR operating point; accuracy alone is
+  not a deployment criterion.
+
+## Status (frozen 2026-10-17)
+
+Detector v1 is frozen for the next session:
+
+- Champion: aim-only GBDT, 5-fold match-disjoint OOF:
+  - player AUC 0.9331, player recall@FPR=1% 0.1735, kill AUC 0.8497.
+- Full 43-channel Transformer (exploratory): player AUC 0.9288, recall@FPR=1% 0.2350; paired Δrecall CI [-0.0146, 0.1847], not promoted.
+- High-rank Q4 FPR 4.76% is the main release blocker.
+- Reports: `reports/REPORT.md`; figures: `reports/figures/`.
+- Experiments are paused until Monday 2026-10-20. The locked-holdout/nested-CV
+  protocol, three pre-registered hypotheses, timebox, and commands are in
+  `docs/llmwiki/next-session.md`.
