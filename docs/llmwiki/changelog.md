@@ -451,3 +451,9 @@
 - Note: demos contain no video. Clips require CS2 playback + capture
   (OBS/FFmpeg) or HLAE; the app always provides 2D trajectory previews and
   tick ranges for review.
+
+## 2026-10-18 (Rust feasibility commit)
+
+- Commit `41b7936`: Rust parser/model spikes, portable JSON export, 5E sample
+  result, and the Windows application plan. 6 files, +342/-2.
+- Working tree clean; artifacts, demos, and zips stay outside the repository.
