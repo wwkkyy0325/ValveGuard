@@ -389,3 +389,11 @@
   threshold).
 - Conclusion: the Q4 effect is real but modest (~3.4x the 1% target), not a
   19% blocker. This is the number to carry into engineering.
+
+## 2026-10-18 (replication commit)
+
+- Commit `a20126e`: rank replication on all dev-80 matches, JSON-rank
+  downloader, replication document, and superseding Q4 numbers. 11 files,
+  +405/-16.
+- Working tree clean; JSON files and rank player parquet stay outside the
+  repository.
