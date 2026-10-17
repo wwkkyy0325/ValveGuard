@@ -108,10 +108,13 @@ Detector v1 remains the champion; the v2 hypotheses did not beat it:
 - H3 rank-group DRO: no change — rejected.
 - Professional demos (7 HLTV demos, 1,020 windows, 70 players): 0/70 players
   flagged at the 1% operating point; adding them as negatives changes nothing.
-- Q4 false positives were understated by a threshold error. At the correct
-  player-level 1% cut the champion's Q4 FPR is 19.05%; empirical-Bayes
-  shrinkage of player scores by kill count (k0=5) reduces it to 4.76% and
-  raises recall@FPR=1% from 0.1735 to 0.2288 (dev80: 13.16% -> 5.26%,
-  0.1475 -> 0.2386). The holdout was already spent, so this is dev-validated
+- Q4 false positives were first understated by a threshold error, then
+  re-estimated on a larger rank sample: at the correct player-level 1% cut the
+  Q4 FPR is **3.37%** (386 clean Q4 players), reduced to **2.59%** by
+  empirical-Bayes shrinkage. The earlier 19%/13% figures came from a
+  38-42-player subset and were small-sample estimates.
+- Shrinkage of player scores by kill count (k0=5) also raises
+  recall@FPR=1% from 0.1735 to 0.2288 (dev80: 0.1475 -> 0.2386) with
+  non-inferior AUC. The holdout was already spent, so this is dev-validated
   only.
 - Reports: `reports/REPORT.md` (sections 11-14); figures: `reports/figures/`.

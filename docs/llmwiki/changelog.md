@@ -371,3 +371,21 @@
   per-kill inspection, the dedicated audit document, and the knowledge-base
   index. 14 files, +665.
 - Working tree clean; scored-window parquet remains ignored.
+
+## 2026-10-18 (rank-stratified FPR replication)
+
+- Added `scripts/download_cs2cd_json.py` and `scripts/rank_replication.py`.
+  Downloaded the per-match JSON for all 635 dev-80 matches (~1.3 GB) and
+  recovered ranks from `rank_update` events, avoiding the 48.9 GB parquet set.
+- Coverage: 3,429/4,678 players (73.3%) ranked.
+- Replication on all dev80, player-level 1% threshold 0.8217:
+  - Q1 0.26%, Q2 1.22%, Q3 1.05%, Q4 **3.37%** (386 clean Q4 players).
+  - Shrinkage k0=5: Q1 0.52%, Q2 1.22%, Q3 1.36%, Q4 **2.59%**.
+  - Q4 AUC 0.864 -> 0.879 with shrinkage.
+- The earlier 19.05% and 13.16% Q4 FPR figures came from 42/38 clean Q4
+  players and are superseded as population estimates. At a true rate near
+  3.4%, 8 false positives out of 42 is a rare but possible draw; the
+  160-match subset is also harder than the full dev set (11.1% at the same
+  threshold).
+- Conclusion: the Q4 effect is real but modest (~3.4x the 1% target), not a
+  19% blocker. This is the number to carry into engineering.

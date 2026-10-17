@@ -388,9 +388,12 @@ scores. Player-level FPR must be measured at a **player-level** threshold
 | champion, dev 80% | 38 | **5 (13.16%)** |
 | mouse-residual scores (rank strata) | 42 | 3 (7.14%) |
 
-The blocker was therefore worse than reported, and it is concentrated in
-low-evidence players: 5 of the 8 champion false positives had one or two
-kills; the Q4 clean group has a median of 9.5 kills but a 25th percentile of 2.
+The blocker was therefore worse than reported on this subset, and it is
+concentrated in low-evidence players: 5 of the 8 champion false positives had
+one or two kills; the Q4 clean group has a median of 9.5 kills but a 25th
+percentile of 2. This is a small-sample estimate: the replication in section
+16 with 386 clean Q4 players gives **3.37%**, so the 19.05% figure should not
+be read as the population rate.
 
 ### 14.2 Empirical-Bayes shrinkage
 
@@ -430,7 +433,9 @@ cannot distinguish these without raw mouse input.
 
 - Adopt shrinkage (k0=5) as the **player-level scoring rule** for reporting;
   it passes the decision rule on dev80 (recall CI lower bound > 0, AUC
-  non-inferior) and on the full OOF.
+  non-inferior) and on the full OOF. On the larger rank replication it reduces
+  Q4 FPR from 3.37% to 2.59% and raises Q4 AUC from 0.864 to 0.879 (section
+  16).
 - It was selected after the holdout was spent, using full-OOF diagnostics; the
   holdout is **not** re-evaluated. A clean confirmation needs a fresh split or
   external data.
@@ -464,3 +469,25 @@ cheat; 64 Hz view data cannot separate them.
 
 Full method, tables, and reproduction commands:
 `docs/llmwiki/label-noise-audit.md`.
+
+## 16. Rank-stratified FPR replication (dev 80% only)
+
+The Q4 estimates above used the 160-match raw subset (38-42 clean Q4 players).
+Ranks were recovered for **all** dev-80 matches from the per-match JSON
+`rank_update` events (3,429 of 4,678 players, 73.3% coverage), and the analysis
+was repeated with the same OOF scores.
+
+| Quartile | Players | Clean | AUC (mean) | FPR (mean) | AUC (shrunk) | FPR (shrunk) |
+|---|---|---|---|---|---|---|
+| Q1 low | 858 | 774 | 0.926 | 0.26% | 0.930 | 0.52% |
+| Q2 | 857 | 737 | 0.878 | 1.22% | 0.875 | 1.22% |
+| Q3 | 865 | 664 | 0.927 | 1.05% | 0.928 | 1.36% |
+| Q4 high | 849 | 386 | 0.864 | **3.37%** | 0.879 | **2.59%** |
+
+The Q4 effect is real but modest: 3.37% at a 1% target, reduced to 2.59% by
+shrinkage. The earlier 19.05% figure was a small-sample estimate (42 clean Q4
+players); with a true rate near 3.4%, observing 8 false positives out of 42 is
+a rare but possible draw. The 160-match subset is also harder than the full
+dev set at the same threshold (11.1%), so it is not representative.
+
+Details: `docs/llmwiki/rank-replication.md`.

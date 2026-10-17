@@ -213,3 +213,16 @@ Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,020 kill windows,
   Q4 FPR 4.8-7.9%), so the result is not knife-edge on k0.
 - Status: adopted as the player-level scoring rule for reporting; dev-validated
   only. The holdout was already spent and is not re-used.
+
+## 13. Rank-stratified FPR replication (all dev 80, JSON ranks)
+
+- Ranks from per-match JSON `rank_update` (635 files); 3,429/4,678 players
+  (73.3%) ranked. Same OOF scores and player-level 1% threshold (0.8217).
+- Q4 (386 clean players): FPR **3.37%**, AUC 0.864; shrunk k0=5: FPR
+  **2.59%**, AUC 0.879.
+- Q1/Q2/Q3 FPR: 0.26% / 1.22% / 1.05% (shrunk 0.52% / 1.22% / 1.36%).
+- The earlier 19.05% and 13.16% were small-sample estimates on 42/38 clean Q4
+  players; the 160-match subset is also harder than the full dev set (11.1% at
+  the same threshold).
+- Conclusion: the Q4 effect is real but modest (~3.4x the 1% target); the
+  19% figure is superseded. Details: `rank-replication.md`.

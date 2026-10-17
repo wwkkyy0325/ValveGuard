@@ -8,6 +8,7 @@ Start here when resuming work.
 | `model-design.md` | Detailed v2 model specification (multi-scale, channels, protocols). |
 | `experiments.md` | Champion/challenger protocol, experiment queue, and all batch results. |
 | `label-noise-audit.md` | Audit of the excluded cdata label-0 windows and the residual Q4 false positives. |
+| `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `next-session.md` | Frozen-state record, executed v2 protocol, and remaining work. |
 | `changelog.md` | Append-only dated record of changes, results, and corrections. |
 | `tasks/aimbot-detection-and-synthesis.md` | Task breakdown with checkboxes and verify steps. |
@@ -24,5 +25,5 @@ Start here when resuming work.
 
 Aim-only GBDT, 5-fold match-disjoint OOF: player AUC 0.9331,
 recall@FPR=1% 0.1735. Player-score shrinkage (k0=5) raises recall to 0.2288
-and cuts the corrected Q4 FPR from 19.05% to 4.76%; it is dev-validated only
+and cuts the replicated Q4 FPR from 3.37% to 2.59%; it is dev-validated only
 because the holdout was already spent.

@@ -226,13 +226,14 @@ Remaining:
   champion flags 0/70 pro players at the 1% operating point and 0.29% of pro
   kills. Pros score below average CS2CD humans despite being more accurate.
   Adding pro windows as training negatives changes nothing.
-- Q4 FPR was understated by a threshold error: at the correct player-level 1%
-  cut the champion's Q4 FPR is 19.05% (8/42), not 4.76%. It is concentrated in
-  players with one or two kills.
+- Q4 FPR was understated by a threshold error. On the larger rank replication
+  (all dev-80 matches, 386 clean Q4 players) the corrected player-level 1% Q4
+  FPR is **3.37%**; the earlier 19.05% was a 42-player small-sample estimate,
+  not the population rate.
 - Empirical-Bayes shrinkage of the player score by kill count (k0=5) reduces
-  Q4 FPR to 4.76% (dev80 5.26%) and raises recall@FPR=1% to 0.2288 (dev80
-  0.2386), with AUC non-inferior. It is a dev-validated player-scoring rule;
-  the holdout was spent, so it awaits external confirmation.
+  Q4 FPR to **2.59%** on the replication and raises recall@FPR=1% to 0.2288
+  (dev80 0.2386), with AUC non-inferior. It is a dev-validated player-scoring
+  rule; the holdout was spent, so it awaits external confirmation.
 - The remaining Q4 false positives have extremely straight trajectories; with
   64 Hz view data they cannot be separated from silent aim without raw mouse
   input or better labels.

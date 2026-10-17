@@ -112,3 +112,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [x] Label-noise audit: out-of-match scoring of the excluded cdata label-0
       windows (5.5% estimated cheater admixture, human-like tail) and a
       per-kill audit of the two residual Q4 false positives.
+- [x] Rank-stratified FPR replication on all dev-80 matches via JSON ranks:
+      Q4 FPR 3.37% (386 clean), 2.59% shrunk; supersedes the 19% subset
+      estimate.
