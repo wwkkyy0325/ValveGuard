@@ -60,7 +60,7 @@ ticks means the kill is skipped. No labels or raw mouse input are required.
 | dev 80%, 5-fold | 0.9294 | 0.1475 | development baseline |
 | locked holdout, trained on dev | 0.9384 | 0.3091 | one-shot, CI 0.187-0.523 |
 | dev 80% + shrinkage | 0.9316 | 0.2386 | player-scoring rule |
-| professional demos | -- | 0/70 players flagged | 1,020 kills, 7 demos |
+| professional demos | -- | 0/70 players flagged | 1,075 kills, 7 demos |
 
 Rank-stratified Q4 FPR after replication: **3.37%** at the player-level 1%
 cut (386 clean Q4 players), **2.59%** with shrinkage.

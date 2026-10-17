@@ -37,12 +37,32 @@
       "reliable": true
     },
     {
+      "steamid": "76561198288238927",
+      "name": "\u5934\u53f7\u73a9\u5bb6 3O55",
+      "kills": 17,
+      "mean_score": 0.280006,
+      "max_kill_score": 0.672948,
+      "shrunk_score": 0.282299,
+      "flagged": false,
+      "reliable": true
+    },
+    {
       "steamid": "76561199177015515",
       "name": "\u66e6\u66e6\uff08=-=\uff09",
       "kills": 11,
       "mean_score": 0.262094,
       "max_kill_score": 0.621475,
       "shrunk_score": 0.270844,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199582050990",
+      "name": "\u53cd\u6050\u7cbe\u82f1\u4e4b\u795eGGBond",
+      "kills": 13,
+      "mean_score": 0.254219,
+      "max_kill_score": 0.474367,
+      "shrunk_score": 0.264185,
       "flagged": false,
       "reliable": true
     },
@@ -63,26 +83,6 @@
       "mean_score": 0.252694,
       "max_kill_score": 0.429321,
       "shrunk_score": 0.262044,
-      "flagged": false,
-      "reliable": true
-    },
-    {
-      "steamid": "76561199582050990",
-      "name": "\u53cd\u6050\u7cbe\u82f1\u4e4b\u795eGGBond",
-      "kills": 11,
-      "mean_score": 0.244998,
-      "max_kill_score": 0.474367,
-      "shrunk_score": 0.259091,
-      "flagged": false,
-      "reliable": true
-    },
-    {
-      "steamid": "76561198288238927",
-      "name": "\u5934\u53f7\u73a9\u5bb6 3O55",
-      "kills": 15,
-      "mean_score": 0.24202,
-      "max_kill_score": 0.471249,
-      "shrunk_score": 0.254039,
       "flagged": false,
       "reliable": true
     },

@@ -1,0 +1,11 @@
+[package]
+name = "valveguard-desktop"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.104"
+awpy = "3.0.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+zip = "9.0.4"

@@ -1,7 +1,7 @@
 {
   "n_features": 59,
   "dev_kills": 63910,
-  "pro_kills": 1020,
+  "pro_kills": 1075,
   "pro_demos": 7,
   "pro_players": 70,
   "operating_points": {
@@ -16,7 +16,7 @@
     "fpr_0.01": {
       "kill_threshold": 0.8914676164985348,
       "dev_kill_fpr": 0.010007322431047107,
-      "pro_kill_fpr": 0.0029411764705882353,
+      "pro_kill_fpr": 0.0027906976744186047,
       "player_threshold": 0.7977236513772199,
       "dev_player_fpr": 0.010087241003271538,
       "pro_player_fpr": 0.0
@@ -24,7 +24,7 @@
     "fpr_0.05": {
       "kill_threshold": 0.7195482659630953,
       "dev_kill_fpr": 0.050016272068993575,
-      "pro_kill_fpr": 0.025490196078431372,
+      "pro_kill_fpr": 0.026976744186046512,
       "player_threshold": 0.596413607910543,
       "dev_player_fpr": 0.05016357688113413,
       "pro_player_fpr": 0.0
@@ -33,49 +33,49 @@
   "score_means": {
     "dev_human_kills": 0.2926025194508132,
     "dev_cheater_kills": 0.7046562429839596,
-    "pro_kills": 0.25333871144771253
+    "pro_kills": 0.25849494340013907
   },
   "by_demo": [
     {
       "match_key": "charrados-vs-alka-m1-anubis",
-      "n": 129,
-      "mean": 0.2461566882366766,
+      "n": 138,
+      "mean": 0.25175422468565095,
       "frac_above": 0.0
     },
     {
       "match_key": "ding-cuts-vs-abyssal-m2-nuke",
-      "n": 156,
-      "mean": 0.2436653824596685,
-      "frac_above": 0.00641025641025641
+      "n": 171,
+      "mean": 0.2547323402784564,
+      "frac_above": 0.005847953216374269
     },
     {
       "match_key": "dnk-vs-winners-m2-overpass",
-      "n": 90,
-      "mean": 0.24650291592607487,
-      "frac_above": 0.011111111111111112
+      "n": 95,
+      "mean": 0.25499971543943734,
+      "frac_above": 0.010526315789473684
     },
     {
       "match_key": "mouz-nxt-vs-ursa-m1-dust2",
-      "n": 207,
-      "mean": 0.2690549177967434,
+      "n": 212,
+      "mean": 0.26982968472799396,
       "frac_above": 0.0
     },
     {
       "match_key": "mouz-nxt-vs-ursa-m2-mirage",
-      "n": 104,
-      "mean": 0.27034869417456586,
+      "n": 112,
+      "mean": 0.27976992643023035,
       "frac_above": 0.0
     },
     {
       "match_key": "sashi-academy-vs-infinite-m1-inferno",
-      "n": 140,
-      "mean": 0.2465530766693908,
-      "frac_above": 0.007142857142857143
+      "n": 147,
+      "mean": 0.25024146050974505,
+      "frac_above": 0.006802721088435374
     },
     {
       "match_key": "tnc-vs-phantom-academy-m2-ancient",
-      "n": 194,
-      "mean": 0.24807292724373736,
+      "n": 200,
+      "mean": 0.25016079188357015,
       "frac_above": 0.0
     }
   ]

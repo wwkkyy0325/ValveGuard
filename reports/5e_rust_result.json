@@ -1,0 +1,112 @@
+{
+  "demo": "D:/workspace-new/wwkkyy0325/ValveGuard/data/raw/5e_sample/g161-20261017205155650208834_de_dust2.dem",
+  "k0": 5.0,
+  "kills_total": 145,
+  "kills_used": 129,
+  "map": "de_dust2",
+  "model_version": "valveguard-gbdt-2026-10-18",
+  "players": [
+    {
+      "flagged": false,
+      "kills": 13,
+      "max_kill_score": 0.7990907654000573,
+      "mean_score": 0.32271339519391523,
+      "name": "阿珍你来真得阿",
+      "reliable": true,
+      "shrunk_score": 0.3136527579721018,
+      "steamid": "76561199817160817"
+    },
+    {
+      "flagged": false,
+      "kills": 5,
+      "max_kill_score": 0.6965084107056814,
+      "mean_score": 0.3350974554646381,
+      "name": "本溪第一枪",
+      "reliable": true,
+      "shrunk_score": 0.31259627833001247,
+      "steamid": "76561199068268545"
+    },
+    {
+      "flagged": false,
+      "kills": 10,
+      "max_kill_score": 0.7276799149251261,
+      "mean_score": 0.30123786623931204,
+      "name": "顶级选手马保枪",
+      "reliable": true,
+      "shrunk_score": 0.29752361122467025,
+      "steamid": "76561198336425907"
+    },
+    {
+      "flagged": false,
+      "kills": 17,
+      "max_kill_score": 0.6729478781378695,
+      "mean_score": 0.2800060000157797,
+      "name": "头号玩家 3O55",
+      "reliable": true,
+      "shrunk_score": 0.2822989775565995,
+      "steamid": "76561198288238927"
+    },
+    {
+      "flagged": false,
+      "kills": 11,
+      "max_kill_score": 0.6214753784852631,
+      "mean_score": 0.26209382925403824,
+      "name": "曦曦（=-=）",
+      "reliable": true,
+      "shrunk_score": 0.2708442267357097,
+      "steamid": "76561199177015515"
+    },
+    {
+      "flagged": false,
+      "kills": 13,
+      "max_kill_score": 0.47436660542106696,
+      "mean_score": 0.25421907230077734,
+      "name": "反恐精英之神GGBond",
+      "reliable": true,
+      "shrunk_score": 0.2641846358826133,
+      "steamid": "76561199582050990"
+    },
+    {
+      "flagged": false,
+      "kills": 7,
+      "max_kill_score": 0.6311683858921818,
+      "mean_score": 0.24527363224590754,
+      "name": "茉莉青花瓷",
+      "reliable": true,
+      "shrunk_score": 0.26394924430819056,
+      "steamid": "76561199080566385"
+    },
+    {
+      "flagged": false,
+      "kills": 15,
+      "max_kill_score": 0.4293210980655767,
+      "mean_score": 0.2526938777135628,
+      "name": "社会你皇少",
+      "reliable": true,
+      "shrunk_score": 0.26204418358401876,
+      "steamid": "76561198981414638"
+    },
+    {
+      "flagged": false,
+      "kills": 15,
+      "max_kill_score": 0.7529380479463497,
+      "mean_score": 0.22352168510809065,
+      "name": "她也曾是粉色丶",
+      "reliable": true,
+      "shrunk_score": 0.2401650391299147,
+      "steamid": "76561199015160393"
+    },
+    {
+      "flagged": false,
+      "kills": 23,
+      "max_kill_score": 0.5459139734822405,
+      "mean_score": 0.19798677176499857,
+      "name": "开启心动模式Ec",
+      "reliable": true,
+      "shrunk_score": 0.21443468773471075,
+      "steamid": "76561199162529034"
+    }
+  ],
+  "prior": 0.29009510119538684,
+  "threshold": 0.7916080822111738
+}

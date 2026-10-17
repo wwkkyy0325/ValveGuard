@@ -84,9 +84,9 @@ docs/llmwiki/           design, detailed model spec, task plan, changelog
 - The dataset does not contain raw mouse deltas. Mouse–view consistency
   (`dyaw ~ usercmd_mouse_dx`) is available only if a small raw parquet subset is
   fetched later.
-- Elite human aim is not mistaken for aim assist: on 1,020 kill windows from
+- Elite human aim is not mistaken for aim assist: on 1,075 kill windows from
   seven professional HLTV demos (70 player-maps), the champion flags 0/70
-  players and 0.29% of kills at its 1% FPR operating point. Pros score below
+  players and 0.28% of kills at its 1% FPR operating point. Pros score below
   average CS2CD humans despite being more accurate.
 - The excluded `cdata` label-0 windows score like clean humans (5.5% estimated
   cheater admixture by first-moment decomposition), so the dataset card's
@@ -116,7 +116,7 @@ Detector v1 remains the champion; the v2 hypotheses did not beat it:
   [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809] — not promoted.
 - H2 1024-tick context: no gain (ΔAUC [-0.0055, 0.0078]) — rejected.
 - H3 rank-group DRO: no change — rejected.
-- Professional demos (7 HLTV demos, 1,020 windows, 70 players): 0/70 players
+- Professional demos (7 HLTV demos, 1,075 windows, 70 players): 0/70 players
   flagged at the 1% operating point; adding them as negatives changes nothing.
 - Q4 false positives were first understated by a threshold error, then
   re-estimated on a larger rank sample: at the correct player-level 1% cut the

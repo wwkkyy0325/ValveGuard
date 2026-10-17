@@ -222,8 +222,8 @@ Remaining:
 - Exploratory within-player self-baseline: kill-level AUC rises 0.847 -> 0.921
   (leakage audit 0.50), but player-level recall gain is not significant, AUC
   drops, and Q4 FPR is unchanged. Not promoted; recorded as a diagnostic.
-- Professional-demo check (7 HLTV demos, 1,020 windows, 70 players): the
-  champion flags 0/70 pro players at the 1% operating point and 0.29% of pro
+- Professional-demo check (7 HLTV demos, 1,075 windows, 70 players): the
+  champion flags 0/70 pro players at the 1% operating point and 0.28% of pro
   kills. Pros score below average CS2CD humans despite being more accurate.
   Adding pro windows as training negatives changes nothing.
 - Q4 FPR was understated by a threshold error. On the larger rank replication

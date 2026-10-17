@@ -328,7 +328,7 @@ reuse.
 The Q4 false positives suggested that strong human aim might look like aim
 assist. To test that directly, 7 professional CS2 demos were downloaded from
 the HLTV demo dataset (`blanchon/opencs2_dataset_demo`, CC-BY-4.0), parsed with
-demoparser2, and turned into 1,020 kill windows from 70 player-maps using the
+demoparser2, and turned into 1,075 kill windows from 70 player-maps using the
 same `raw_window`/`summarize` code as CS2CD. Pro windows are treated as clean
 human negatives.
 
@@ -343,11 +343,11 @@ windows.
 
 | Operating point | CS2CD human FPR | Pro kill FPR | Pro player FPR |
 |---|---|---|---|
-| 0.1% | 0.10% | 0/1,020 (0%) | 0/70 (0%) |
-| 1% | 1.00% | 3/1,020 (0.29%) | 0/70 (0%) |
-| 5% | 5.00% | 2.55% | 0/70 (0%) |
+| 0.1% | 0.10% | 0/1,075 (0%) | 0/70 (0%) |
+| 1% | 1.00% | 3/1,075 (0.28%) | 0/70 (0%) |
+| 5% | 5.00% | 2.70% | 0/70 (0%) |
 
-Mean scores: pro 0.253, CS2CD humans 0.293, CS2CD cheaters 0.705.
+Mean scores: pro 0.258, CS2CD humans 0.293, CS2CD cheaters 0.705.
 
 **Elite human aim is not mistaken for aim assist.** Pros score below the
 average CS2CD human despite being more accurate, so the Q4 false positives are
@@ -356,19 +356,19 @@ high-rank sample (or to label noise / small-sample variance there).
 
 ### 13.2 Adding pro windows as negatives
 
-The 1,020 pro windows were added to every training fold (never to a test fold)
+The 1,075 pro windows were added to every training fold (never to a test fold)
 in the dev-80 5-fold CV:
 
-- Paired vs the baseline GBDT: ΔAUC **[-0.0010, +0.0017]**, Δrecall@FPR=1%
-  **[-0.0215, +0.0290]**.
-- Q4 FPR 10.5% -> 10.5%; Q4 AUC 0.685 -> 0.677.
+- Paired vs the baseline GBDT: ΔAUC **[-0.0019, +0.0014]**, Δrecall@FPR=1%
+  **[-0.0098, +0.0480]**.
+- Q4 FPR 10.5% -> 10.5%; Q4 AUC 0.685 -> 0.683.
 
 Decision: **high-skill-negative augmentation rejected** — it changes nothing.
 The specificity result is the useful outcome.
 
 ### 13.3 Caveats
 
-- 7 demos / 70 players / 1,020 kills; the FPR CI is wide.
+- 7 demos / 70 players / 1,075 kills; the FPR CI is wide.
 - Professional players are the extreme of skill, not a random sample of the
   CS2CD Q4 matchmaking population.
 - Demos are from 2026; CS2CD may cover a different patch.

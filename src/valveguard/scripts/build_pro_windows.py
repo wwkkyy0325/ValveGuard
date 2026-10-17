@@ -25,7 +25,7 @@ from valveguard.features.summarize import summarize
 TICK_PROPS = [
     "X", "Y", "Z", "pitch", "yaw", "velocity", "health",
     "active_weapon_name", "flash_duration", "shots_fired", "is_alive",
-    "total_rounds_played",
+    "is_warmup_period",
 ]
 KILL_ROW = 223
 
@@ -71,7 +71,9 @@ def demo_windows(path: Path) -> pd.DataFrame:
         kill_row = ticks[
             (ticks["steamid"] == ev["attacker_steamid"]) & (ticks["tick"] == kill_tick)
         ]
-        if len(kill_row) == 0 or int(kill_row["total_rounds_played"].iloc[0]) < 1:
+        # total_rounds_played is 0 during the whole first round, so it cannot
+        # be used to exclude warm-up.  The warm-up flag is explicit.
+        if len(kill_row) == 0 or bool(kill_row["is_warmup_period"].iloc[0]):
             continue
         tick_range = np.arange(kill_tick - KILL_ROW, kill_tick + 33)
         attacker = by_player[ev["attacker_steamid"]]

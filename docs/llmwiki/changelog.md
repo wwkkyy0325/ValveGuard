@@ -457,3 +457,22 @@
 - Commit `41b7936`: Rust parser/model spikes, portable JSON export, 5E sample
   result, and the Windows application plan. 6 files, +342/-2.
 - Working tree clean; artifacts, demos, and zips stay outside the repository.
+
+## 2026-10-18 (pure-Rust core and warm-up correction)
+
+- Implemented `desktop/` (pure Rust): `.zip`/`.dem` -> `awpy` parse ->
+  256-tick windows -> 59 features -> JSON tree ensemble -> player table with
+  shrinkage. No Python at runtime.
+- Validated on the 5E dust2 sample: 129/145 kills used, 10 players, 0 flagged,
+  **3.9 s** end to end including zip extraction.
+- Parity vs Python: 129/129 kills matched; kill-score max diff **0.0**;
+  player-score max diff **4.6e-7**; identical kill counts and flags.
+- Found and fixed a real warm-up bug: `total_rounds_played` is 0 for the whole
+  first live round, so the Python filter dropped first-round kills. Both
+  pipelines now use explicit warm-up/round logic.
+- Pro windows rebuilt with the fix: **1,075** (was 1,020). Pro FPR at 1% is
+  **0.28% (3/1,075)**, 0/70 players; at 5% it is 2.70%. Pro-negative
+  augmentation: ΔAUC [-0.0019, +0.0014], Δrecall [-0.0098, +0.0480];
+  Q4 unchanged. Conclusions hold.
+- Added `desktop/README.md`; updated `windows-app.md` and all pro-demo numbers
+  in the living docs.

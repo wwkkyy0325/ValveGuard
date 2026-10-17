@@ -181,18 +181,18 @@ matches / 63,910 windows. Post-hoc lock, documented in
 
 ## 11. Professional demos (2026-10-18)
 
-Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,020 kill windows,
+Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,075 kill windows,
 70 player-maps. Treated as clean human negatives.
 
 | Operating point | Pro kill FPR | Pro player FPR |
 |---|---|---|
-| 0.1% | 0/1,020 | 0/70 |
-| 1% | 0.29% (3/1,020) | 0/70 |
-| 5% | 2.55% | 0/70 |
+| 0.1% | 0/1,075 | 0/70 |
+| 1% | 0.28% (3/1,075) | 0/70 |
+| 5% | 2.70% | 0/70 |
 
-- Pro mean score 0.253 vs CS2CD humans 0.293 and cheaters 0.705.
+- Pro mean score 0.258 vs CS2CD humans 0.293 and cheaters 0.705.
 - Pro-negative augmentation (dev-80 5-fold, pro only in training):
-  ΔAUC [-0.0010, +0.0017], Δrecall [-0.0215, +0.0290], Q4 FPR unchanged.
+  ΔAUC [-0.0019, +0.0014], Δrecall [-0.0098, +0.0480], Q4 FPR unchanged.
 - Conclusion: elite human aim is not confused with aim assist; adding pro
   negatives does not move the detector. The Q4 FPR is not a generic
   high-skill effect.

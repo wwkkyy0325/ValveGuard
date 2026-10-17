@@ -115,9 +115,33 @@ Effort estimate: 3-5 days for the feature port, 3-5 days for the Tauri UI,
 Given the parser and model spikes are done, pure Rust is technically sound;
 the sidecar is the faster path if time-to-demo matters more than size.
 
-## Open decisions
+## Rust core status (2026-10-18)
 
-1. Pure Rust vs Python sidecar for v1.
-2. Video scope: tick-range review + 2D preview only, or OBS capture automation.
-3. Frontend framework (React/Svelte/vanilla) and UI language (Chinese first).
-4. Batch queue in v1 or single demo first.
+Implemented in `desktop/`:
+
+- `.zip` / `.dem` input, temp extraction, `awpy` parsing, per-tick snapshots;
+- port of the 59 aim features;
+- JSON tree-ensemble scoring;
+- player aggregation and JSON output; Chinese names preserved.
+
+Validated on the 5E dust2 sample:
+
+- 129 of 145 kills used; 10 players; 0 flagged;
+- **3.9 s** end to end, including zip extraction;
+- Python vs Rust: 129/129 kills matched, kill-score max diff **0.0**,
+  player-score max diff **4.6e-7**, identical kill counts and flags.
+
+A real bug surfaced during the parity check: `total_rounds_played` is 0 for
+the whole first live round, so the Python warm-up filter was dropping
+first-round kills. Both pipelines now use explicit round/warm-up logic; the
+pro-demo results are re-run with the fix.
+
+Remaining work: Tauri UI (Chinese), 2D previews, CS2 launch, OBS capture.
+
+## Decisions
+
+1. **Pure Rust** for the desktop app.
+2. v1 review = tick ranges + 2D preview + "open in CS2"; OBS background
+   capture is a later addition.
+3. Chinese UI by default.
+4. Single demo first; batch queue after the table/review flow is stable.

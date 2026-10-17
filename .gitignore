@@ -20,3 +20,6 @@ experiments/**/oof/
 
 # Model artifacts
 artifacts/
+
+# Rust build output
+desktop/target/
