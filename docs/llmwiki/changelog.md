@@ -426,3 +426,9 @@
 - ONNX export attempted; `skl2onnx` 1.20 fails on this HGB model (boolean
   attribute in TreeEnsembleClassifier). The raw artifact stays joblib, which
   is sufficient for a Python/PyInstaller Windows app.
+
+## 2026-10-18 (I/O contract commit)
+
+- Commit `cd69f31`: frozen model I/O contract of 3 files.
+- Working tree clean; the joblib artifact and experimental ONNX deps stay
+  outside version control.
