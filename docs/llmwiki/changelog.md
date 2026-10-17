@@ -397,3 +397,20 @@
   +405/-16.
 - Working tree clean; JSON files and rank player parquet stay outside the
   repository.
+
+## 2026-10-18 (deployment artifact and scoring CLI)
+
+- Added `scripts/train_final.py`: fits the deployment GBDT on all 79,533
+  clean windows / 793 matches and saves a 1.2 MB joblib artifact with the
+  feature order, player-level 1% threshold (0.7916), human prior (0.290) and
+  shrinkage k0=5.
+- Added `scripts/score_demo.py`: demo -> windows -> features -> kill scores ->
+  per-player shrunk scores with `flagged` and `reliable` fields. Tested on a
+  professional demo: 10 players, 0 flagged, 18.7 s wall clock on CPU.
+- Added `docs/llmwiki/model-card.md` (input/output contract, metrics,
+  limitations, batch-retraining policy) and console entry points in
+  `pyproject.toml` (`valveguard-train`, `valveguard-score`).
+- Decision: **no incremental training**. Full retraining is 1-2 minutes and
+  avoids catastrophic forgetting; increments apply to data ingestion and
+  versioned batch retraining, not to model fitting.
+- Artifacts are gitignored; they are rebuilt with one command.
