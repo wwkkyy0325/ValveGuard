@@ -134,3 +134,28 @@ kill AUC 0.8774. Paired vs aim-only GBDT: ΔAUC [-0.0125, 0.0039], Δrecall
 [-0.0146, 0.1847]. Not promoted under the decision rule. It is the leading
 H1 candidate for Monday, but it must be re-run on the locked holdout and
 with a fair channel set.
+
+## 9. v2 dev-80 results (2026-10-17, RTX 3060)
+
+Holdout: 158 matches / 15,623 windows locked with seed 20261020; dev 635
+matches / 63,910 windows. Post-hoc lock, documented in
+`reports/holdout/holdout_summary.json`.
+
+| Run | Player AUC | Recall@FPR1 | Kill AUC | Decision |
+|---|---|---|---|---|
+| GBDT on dev 80% (5-fold) | 0.9294 | 0.1475 | 0.8472 | reference |
+| H1 43-channel Transformer (dev 80%) | 0.9251 | 0.2297 | 0.8704 | rejected: ΔAUC [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809] |
+| H2 near (subset) | 0.8822 | 0.0374 | 0.8241 | reference |
+| H2 near+macro (1024) | 0.8830 | 0.0349 | 0.8290 | rejected: ΔAUC [-0.0055, 0.0078] |
+| H2 macro only | 0.8240 | 0.0050 | 0.7176 | rejected: ΔAUC [-0.084, -0.031] |
+| H3 baseline (rank subset) | 0.8771 | 0.0374 | 0.8155 | reference |
+| H3 DRO reweighting | 0.8800 | 0.0299 | 0.8184 | rejected: Q4 FPR unchanged |
+| Holdout, GBDT trained on dev | 0.9384 | 0.3091 | 0.8474 | final estimate |
+
+- H1 (43-channel Transformer on dev 80%) did not clear the rule: the recall
+  point estimate is +0.082, but the CI crosses zero and AUC is slightly lower.
+- No hypothesis passed; the aim-only GBDT remains champion.
+- H2 and H3 are pilots on the 160-match rank/raw subset; their absolute metrics
+  are not comparable to the full-dataset numbers, only within-row.
+- H2 reconstruction sanity check: rebuilt near features vs published cached
+  features on the same subset, ΔAUC [-0.0067, 0.0040].

@@ -82,7 +82,9 @@ def _denorm(values: np.ndarray, lo: float, hi: float) -> np.ndarray:
     return lo + np.asarray(values, dtype=np.float32) * (hi - lo)
 
 
-def recover(window: pd.DataFrame) -> dict[str, np.ndarray | str]:
+def recover(
+    window: pd.DataFrame, kill_row: int = KILL_ROW
+) -> dict[str, np.ndarray | str]:
     """Recover world coordinates, angles, and target-relative errors."""
     map_name = get_map(window)
     if map_name not in MAP_BOUNDS:
@@ -90,8 +92,8 @@ def recover(window: pd.DataFrame) -> dict[str, np.ndarray | str]:
     min_x, max_x, min_y, max_y, min_z, max_z = MAP_BOUNDS[map_name]
 
     n = len(window)
-    if n != KILL_ROW + 33:
-        raise ValueError(f"Expected 256 ticks, got {n}")
+    if n != kill_row + 33:
+        raise ValueError(f"Expected {kill_row + 33} ticks, got {n}")
 
     pitch = np.asarray(window["attacker_pitch"], dtype=np.float32) * 180.0 - 90.0
     yaw = np.asarray(window["attacker_yaw"], dtype=np.float32) * 360.0 - 180.0
@@ -132,7 +134,7 @@ def recover(window: pd.DataFrame) -> dict[str, np.ndarray | str]:
     dpitch = np.diff(pitch, prepend=pitch[0])
     dyaw = wrap_deg(dyaw)
 
-    t = (np.arange(n, dtype=np.float32) - KILL_ROW) / TICK_RATE
+    t = (np.arange(n, dtype=np.float32) - kill_row) / TICK_RATE
 
     return {
         "map": map_name,

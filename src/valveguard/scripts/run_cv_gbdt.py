@@ -33,6 +33,10 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--folds", type=int, default=5)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--holdout", default=None,
+                    help="holdout_matches.parquet; restrict to its dev matches")
+    ap.add_argument("--folds-from", default=None,
+                    help="predictions parquet whose match->fold map is reused")
     args = ap.parse_args()
 
     out = Path(args.out)
@@ -46,6 +50,10 @@ def main() -> None:
         on="row", how="inner",
     )
     data = data[~((data["source"] == "cdata") & (data["label"] == 0))].copy()
+    if args.holdout:
+        hm = pd.read_parquet(args.holdout)
+        dev_keys = set(hm.loc[hm["split"] == "dev", "match_key"])
+        data = data[data["match_key"].isin(dev_keys)].copy()
     data = data.reset_index(drop=True)
 
     weapon = [c for c in data.columns if c.startswith("weapon_")]
@@ -58,16 +66,23 @@ def main() -> None:
             and data[c].notna().any()
             and c not in set(weapon + outcome + motion)]
 
-    # Stratified match folds.
-    match_label = data.groupby("match_key")["label"].max()
-    rng = np.random.default_rng(args.seed)
-    fold_of: dict[str, int] = {}
-    for label, keys in match_label.groupby(match_label).groups.items():
-        keys = np.array(sorted(keys))
-        rng.shuffle(keys)
-        for i, k in enumerate(keys):
-            fold_of[k] = i % args.folds
-    data["fold"] = data["match_key"].map(fold_of)
+    if args.folds_from:
+        fp = pd.read_parquet(args.folds_from)[["match_key", "fold"]].drop_duplicates()
+        data = data.merge(fp, on="match_key", how="left")
+        if data["fold"].isna().any():
+            raise RuntimeError("--folds-from does not cover every dev match")
+        data["fold"] = data["fold"].astype(int)
+    else:
+        # Stratified match folds.
+        match_label = data.groupby("match_key")["label"].max()
+        rng = np.random.default_rng(args.seed)
+        fold_of: dict[str, int] = {}
+        for label, keys in match_label.groupby(match_label).groups.items():
+            keys = np.array(sorted(keys))
+            rng.shuffle(keys)
+            for i, k in enumerate(keys):
+                fold_of[k] = i % args.folds
+        data["fold"] = data["match_key"].map(fold_of)
 
     oof = np.full(len(data), np.nan)
     fold_metrics = []

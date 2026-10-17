@@ -209,3 +209,37 @@ Remaining:
 1. Synthesis endpoints: use 2D view angles (yaw, pitch) plus target angular size; confirm whether the user also wants screen-pixel endpoints.
 2. Responsible release: detector/code open; generator weights restricted or released with a dual-use statement. Confirm the intended release policy.
 3. Target visibility: no raycast in v1; use a geometry/FOV/smoke proxy and state the limitation. Is a map-raycast module in scope for v2?
+
+## 10. Current State (v2, 2026-10-17)
+
+- Champion: aim-only GBDT on 59 window features; 5-fold match-disjoint OOF
+  player AUC 0.9331, recall@FPR=1% 0.1735, kill AUC 0.8497.
+- Locked 20% match holdout (158 matches); the champion fitted on the dev 80%
+  scores player AUC 0.9384, recall@FPR=1% 0.3091 on it.
+- Rejected v2 hypotheses: 43-channel Transformer (recall gain not significant,
+  context channels confounded), 1024-tick context (no gain), rank-group DRO
+  (no change to Q4 FPR).
+- Open blocker: high-rank humans overlap cheat-like aim features (Q4 AUC 0.71,
+  FPR 4.76% at the global 1% cut). The next step needs new information
+  (high-rate mouse/view consistency or high-skill human negatives), not more
+  model search on the current features.
+- The conditional generator remains deferred.
+
+## 11. Player Identity and Temporal Scope (verified 2026-10-17)
+
+- **No cross-match identity.** Every player field in the demos is already
+  replaced by `Player_1..Player_10`; `player_connect`, `player_disconnect`,
+  `rank_update`, and the tick table contain no name, XUID, or network id.
+  `Player_k` is regenerated per demo: `Player_1` alone appears in 539-645
+  different matches. Linking a person across matches is not possible, and
+  attempting it from timing/rank fingerprints would be unreliable and outside
+  the dataset's anonymisation contract.
+- **Within-match series are rich.** 5,868 player-match groups with kills;
+  median 13 kills per player-match, 97% have >=2 and 67% have >=10 (max 92).
+  The cache already supports per-player aggregation (mean/top-k/max/HMM) and
+  per-player mouse-view residual fits.
+- **Consequence.** "Same person across games" analyses (habit drift, style
+  change across matches) cannot be run on CS2CD. Within-match temporal work is
+  possible: per-player self-baselines, kill-order sequences, and style-change
+  detection inside a demo. Cross-match claims require an external dataset with
+  stable ids.

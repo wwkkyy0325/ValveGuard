@@ -1,6 +1,9 @@
 # ValveGuard — Detector v1 Report
 
 Status: research checkpoint, 2026-10-17. Not deployment-ready.
+v2 update: the locked-holdout evaluation and the three pre-registered
+hypotheses (H1 Transformer, H2 1024-tick context, H3 rank DRO) are in
+section 11. No challenger passed; the aim-only GBDT remains the champion.
 
 ## 1. Data
 
@@ -121,7 +124,13 @@ Conclusion: high-rank false positives are a ranking/data problem, not a calibrat
 ## 8. Limitations
 
 - 64 Hz view angles, not 1000 Hz raw mouse input.
-- Match-disjoint only; per-match pseudonyms.
+- Match-disjoint only; per-match pseudonyms. `Player_k` is regenerated for every
+  demo, and the raw JSON contains no name, XUID, or network id, so a person
+  cannot be linked across matches. Cross-match (multi-game) person analysis is
+  impossible by construction; only within-match series are available. Within a
+  match the series is rich: 5,868 player-match groups, median 13 kills
+  (97% have >=2, 67% have >=10), so per-player temporal analysis is possible
+  inside a demo.
 - No target visibility/raycast; FOV/distance/smoke are proxies.
 - Labels: VAC-based positives have low recall; cdata negatives excluded.
 - Small high-rank negative sample (42 clean players in Q4); CI is wide.
@@ -156,3 +165,113 @@ python -m valveguard.scripts.analyze_cascade_residuals --gbdt reports/cv_gbdt/cv
 python -m valveguard.scripts.analyze_skill --scores reports/mouse_residual_eval2/base_player_scores.parquet --raw data/raw/cs2cd_subset --out reports/skill
 python -m valveguard.scripts.make_figures
 ```
+
+## 11. v2 checkpoint — locked holdout and pre-registered hypotheses (2026-10-17)
+
+Status: the three pre-registered hypotheses are complete. The aim-only GBDT
+remains the champion; no challenger passed the decision rule.
+
+### 11.1 Holdout lock
+
+- Stratified 20% match holdout: **158 matches / 15,623 windows**; development
+  635 matches / 63,910 windows. Positive rate 0.3987 vs 0.3984.
+- Seed 20261020; digest `01ff5174...522520e` in
+  `reports/holdout/holdout_summary.json`.
+- The lock is **post-hoc**: v1 selection used every match, so it bounds v2
+  selection but does not retroactively cleanse the frozen baseline.
+
+### 11.2 Development-80 baseline
+
+Aim-only GBDT, original folds, holdout matches removed from training:
+
+| Metric | dev 80% | frozen v1 (all data) |
+|---|---|---|
+| player AUC | 0.9294 | 0.9331 |
+| player recall@FPR=1% | 0.1475 (CI 0.096–0.252) | 0.1735 |
+| kill AUC | 0.8472 | 0.8497 |
+
+The difference is consistent with 20% less training data; the frozen estimate
+is stable, not inflated.
+
+### 11.3 H1 — 43-channel Transformer on dev 80%
+
+5-fold match-disjoint, same folds as the GBDT:
+
+| Metric | Transformer | GBDT |
+|---|---|---|
+| player AUC | 0.9251 | 0.9294 |
+| player AP | 0.7773 | 0.7514 |
+| player recall@FPR=1% | **0.2297** (CI 0.146–0.357) | 0.1475 |
+| player ECE | **0.1091** | 0.1843 |
+| kill AUC | **0.8704** | 0.8472 |
+
+Paired match-grouped bootstrap: ΔAUC **[-0.0153, 0.0057]**,
+Δrecall **[-0.0071, 0.1809]**.
+
+Decision: **not promoted**. The recall point estimate is +0.082, but the CI
+crosses zero, and the model consumes weapon/outcome channels that the
+metadata-only audit showed to be confounded.
+
+### 11.4 H2 — 1024-tick context (pilot, rejected)
+
+Rebuilt 1024-tick windows from raw telemetry for the 160-match subset:
+16,185 / 16,357 windows kept. Reconstruction validated against the published
+cache; on the same subset the rebuilt near features score 0.8822 player AUC vs
+0.8810 for the cached features (paired ΔAUC [-0.0067, 0.0040]).
+
+| Feature set | player AUC | recall@FPR=1% |
+|---|---|---|
+| near (59) | 0.8822 | 0.0374 |
+| near + macro (96) | 0.8830 | 0.0349 |
+| macro only (37) | 0.8240 | 0.0050 |
+
+Paired near+macro vs near: ΔAUC [-0.0055, 0.0078], Δrecall [-0.043, 0.038].
+Macro only is significantly worse (ΔAUC [-0.084, -0.031]).
+Decision: **rejected**. Context beyond the near-kill window adds no ranking
+signal; the upper bound on a missed gain is about +0.008 AUC.
+The pilot used all 160 subset matches (including those in the holdout) because
+it is a diagnostic that cannot be transferred to the main dataset, which has
+no 1024-tick windows; it is not a candidate model.
+
+### 11.5 H3 — rank-group DRO (pilot, rejected)
+
+160-match rank subset, 14,558 windows / 1,123 players, groups Q1–Q4 plus
+unknown, four adaptive reweighting iterations with inner 2-fold loss estimates:
+
+| | Baseline | DRO |
+|---|---|---|
+| player AUC | 0.8771 | 0.8800 |
+| recall@FPR=1% | 0.0374 | 0.0299 |
+| Q4 AUC | 0.6749 | 0.6645 |
+| Q4 FPR at global 1% | 4.76% | 4.76% |
+
+Weights stayed in 0.93–1.11, i.e. the group losses are nearly identical.
+Decision: **rejected**. Q4 false positives are feature overlap, not loss
+weighting. Like H2, this pilot uses the 160-match subset for diagnosis only.
+
+### 11.6 Final holdout evaluation (one shot)
+
+The champion pipeline (aim-only GBDT, 59 features) was fitted on the
+development 80% and scored once on the locked holdout:
+
+| Metric | Holdout |
+|---|---|
+| player AUC | 0.9384 (CI 0.912–0.958) |
+| player AP | 0.8354 |
+| player recall@FPR=1% | 0.3091 (CI 0.187–0.523) |
+| player FPR@TPR=95% | 0.2645 |
+| kill AUC | 0.8474 |
+| kill recall@FPR=1% | 0.1308 |
+
+The holdout point estimate is higher than the dev OOF value, but the CI is
+wide (275 positive / 915 negative players). The out-of-sample result is
+consistent with the frozen estimate and shows no collapse.
+
+### 11.7 v2 conclusion
+
+- No pre-registered hypothesis passed; the frozen champion stands.
+- The remaining blocker is unchanged: top-rank humans overlap with cheat-like
+  aim features (Q4 AUC 0.71), and neither longer context nor loss reweighting
+  separates them.
+- The credible next lever is new information, not a new loss: raw mouse/view
+  consistency at 1000 Hz or high-skill human negatives.

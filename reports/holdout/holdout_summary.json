@@ -1,0 +1,13 @@
+{
+  "seed": 20261020,
+  "frac": 0.2,
+  "sha256_holdout_matches": "01ff51744460a145bb18c56c052673d2372d754b7f97b6b7c8ecea005322520e",
+  "n_matches": 793,
+  "n_holdout_matches": 158,
+  "n_dev_matches": 635,
+  "holdout_windows": 15623,
+  "dev_windows": 63910,
+  "holdout_positive_rate": 0.3987341772151899,
+  "dev_positive_rate": 0.3984251968503937,
+  "note": "post-hoc lock; not pristine with respect to v1 selection"
+}

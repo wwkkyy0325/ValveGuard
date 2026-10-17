@@ -143,3 +143,91 @@
 - Commit `ddcabfb` on `master`; annotated tag `v0.1.0-detector-baseline`.
 - Working tree clean. The repository contains code, tests, docs, reports, figures, and experiment summaries; raw data, caches, virtualenv, OOF parquet files, and model checkpoints are ignored.
 - Monday continuation starts from this tag; see `next-session.md`.
+
+## 2026-10-17 (resumed on the RTX 3060: holdout lock and dev-80 baseline)
+
+- Resumed before Monday at the user's request; only work that does not need the
+  5070 Ti is being run.
+- Added `scripts/lock_holdout.py`. Locked a stratified 20% match holdout:
+  158 matches / 15,623 windows; dev 635 matches / 63,910 windows. Positive rate
+  0.3987 (holdout) vs 0.3984 (dev). Seed 20261020; holdout match digest
+  `01ff51744460a145bb18c56c052673d2372d754b7f97b6b7c8ecea005322520e`.
+- The lock is post-hoc: v1 selection already used every match, so the holdout
+  bounds v2 selection but cannot retroactively cleanse the frozen baseline. This
+  is recorded in `reports/holdout/holdout_summary.json`.
+- Re-ran the aim-only GBDT on dev 80% with the original match folds and every
+  holdout match removed from training. Player AUC 0.9294 (frozen 0.9331),
+  recall@FPR=1% 0.1475 (frozen 0.1735), kill AUC 0.8472. The drop is consistent
+  with 20% fewer training matches and the recall CI [0.096, 0.252] covers the
+  frozen estimate; the baseline is stable, not inflated.
+- Added `--holdout` / `--folds-from` options to the GBDT and Transformer CV
+  scripts so every v2 run uses the same dev split and fold map.
+
+## 2026-10-17 (H2 pilot: 1024-tick context)
+
+- Rebuilt 1024-tick windows from raw telemetry for the 160-match subset:
+  16,185 of 16,357 windows kept; 172 dropped for missing pre-kill history.
+  Reconstruction validated against the cached 256 windows (tick alignment,
+  normalisation, victim join, velocity/250, shot deltas, kill flag, weapon
+  class) and, as a like-for-like check, the rebuilt near features match the
+  published cached features: player AUC 0.8822 vs 0.8810, paired ΔAUC
+  [-0.0067, 0.0040].
+- H2 comparison on the same matches and folds:
+  - near (59 features): player AUC 0.8822, recall@FPR=1% 0.0374.
+  - near + 37 macro features (96): 0.8830 / 0.0349.
+  - macro only (37): 0.8240 / 0.0050.
+  - paired near+macro vs near: ΔAUC [-0.0055, 0.0078], Δrecall [-0.043, 0.038].
+  - paired macro vs near: ΔAUC [-0.084, -0.031].
+- Decision: **H2 rejected**. Context beyond the near-kill window adds no
+  ranking signal on this subset; the near window carries the signal. The
+  macro-only arm is significantly worse. This is a subset pilot (160 matches),
+  so the upper bound on any missed gain is about +0.008 AUC.
+- Added `features/raw_window.py`, `features/macro.py`,
+  `scripts/build_raw_windows.py`, and `scripts/run_h2_pilot.py`.
+  `geometry.recover` and `summarize.summarize` now take a `kill_row` argument
+  (default unchanged).
+
+## 2026-10-17 (H3 pilot: rank-group DRO reweighting)
+
+- Added `scripts/run_h3_dro.py`. Pilot on the 160-match rank subset: 14,558
+  windows / 1,123 players; groups Q1-Q4 plus unknown; 4 adaptive reweighting
+  iterations with inner 2-fold loss estimates per outer fold.
+- Baseline vs DRO-style reweighting:
+  - player AUC 0.8771 -> 0.8800; recall@FPR=1% 0.0374 -> 0.0299.
+  - Q4 player AUC 0.6749 -> 0.6645; Q4 FPR at the global 1% cut 4.76% -> 4.76%.
+  - Weights stayed in 0.93-1.11: the group losses are nearly identical, so the
+    data does not support a worst-group reweighting signal.
+- Decision: **H3 rejected**. Adaptive group reweighting does not move Q4 FPR;
+  this confirms the earlier fixed-upweighting result. The blocker is feature
+  overlap between top humans and cheaters, not the loss weighting.
+
+## 2026-10-17 (H1 Transformer on dev 80% and final holdout evaluation)
+
+- H1 43-channel Transformer, 5-fold match-disjoint on the dev 80% (same folds
+  as the GBDT): player AUC 0.9251, AP 0.7773, recall@FPR=1% 0.2297
+  (CI 0.146-0.357), ECE 0.1091, kill AUC 0.8704.
+- Paired vs the dev-80 GBDT: ΔAUC [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809].
+  Decision: **not promoted** (same pattern as the all-data run).
+- Added `scripts/compare_oof.py` for paired match-grouped bootstrap between two
+  OOF prediction files.
+- Added `scripts/run_holdout_eval.py`. Champion fitted on dev 80% and scored
+  once on the locked holdout: player AUC 0.9384 (CI 0.912-0.958), AP 0.8354,
+  recall@FPR=1% 0.3091 (CI 0.187-0.523), kill AUC 0.8474.
+- v2 conclusion: no pre-registered hypothesis passed. The frozen aim-only GBDT
+  stands; Q4 FPR 4.76% remains the blocker and points to missing information
+  rather than model capacity.
+- The first H1 attempt (25-epoch, workers=4) crashed in a Windows DataLoader
+  spawn (`pickle data was truncated`) under CPU contention; rerun with
+  batch-size 48 and workers=2 completed cleanly.
+
+## 2026-10-17 (identity and temporal scope audit)
+
+- Verified that the raw demos expose no cross-match player identity: every
+  player field is `Player_k`, and `player_connect` / `player_disconnect` /
+  `rank_update` carry no name, XUID, or network id. `player_name` is a
+  per-match pseudonym (`Player_1` appears in 539-645 matches).
+- Cross-match (multi-game) person analysis is therefore impossible on CS2CD.
+- Within-match series are rich: 5,868 player-match groups, median 13 kills,
+  97% with >=2 kills and 67% with >=10, so per-player temporal analysis inside
+  a demo is supported.
+- Recorded the limitation in `REPORT.md`, `README.md`, and `design.md`.

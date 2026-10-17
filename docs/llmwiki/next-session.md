@@ -1,7 +1,12 @@
 # Next Session — Monday 2026-10-20
 
-Status: experiments paused after the 2026-10-17 run. The repository is frozen
-at the detector-v1 baseline plus the completed audit/figures/experiment grid.
+Status: the v2 protocol below was executed early on the RTX 3060 (2026-10-17).
+No challenger passed; see "v2 execution record" at the end. Monday is now
+optional follow-up, not a required run.
+
+Original plan (kept for the record): experiments paused after the 2026-10-17
+run. The repository is frozen at the detector-v1 baseline plus the completed
+audit/figures/experiment grid.
 
 ## Frozen state
 
@@ -101,3 +106,26 @@ python -m valveguard.scripts.make_figures
 - Branch: `master`
 - Working tree clean at freeze.
 - Resume from this commit on Monday; do not rewrite or force-push the tag.
+
+## v2 execution record (2026-10-17, RTX 3060)
+
+- [x] Locked 20% match holdout: 158 matches / 15,623 windows (`reports/holdout`).
+- [x] GBDT on dev 80%: player AUC 0.9294, recall@FPR=1% 0.1475.
+- [x] H1 Transformer on dev 80%: 0.9251 / 0.2297; ΔAUC [-0.0153, 0.0057],
+      Δrecall [-0.0071, 0.1809] -> not promoted.
+- [x] H2 1024-tick context: ΔAUC [-0.0055, 0.0078] -> rejected. The macro-only
+      arm is significantly worse. Reconstruction validated against the cache.
+- [x] H3 rank-group DRO: Q4 FPR unchanged at 4.76% -> rejected.
+- [x] Final holdout evaluation: player AUC 0.9384, recall@FPR=1% 0.3091
+      (CI 0.187-0.523), kill AUC 0.8474.
+
+What remains is not a model-search problem:
+
+1. New information: 1000 Hz raw mouse/view consistency or high-skill human
+   negatives (pro/FACEIT demos). Everything else has been tried on this data.
+2. If either becomes available, re-run the locked-holdout protocol above with
+   one pre-registered hypothesis at a time.
+3. Do not re-tune the current feature/model space against the holdout.
+
+New artifacts: `reports/cv_gbdt_dev80`, `reports/cv_transformer_full_dev80`,
+`reports/h2_pilot`, `reports/h3_dro`, `reports/holdout_eval`.

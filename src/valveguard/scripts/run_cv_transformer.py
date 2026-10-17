@@ -35,23 +35,38 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--drop-groups", default="weapon,outcome,motion,position")
+    ap.add_argument("--holdout", default=None,
+                    help="holdout_matches.parquet; restrict to its dev matches")
+    ap.add_argument("--folds-from", default=None,
+                    help="predictions parquet whose match->fold map is reused")
     args = ap.parse_args()
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     index = pd.read_parquet(Path(args.cache) / "index.parquet")
     index = index[~((index["source"] == "cdata") & (index["label"] == 0))].copy()
+    if args.holdout:
+        hm = pd.read_parquet(args.holdout)
+        dev_keys = set(hm.loc[hm["split"] == "dev", "match_key"])
+        index = index[index["match_key"].isin(dev_keys)].copy()
     index = index.reset_index(drop=True)
 
-    match_label = index.groupby("match_key")["label"].max()
-    rng = np.random.default_rng(args.seed)
-    fold_of: dict[str, int] = {}
-    for _, keys in match_label.groupby(match_label).groups.items():
-        keys = np.array(sorted(keys))
-        rng.shuffle(keys)
-        for i, k in enumerate(keys):
-            fold_of[k] = i % args.folds
-    index["fold"] = index["match_key"].map(fold_of)
+    if args.folds_from:
+        fp = pd.read_parquet(args.folds_from)[["match_key", "fold"]].drop_duplicates()
+        index = index.merge(fp, on="match_key", how="left")
+        if index["fold"].isna().any():
+            raise RuntimeError("--folds-from does not cover every dev match")
+        index["fold"] = index["fold"].astype(int)
+    else:
+        match_label = index.groupby("match_key")["label"].max()
+        rng = np.random.default_rng(args.seed)
+        fold_of: dict[str, int] = {}
+        for _, keys in match_label.groupby(match_label).groups.items():
+            keys = np.array(sorted(keys))
+            rng.shuffle(keys)
+            for i, k in enumerate(keys):
+                fold_of[k] = i % args.folds
+        index["fold"] = index["match_key"].map(fold_of)
 
     parts = []
     for fold in range(args.folds):

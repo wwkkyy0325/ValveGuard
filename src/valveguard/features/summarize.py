@@ -44,9 +44,10 @@ def _add_stats(out: dict, prefix: str, values: np.ndarray) -> None:
     out[f"{prefix}_p95"] = float(np.quantile(v, 0.95))
 
 
-def summarize(window: pd.DataFrame) -> dict:
+def summarize(window: pd.DataFrame, kill_row: int = KILL_ROW) -> dict:
     """Return a flat dict of summary features for one window."""
-    g = recover(window)
+    g = recover(window, kill_row)
+    kr = kill_row
     out: dict = {"map": g["map"]}
 
     t = np.asarray(g["t"])
@@ -66,27 +67,27 @@ def summarize(window: pd.DataFrame) -> dict:
     accel = angular_accel(dyaw, dpitch)
     jerk = angular_jerk(dyaw, dpitch)
 
-    sl64 = slice(max(0, KILL_ROW - 63), KILL_ROW + 1)
-    sl128 = slice(max(0, KILL_ROW - 127), KILL_ROW + 1)
-    sl16 = slice(max(0, KILL_ROW - 15), KILL_ROW + 1)
+    sl64 = slice(max(0, kr - 63), kr + 1)
+    sl128 = slice(max(0, kr - 127), kr + 1)
+    sl16 = slice(max(0, kr - 15), kr + 1)
 
     # ---- target alignment ------------------------------------------------
     target_idx = np.where(err[sl128] < 2.0)[0]
     if len(target_idx):
         first_target = int(target_idx[0]) + sl128.start
-        out["time_to_target"] = float((KILL_ROW - first_target) / TICK_RATE)
+        out["time_to_target"] = float((kr - first_target) / TICK_RATE)
     else:
         out["time_to_target"] = np.nan
 
     cross = np.where(err[sl128] < 1.0)[0]
     if len(cross):
         cross_idx = int(cross[0]) + sl128.start
-        after = err[cross_idx:KILL_ROW + 1]
+        after = err[cross_idx:kr + 1]
         out["reached_target"] = 1.0
         out["overshoot"] = float(max(0.0, np.max(after) - 1.0))
         above = np.where(after > 1.0)[0]
         out["settling_time"] = (
-            float((KILL_ROW - (cross_idx + int(above[-1]))) / TICK_RATE)
+            float((kr - (cross_idx + int(above[-1]))) / TICK_RATE)
             if len(above) else 0.0
         )
     else:
@@ -94,13 +95,13 @@ def summarize(window: pd.DataFrame) -> dict:
         out["overshoot"] = np.nan
         out["settling_time"] = np.nan
 
-    out["final_err"] = float(err_origin[KILL_ROW])
+    out["final_err"] = float(err_origin[kr])
     out["min_err"] = float(np.min(err_origin[sl64]))
     out["mean_err"] = float(np.mean(err_origin[sl64]))
     out["std_err"] = float(np.std(err_origin[sl64]))
-    out["final_err_yaw"] = float(err_yaw[KILL_ROW])
-    out["final_err_pitch"] = float(err_pitch[KILL_ROW])
-    out["final_err_head"] = float(err_head[KILL_ROW])
+    out["final_err_yaw"] = float(err_yaw[kr])
+    out["final_err_pitch"] = float(err_pitch[kr])
+    out["final_err_head"] = float(err_head[kr])
     out["mean_err_head"] = float(np.mean(err_head[sl64]))
 
     # Lock: how long the crosshair sits on target with almost no movement.
@@ -113,7 +114,7 @@ def summarize(window: pd.DataFrame) -> dict:
     _add_stats(out, "accel", accel[sl64])
     _add_stats(out, "jerk", jerk[sl64])
     _add_stats(out, "dist", dist[sl64])
-    out["dist_final"] = float(dist[KILL_ROW])
+    out["dist_final"] = float(dist[kr])
     out["dist_change_rate"] = float(
         np.polyfit(t[sl64], dist[sl64], 1)[0]
     ) if len(dist[sl64]) >= 2 else np.nan
@@ -125,7 +126,7 @@ def summarize(window: pd.DataFrame) -> dict:
     out["sparc"] = float(sparc(speed[sl64], TICK_RATE))
     out["ldlj"] = float(ldlj(yaw[sl64], pitch[sl64], TICK_RATE))
     out["psd_slope"] = float(psd_slope(speed[sl64], TICK_RATE))
-    out["sample_entropy"] = float(sample_entropy(speed[KILL_ROW - 31:KILL_ROW + 1]))
+    out["sample_entropy"] = float(sample_entropy(speed[kr - 31:kr + 1]))
     out["submovements"] = int(submovement_count(speed[sl64]))
 
     # ---- victim / attacker motion ----------------------------------------
@@ -143,7 +144,7 @@ def summarize(window: pd.DataFrame) -> dict:
     out["lead_lag_corr"] = float(corr)
 
     # ---- kill / context ---------------------------------------------------
-    kill = window.iloc[KILL_ROW]
+    kill = window.iloc[kr]
     out["shot_count"] = float(np.sum(window["attacker_shot"].to_numpy()[sl64]))
     out["flashed_at_kill"] = float(kill.get("attacker_flashed", 0.0))
     out["headshot"] = float(kill.get("is_kill_headshot", 0.0))

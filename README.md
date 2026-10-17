@@ -79,21 +79,25 @@ docs/llmwiki/           design, detailed model spec, task plan, changelog
 
 - 64 Hz view angles, not 1000 Hz raw mouse input.
 - Match-disjoint evaluation only; per-match pseudonyms prevent a verifiable
-  person-disjoint split.
+  person-disjoint split and any cross-match person linkage. Only within-match
+  player series are available (median 13 kills per player-match).
 - No target visibility/raycast in v1; FOV, distance, and smoke/wallbang flags
   are proxies.
 - Reported metrics must include the low-FPR operating point; accuracy alone is
   not a deployment criterion.
 
-## Status (frozen 2026-10-17)
+## Status (v2 checkpoint, 2026-10-17)
 
-Detector v1 is frozen for the next session:
+Detector v1 remains the champion; the v2 hypotheses did not beat it:
 
 - Champion: aim-only GBDT, 5-fold match-disjoint OOF:
   - player AUC 0.9331, player recall@FPR=1% 0.1735, kill AUC 0.8497.
-- Full 43-channel Transformer (exploratory): player AUC 0.9288, recall@FPR=1% 0.2350; paired Δrecall CI [-0.0146, 0.1847], not promoted.
-- High-rank Q4 FPR 4.76% is the main release blocker.
-- Reports: `reports/REPORT.md`; figures: `reports/figures/`.
-- Experiments are paused until Monday 2026-10-20. The locked-holdout/nested-CV
-  protocol, three pre-registered hypotheses, timebox, and commands are in
-  `docs/llmwiki/next-session.md`.
+- Locked 20% match holdout (158 matches): champion trained on the dev 80%
+  scores player AUC 0.9384, recall@FPR=1% 0.3091 (CI 0.187–0.523).
+- H1 43-channel Transformer on dev 80%: 0.9251 / 0.2297; paired ΔAUC
+  [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809] — not promoted.
+- H2 1024-tick context: no gain (ΔAUC [-0.0055, 0.0078]) — rejected.
+- H3 rank-group DRO: Q4 FPR stays 4.76% — rejected.
+- High-rank Q4 FPR 4.76% is still the main blocker; the remaining lever is
+  new information (raw mouse/view at high rate or high-skill human negatives).
+- Reports: `reports/REPORT.md` (v2 in section 11); figures: `reports/figures/`.

@@ -88,3 +88,16 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [ ] Monday: H2 1024-tick context (GBDT first, Transformer only if GBDT passes).
 - [ ] Monday: H3 high-rank negatives / group DRO pilot.
 - [ ] Monday: final holdout evaluation, report, stop.
+
+## Phase 6 — Resumed on the RTX 3060 (2026-10-17)
+
+- [x] Lock a stratified 20% match holdout (158 matches / 15,623 windows).
+- [x] Re-run the aim-only GBDT on the development 80% with the original folds
+      and holdout matches removed from training (player AUC 0.9294,
+      recall@FPR=1% 0.1475).
+- [x] H1: full 43-channel Transformer on the development 80%
+      (0.9251 / 0.2297; Δrecall CI crosses zero; not promoted).
+- [x] H2 pilot: 1024-tick context on the 160-match raw subset
+      (ΔAUC [-0.0055, 0.0078]; rejected).
+- [x] H3: high-rank group-DRO pilot (Q4 FPR 4.76% unchanged; rejected).
+- [x] Final holdout evaluation (player AUC 0.9384, recall@FPR=1% 0.3091).
