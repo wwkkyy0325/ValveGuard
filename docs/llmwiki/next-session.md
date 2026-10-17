@@ -93,3 +93,11 @@ python -m valveguard.scripts.make_figures
 - `reports/cv_transformer_full/` — full 43-channel 5-fold run.
 - `reports/cascade/` — calibration, aggregation, residual audits.
 - `reports/skill/` — rank-quartile analysis.
+
+## Freeze record
+
+- Commit: `ddcabfb`
+- Tag: `v0.1.0-detector-baseline`
+- Branch: `master`
+- Working tree clean at freeze.
+- Resume from this commit on Monday; do not rewrite or force-push the tag.

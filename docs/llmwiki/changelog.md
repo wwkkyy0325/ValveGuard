@@ -137,3 +137,9 @@
 - Full 43-channel Transformer, 5-fold match-disjoint: player AUC 0.9288, AP 0.7882, recall@FPR=1% 0.2350, FPR@TPR=95% 0.3400, ECE 0.1154; kill AUC 0.8774, kill recall@FPR=1% 0.2236.
 - Paired match-grouped bootstrap vs aim-only GBDT: ΔAUC [-0.0125, 0.0039], Δrecall@FPR=1% [-0.0146, 0.1847].
 - Decision: not promoted. The recall point estimate is higher, but the CI crosses zero and the model uses context/outcome/position channels that the metadata-only audit showed to be confounded. It remains H1 for Monday under the locked-holdout protocol.
+
+## 2026-10-17 (freeze commit)
+
+- Commit `ddcabfb` on `master`; annotated tag `v0.1.0-detector-baseline`.
+- Working tree clean. The repository contains code, tests, docs, reports, figures, and experiment summaries; raw data, caches, virtualenv, OOF parquet files, and model checkpoints are ignored.
+- Monday continuation starts from this tag; see `next-session.md`.
