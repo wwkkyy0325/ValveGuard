@@ -364,3 +364,10 @@
   kills closer to cheater windows; the second is extremely straight (0.945),
   accurate (2.06 deg) and slow (8.3). Unusual style or undetected smooth aim;
   64 Hz cannot separate them.
+
+## 2026-10-18 (label-noise commit)
+
+- Commit `f74d46c`: label-noise audit scripts/results, Q4 false-positive
+  per-kill inspection, the dedicated audit document, and the knowledge-base
+  index. 14 files, +665.
+- Working tree clean; scored-window parquet remains ignored.
