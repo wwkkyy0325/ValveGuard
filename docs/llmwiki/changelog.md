@@ -239,3 +239,34 @@
   audit. 37 files, +3,930/-50.
 - Large artifacts (OOF parquet, model checkpoints, raw/processed data) remain
   ignored; the commit contains only code, docs, and small result files.
+
+## 2026-10-17 (within-player self-baseline diagnostic)
+
+- Added `scripts/run_self_baseline.py`: per (match, player) robust z-scores
+  (median/MAD over that player's kills) added to the champion features.
+  Dev-80 only; the holdout was already used for the champion's final score.
+- Unfiltered dev-80 (all players, same folds):
+  - raw: player AUC 0.9302, recall@FPR=1% 0.1515, kill AUC 0.8478.
+  - raw+selfz: 0.9188 / 0.1881 / **0.9201**.
+  - selfz only: 0.8932 / 0.1139 / 0.8447.
+- The all-zero z rows for players with <3 kills could signal kill count, so a
+  filtered run dropped those players (63,532 rows / 4,422 players):
+  - raw: 0.9383 / 0.1851 / 0.8475.
+  - raw+selfz: 0.9269 / 0.2160 / 0.9210.
+  - raw+selfz+count: 0.9276 / 0.2447 / 0.9224.
+- Paired (filtered) raw+selfz vs raw: ΔAUC [-0.0162, -0.0065],
+  Δrecall@FPR=1% [-0.0394, +0.0963]. The kill-level gain is large and robust,
+  but the player-level recall gain is not significant and AUC drops
+  significantly.
+- Kill-count features add nothing significant (ΔAUC [-0.001, +0.003],
+  Δrecall [-0.014, +0.070]) and are a performance shortcut, not aim.
+- Shuffled-label audit (match-level permutation): player AUC 0.495-0.504,
+  kill AUC 0.497-0.501. No label leakage.
+- Q4 (filtered, dev-80): raw AUC 0.726 / FPR 3.85%; raw+selfz 0.764 / 3.85%;
+  raw+selfz+count 0.767 / 3.85%. Q4 ranking improves slightly, FPR is
+  unchanged (2 false positives out of 52 clean Q4 players).
+- Aggregation check on raw+selfz scores: mean is still best; max/top2/top3/top5
+  do not improve recall and lose AUC (Δrecall CIs all cross zero or are
+  negative). The kill-level signal does not convert to player-level decisions.
+- Decision: **not promoted**. The stated target (Q4 false positives) is not
+  moved; the result is recorded as an exploratory diagnostic.

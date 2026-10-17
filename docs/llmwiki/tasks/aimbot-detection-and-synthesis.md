@@ -101,3 +101,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
       (ΔAUC [-0.0055, 0.0078]; rejected).
 - [x] H3: high-rank group-DRO pilot (Q4 FPR 4.76% unchanged; rejected).
 - [x] Final holdout evaluation (player AUC 0.9384, recall@FPR=1% 0.3091).
+- [x] Within-player self-baseline diagnostic (dev-80 only): kill AUC
+      0.847 -> 0.921, but no player-level recall gain and no Q4 FPR change;
+      not promoted.

@@ -219,6 +219,9 @@ Remaining:
 - Rejected v2 hypotheses: 43-channel Transformer (recall gain not significant,
   context channels confounded), 1024-tick context (no gain), rank-group DRO
   (no change to Q4 FPR).
+- Exploratory within-player self-baseline: kill-level AUC rises 0.847 -> 0.921
+  (leakage audit 0.50), but player-level recall gain is not significant, AUC
+  drops, and Q4 FPR is unchanged. Not promoted; recorded as a diagnostic.
 - Open blocker: high-rank humans overlap cheat-like aim features (Q4 AUC 0.71,
   FPR 4.76% at the global 1% cut). The next step needs new information
   (high-rate mouse/view consistency or high-skill human negatives), not more

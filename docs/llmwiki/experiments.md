@@ -159,3 +159,20 @@ matches / 63,910 windows. Post-hoc lock, documented in
   are not comparable to the full-dataset numbers, only within-row.
 - H2 reconstruction sanity check: rebuilt near features vs published cached
   features on the same subset, ΔAUC [-0.0067, 0.0040].
+
+## 10. Within-player self-baseline (exploratory, dev-80 only)
+
+| Set | Player AUC | Recall@FPR1 | Kill AUC | Decision |
+|---|---|---|---|---|
+| raw | 0.9383 | 0.1851 | 0.8475 | reference |
+| raw+selfz | 0.9269 | 0.2160 | 0.9210 | exploratory |
+| raw+selfz+count | 0.9276 | 0.2447 | 0.9224 | shortcut, not aim |
+| selfz only | 0.9028 | 0.1021 | 0.8456 | worse |
+
+- Paired raw+selfz vs raw: ΔAUC [-0.0162, -0.0065], Δrecall [-0.0394, +0.0963].
+- The kill-level signal is real (shuffled-label audit 0.50; unchanged after
+  dropping <3-kill players) but does not reach player-level recall; max/top-k
+  aggregation fails too.
+- Q4 FPR unchanged at 3.85% (2/52 clean); Q4 AUC 0.726 -> 0.764.
+- Not promoted. No holdout reuse; a future confirmation needs a new split or
+  external data.

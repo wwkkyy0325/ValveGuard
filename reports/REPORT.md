@@ -275,3 +275,39 @@ consistent with the frozen estimate and shows no collapse.
   separates them.
 - The credible next lever is new information, not a new loss: raw mouse/view
   consistency at 1000 Hz or high-skill human negatives.
+
+## 12. Exploratory: within-player self-baseline (dev 80% only)
+
+Motivation: a high-rank human's normal aim is already precise, so population
+features cannot separate it from aim assist. A kill that is far from *that
+player's own* baseline might still be detectable. For each (match, player)
+group we computed robust z-scores (median/MAD over the player's kills in that
+match) and concatenated them with the champion features.
+
+The holdout was already used for the champion's final score, so this is a
+dev-80 diagnostic and cannot be promoted. Players with fewer than three kills
+were dropped in the main run because their all-zero z rows leak the kill count.
+
+| Feature set | player AUC | recall@FPR=1% | kill AUC |
+|---|---|---|---|
+| raw (59) | **0.9383** | 0.1851 | 0.8475 |
+| raw+selfz (118) | 0.9269 | 0.2160 | **0.9210** |
+| raw+selfz+count (120) | 0.9276 | **0.2447** | 0.9224 |
+| selfz only (59) | 0.9028 | 0.1021 | 0.8456 |
+
+Paired raw+selfz vs raw: ΔAUC [-0.0162, -0.0065],
+Δrecall@FPR=1% [-0.0394, +0.0963].
+
+- The kill-level gain is large and survives dropping low-kill players and a
+  match-level label-permutation audit (shuffled player AUC 0.495–0.504,
+  kill AUC 0.497–0.501), so it is not leakage.
+- It does not reach the player level: mean aggregation washes it out, and
+  max/top-k aggregation does not recover it (all Δrecall CIs cross zero or are
+  negative).
+- Q4 (154 players, 2 false positives among 52 clean): AUC 0.726 → 0.764,
+  FPR 3.85% → 3.85%. The stated target is not moved.
+- The kill-count features (`self_n`, `self_valid`) add no significant ranking
+  gain and are a performance shortcut, not an aim signal.
+
+Decision: **not promoted**. Recorded as an exploratory diagnostic; no holdout
+reuse.
