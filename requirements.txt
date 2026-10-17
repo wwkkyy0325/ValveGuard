@@ -8,4 +8,6 @@ seaborn
 tqdm
 pyyaml
 huggingface_hub
+hf_xet
+demoparser2
 pytest

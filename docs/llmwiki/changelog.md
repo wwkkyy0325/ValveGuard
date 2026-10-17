@@ -277,3 +277,30 @@
   count/shortcut ablation, shuffled-label audit, aggregation check, and the
   recorded negative result. 21 files, +848.
 - Working tree clean at commit; parquet OOF files remain ignored.
+
+## 2026-10-18 (professional demos: specificity and negative augmentation)
+
+- Data: 7 professional CS2 demos from `blanchon/opencs2_dataset_demo`
+  (HLTV matches, CC-BY-4.0), downloaded through the HF mirror with `hf_xet`;
+  parsed with demoparser2. 1,020 kill windows / 70 player-maps / 7 maps.
+- Added `scripts/download_pro_demos.py`, `scripts/build_pro_windows.py`,
+  `scripts/eval_pro_fpr.py`, `scripts/run_pro_augment.py`. Pro windows are
+  rebuilt with the same `raw_window`/`summarize` code as CS2CD; feature
+  distributions are comparable (e.g. mean final error 3.19 deg vs 4.07 for
+  CS2CD humans, 4.40 for cheaters).
+- Specificity of the champion (trained on CS2CD dev 80%), thresholds set on
+  CS2CD human scores:
+  - 1% operating point: pro kill FPR **0.29% (3/1,020)**, pro player FPR
+    **0% (0/70)**.
+  - 0.1% point: 0/1,020 kills, 0/70 players.
+  - 5% point: 2.55% kills, 0/70 players.
+  - Mean score: pro 0.253, CS2CD humans 0.293, CS2CD cheaters 0.705.
+- Interpretation: elite human aim is **not** mistaken for aim assist; pros
+  score below average CS2CD humans despite being more accurate. The Q4 false
+  positives are therefore not a generic "high skill" effect.
+- Adding the 1,020 pro windows as extra negatives in every training fold
+  changes nothing: paired ΔAUC [-0.0010, +0.0017], Δrecall@FPR=1%
+  [-0.0215, +0.0290]; Q4 FPR unchanged (10.5% on the dev-80 threshold),
+  Q4 AUC 0.685 -> 0.677.
+- Decision: **high-skill-negative hypothesis rejected**, but the specificity
+  result is recorded as a positive validity check.

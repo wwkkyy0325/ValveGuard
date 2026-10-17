@@ -1,0 +1,82 @@
+{
+  "n_features": 59,
+  "dev_kills": 63910,
+  "pro_kills": 1020,
+  "pro_demos": 7,
+  "pro_players": 70,
+  "operating_points": {
+    "fpr_0.001": {
+      "kill_threshold": 0.9531727917150531,
+      "dev_kill_fpr": 0.0010170043120982834,
+      "pro_kill_fpr": 0.0,
+      "player_threshold": 0.9405470120022578,
+      "dev_player_fpr": 0.0010905125408942203,
+      "pro_player_fpr": 0.0
+    },
+    "fpr_0.01": {
+      "kill_threshold": 0.8914676164985348,
+      "dev_kill_fpr": 0.010007322431047107,
+      "pro_kill_fpr": 0.0029411764705882353,
+      "player_threshold": 0.7977236513772199,
+      "dev_player_fpr": 0.010087241003271538,
+      "pro_player_fpr": 0.0
+    },
+    "fpr_0.05": {
+      "kill_threshold": 0.7195482659630953,
+      "dev_kill_fpr": 0.050016272068993575,
+      "pro_kill_fpr": 0.025490196078431372,
+      "player_threshold": 0.596413607910543,
+      "dev_player_fpr": 0.05016357688113413,
+      "pro_player_fpr": 0.0
+    }
+  },
+  "score_means": {
+    "dev_human_kills": 0.2926025194508132,
+    "dev_cheater_kills": 0.7046562429839596,
+    "pro_kills": 0.25333871144771253
+  },
+  "by_demo": [
+    {
+      "match_key": "charrados-vs-alka-m1-anubis",
+      "n": 129,
+      "mean": 0.2461566882366766,
+      "frac_above": 0.0
+    },
+    {
+      "match_key": "ding-cuts-vs-abyssal-m2-nuke",
+      "n": 156,
+      "mean": 0.2436653824596685,
+      "frac_above": 0.00641025641025641
+    },
+    {
+      "match_key": "dnk-vs-winners-m2-overpass",
+      "n": 90,
+      "mean": 0.24650291592607487,
+      "frac_above": 0.011111111111111112
+    },
+    {
+      "match_key": "mouz-nxt-vs-ursa-m1-dust2",
+      "n": 207,
+      "mean": 0.2690549177967434,
+      "frac_above": 0.0
+    },
+    {
+      "match_key": "mouz-nxt-vs-ursa-m2-mirage",
+      "n": 104,
+      "mean": 0.27034869417456586,
+      "frac_above": 0.0
+    },
+    {
+      "match_key": "sashi-academy-vs-infinite-m1-inferno",
+      "n": 140,
+      "mean": 0.2465530766693908,
+      "frac_above": 0.007142857142857143
+    },
+    {
+      "match_key": "tnc-vs-phantom-academy-m2-ancient",
+      "n": 194,
+      "mean": 0.24807292724373736,
+      "frac_above": 0.0
+    }
+  ]
+}

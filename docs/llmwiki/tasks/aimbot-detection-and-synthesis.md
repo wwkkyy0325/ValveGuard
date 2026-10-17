@@ -104,3 +104,5 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [x] Within-player self-baseline diagnostic (dev-80 only): kill AUC
       0.847 -> 0.921, but no player-level recall gain and no Q4 FPR change;
       not promoted.
+- [x] Professional-demo specificity: 7 HLTV demos, 1,020 windows, 70 players;
+      0/70 players flagged at 1% FPR; pro-negative augmentation has no effect.

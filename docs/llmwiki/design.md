@@ -222,9 +222,14 @@ Remaining:
 - Exploratory within-player self-baseline: kill-level AUC rises 0.847 -> 0.921
   (leakage audit 0.50), but player-level recall gain is not significant, AUC
   drops, and Q4 FPR is unchanged. Not promoted; recorded as a diagnostic.
-- Open blocker: high-rank humans overlap cheat-like aim features (Q4 AUC 0.71,
-  FPR 4.76% at the global 1% cut). The next step needs new information
-  (high-rate mouse/view consistency or high-skill human negatives), not more
+- Professional-demo check (7 HLTV demos, 1,020 windows, 70 players): the
+  champion flags 0/70 pro players at the 1% operating point and 0.29% of pro
+  kills. Pros score below average CS2CD humans despite being more accurate.
+  Adding pro windows as training negatives changes nothing.
+- Open blocker: high-rank matchmaking humans still produce Q4 FPR 4.76%
+  (2/42 clean players, wide CI). This is not a generic high-skill effect, since
+  pros are not flagged; it is specific to that sample or to label noise. The
+  next step needs high-rate mouse/view consistency or better labels, not more
   model search on the current features.
 - The conditional generator remains deferred.
 

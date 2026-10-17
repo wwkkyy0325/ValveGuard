@@ -74,6 +74,10 @@ docs/llmwiki/           design, detailed model spec, task plan, changelog
 - The dataset does not contain raw mouse deltas. Mouse–view consistency
   (`dyaw ~ usercmd_mouse_dx`) is available only if a small raw parquet subset is
   fetched later.
+- Elite human aim is not mistaken for aim assist: on 1,020 kill windows from
+  seven professional HLTV demos (70 player-maps), the champion flags 0/70
+  players and 0.29% of kills at its 1% FPR operating point. Pros score below
+  average CS2CD humans despite being more accurate.
 
 ## Limitations
 
