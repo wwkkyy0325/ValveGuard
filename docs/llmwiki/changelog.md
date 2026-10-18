@@ -495,3 +495,9 @@
   [-0.0663, +0.0526]. Q4 FPR 2.63% -> 5.26% (mean), 5.26% -> 10.53% shrunk.
 - Decision: **not promoted**; kill-level gain only. Recorded in
   `segment-features.md` and `experiments.md` section 14.
+
+## 2026-10-18 (segment pilot commit)
+
+- Commit `1f1a550`: movement/pre-aim segment features, dev-80 comparison,
+  negative result, and the 5E review summaries. 16 files, +1,907.
+- Working tree clean; feature parquets and OOF files remain ignored.
