@@ -604,3 +604,12 @@
   `*.wad`, `_vizdoom.ini` to `.gitignore`. Final demo artifacts and docs kept.
 - Aim Botz remains installed for the camera-only showcase; live-server free
   camera is still the open item (see `failed-attempts.md`).
+
+## 2026-10-18 (ViZDoom ceasefire and target switching)
+
+- Fixed the ViZDoom controller locking onto its own red pistol parts and blood
+  blobs. Added weapon-region exclusion, humanoid size/shape filters, dead
+  marks, a 6-frame ceasefire after kills, and a 2-frame aim-settle gate before
+  firing.
+- 900-frame run: 6 kills / 6 hits; the next live monster is boxed and the
+  crosshair transfers to it after each kill.
