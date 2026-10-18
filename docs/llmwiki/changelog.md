@@ -501,3 +501,106 @@
 - Commit `1f1a550`: movement/pre-aim segment features, dev-80 comparison,
   negative result, and the 5E review summaries. 16 files, +1,907.
 - Working tree clean; feature parquets and OOF files remain ignored.
+
+## 2026-10-18 (offline aim generator v0/v1)
+
+- Added `valveguard.generator`: human-window state cache, 14-d aiming state,
+  behavioral-cloning MLP, per-tick MDN, 16-tick chunk MDN, and closed-loop
+  rollout against the recorded target track. Fit on dev-80 human windows
+  only; the holdout is evaluation-only.
+- Added `train_aim_generator.py`, `eval_aim_generator.py`,
+  `analyze_aim_generator.py`, and `render_aim_demo.py`. The renderer writes a
+  side-by-side first-person MP4 (human / BC / BC+PD) with a crosshair, HUD,
+  ground grid and top-down inset.
+- v0 MSE BC: champion flag rate 47.2% vs 3.3% human; discriminator AUC
+  ~1.000. The generated trajectory is too smooth (minimum curvature, speed
+  and jerk are the top separating features).
+- v1 per-tick MDN K=8: champion flag rate 24.5% (BC) and 48.0% (BC+PD);
+  discriminator AUC 0.9999. Submovements match (5), but speed and curvature
+  overshoot because per-tick samples are independent white noise.
+- v2 chunk MDN (16 ticks, future target velocity) is training; results are
+  recorded in `generator.md`.
+- Boundary: offline angles only. No screen capture, enemy detection, input
+  injection, or live CS2 control.
+- v2 chunk MDN (16 ticks, K=6, future target velocity) trained for 10 epochs:
+  champion flag rate 20.5% (BC) and 44.5% (BC+PD); speed p95 58.2 vs 55.4
+  human. Discriminator AUC 0.9999; human windows keep near-zero curvature and
+  speed phases that the generator lacks. Rendered three side-by-side clips
+  under `reports/generator/render/` and `reports/generator_chunk/render/`.
+
+## 2026-10-18 (readable aim demo)
+
+- Replaced the synthetic first-person render with `render_aim_chase.py`: a
+  stable over-the-shoulder camera, labelled attacker/victim capsules, a green
+  generated-view beam, a yellow eye-to-body line, a top-down inset, and human
+  shot flashes. Close-range clips are used so the target is large.
+- Found that human kills are mostly body-aimed: `final_err` (origin) median
+  2.4 deg vs `final_err_head` 8.6 deg. The old HUD showed head error and made
+  the human panel look wrong; the chase HUD uses body error.
+- Added `make_cs2_camera.py`: emits an HLAE `mirv_cmd`/`spec_goto` camera
+  script for real CS2 demo playback. It only overrides the spectator camera;
+  no keyboard or mouse input is sent. Generated `reports/cs2_camera/dust2_k5/`.
+
+## 2026-10-18 (demo pipeline fix)
+
+- Fixed a one-tick shift in `rollout` / `chunk_rollout`: frame 0 now equals
+  the human view and each action maps t -> t+1. The CS2 camera path therefore
+  starts exactly at the recorded human POV.
+- Stopped generated camera paths at the kill tick. The previous 33 post-kill
+  ticks tracked a dead victim and made the camera jump.
+- `make_cs2_camera.py` now emits `human.cfg` and `bc.cfg` for the same fixed
+  demo, so the same segment can be recorded twice and stacked side by side.
+  Camera paths use the deterministic mixture mean to avoid per-tick jumps.
+- Added `make_cs2_overlay.py`: a transparent BC crosshair overlay projected
+  into the human camera, for a no-HLAE one-recording workflow.
+
+## 2026-10-18 (real CS2 demo, overlay path)
+
+- Installed HLAE 2.192.8 portable at `D:\dev\HLAE`; found CS2 at
+  `D:\staam\...`; set CS2 to a 1280x720 window and added
+  `-insecure -console -netconport 29000` (VConsole2) to the launcher.
+- The HLTV pro demo (patch 14141) was rejected by the current CS2; switched
+  to the 5E demo from 2026-10-18 (patch 14191), which loads.
+- `mirv_cmd addAtTick` uses playback ticks, not server ticks; per-tick
+  `spec_goto` still stutters and was abandoned for the demo.
+- Recorded a real human POV with ffmpeg gdigrab and composited the generated
+  BC crosshair overlay (`reports/cs2_camera/human_vs_bc_5e.mp4`). This is the
+  current human-readable demo: left = human, right = human + green BC aim.
+
+## 2026-10-18 (target-relative aim panel)
+
+- Added `render_aim_panel.py`: target fixed at centre, human (white) and BC
+  (green) crosshairs with trails, degree rings, and live error readout.
+- Built `reports/cs2_camera/human_vs_bc_panel_slow4.mp4` (1920x840, 4x slow,
+  13.8 s): real CS2 human POV + BC overlay on top, aim-only panel below.
+- Live aim-map/bot setup was attempted on a local Dust2 server; bots and
+  entity readout were unstable, so the panel is the first readable B result.
+
+## 2026-10-18 (Aim Botz installed)
+
+- Downloaded CS2 workshop items 3070244462 (Aim Botz, 124.8 MB) and
+  3070549948 (AIM MAP, 32.4 MB) with SteamCMD.
+- `map_workshop` still reported a missing map because the Steam client had no
+  subscription entry; extracted the outer workshop VPK and inner map VPK into
+  `game/csgo/`, after which `map aim_botz` loads and the purple missing
+  textures are gone.
+- Bots move with `bot_stop 0`; recorded `vg_botz.dem` and
+  `reports/cs2_camera/aimbotz_fixed.mp4`.
+- Live-server free camera and HUD hiding do not take effect; demo UI/HLAE
+  camera is the remaining path for a clean generated-aim showcase.
+
+## 2026-10-18 (ViZDoom sandbox and project cleanup)
+
+- Installed ViZDoom 1.3.2 (direct wheel; the normal pip download stalled) and
+  added `vizdoom_demo.py`.
+- `deadly_corridor` cfg copied and extended with KILLCOUNT/HITCOUNT; the
+  vision controller detects multiple red targets, locks/turns/fires, re-acquires
+  after kills and shows DOUBLE/TRIPLE/MULTI KILL banners.
+- 900-frame run: 7 kills, 7 hits; 500-frame visible-window run: 3 kills.
+  Videos: `reports/vizdoom/vizdoom_multi_slow2.mp4`,
+  `reports/vizdoom_visible/vizdoom_raw.mp4`.
+- Cleanup: removed failed render/camera artifacts, generator caches and eval
+  matrices, scratch HTML/INI files, and downloaded wheels; added `*.mov`,
+  `*.wad`, `_vizdoom.ini` to `.gitignore`. Final demo artifacts and docs kept.
+- Aim Botz remains installed for the camera-only showcase; live-server free
+  camera is still the open item (see `failed-attempts.md`).

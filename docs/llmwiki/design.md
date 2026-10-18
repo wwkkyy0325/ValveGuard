@@ -4,7 +4,7 @@ Status: detector-first (2026-10-17)
 
 > Detailed, implementation-ready model specification: [`model-design.md`](model-design.md). It supersedes the model sketch below where they differ. Key updates: raw CS2CD is the primary dataset because it contains `usercmd_mouse_dx/dy`; the 96-tick window is replaced by a 64/256/1024/match multi-scale pyramid; CS2CD player IDs are per-match pseudonyms, so evaluation is match-disjoint (a true person-disjoint check needs a stable-ID dataset).
 >
-> **Scope change:** the conditional generator is deferred. Phase 1 builds and validates the detector only. The detector's feature learning and human-likelihood calibration will make the later generator easier.
+> **Scope change:** the generator is offline-only. It produces per-tick view angles for evaluation and detector stress-testing; it does not drive a game client. Live input injection is out of scope. The detector remains the primary deliverable. See `generator.md`.
 
 ## 1. Goal
 
@@ -244,7 +244,8 @@ Remaining:
   closer to cheater windows in feature space; the 64 Hz data cannot say
   whether they are unusual styles or undetected cheats.
   Details: `docs/llmwiki/label-noise-audit.md`.
-- The conditional generator remains deferred.
+- The offline aim generator is active for detector stress-testing; it does not
+  drive a game client. v0/v1 results are in `generator.md`.
 
 ## 11. Player Identity and Temporal Scope (verified 2026-10-17)
 

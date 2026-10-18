@@ -12,8 +12,14 @@ data/processed/
 # Large binary artifacts
 reports/**/*.parquet
 reports/**/*.pt
+reports/**/*.npy
+reports/**/*.npz
+reports/**/*.mp4
+reports/**/*.mov
+reports/**/*.wad
 experiments/**/oof/
 *.log
+_vizdoom.ini
 
 # Packaging
 *.egg-info/
