@@ -1,0 +1,14 @@
+g161-n  top kills (threshold player 0.7916, kill 1% ~0.891)
+player              score kill_tick   start     end victim           weapon         hs pen smoke
+你过不了中门             0.8937     36525   36302   36557 用户0211K4s1Tj1Y   deagle         1  0   0
+哈医大第一tec9          0.8416     24188   23965   24220 你过不了中门           tec9           1  0   0
+你过不了中门             0.8215     36606   36383   36638 iioneny          deagle         1  0   0
+嘛豆特聘               0.7572     18703   18480   18735 我们一起玩叭           fiveseven      1  0   0
+dank6657           0.7556     18702   18479   18734 pash4            deagle         1  0   0
+嘛豆特聘               0.7085     10522   10299   10554 用户0211K4s1Tj1Y   famas          1  0   0
+你过不了中门             0.6866     36364   36141   36396 哈医大第一tec9        deagle         1  0   0
+你过不了中门             0.6855     36458   36235   36490 我们一起玩叭           deagle         1  0   0
+嘛豆特聘               0.6520      6976    6753    7008 用户0211K4s1Tj1Y   usp_silencer   1  0   0
+dank6657           0.5813      6305    6082    6337 哈医大第一tec9        usp_silencer   1  0   0
+你过不了中门             0.5662     19395   19172   19427 iioneny          ssg08          1  0   0
+dank6657           0.5411     41134   40911   41166 iioneny          awp            0  0   0

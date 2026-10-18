@@ -483,3 +483,15 @@
   and refreshed pro-demo results. 22 files, +2,177/-100.
 - Working tree clean; `desktop/target`, demos, zips, and model artifacts stay
   outside the repository.
+
+## 2026-10-18 (movement / pre-aim segment pilot)
+
+- Added `scripts/build_segment_features.py`: 24 rule-based features for
+  travel / walk-silent / stop / duel, pre-aim error and distance, and state
+  transitions. The cache has no `is_walking`, so silence is a speed band.
+- Dev-80 5-fold: base 0.9294/0.1475, base+segments 0.9311/0.1337 (kill AUC
+  0.8472 -> 0.8677), segments only 0.9041/0.1050.
+- Paired base+segments vs base: ΔAUC [-0.0015, +0.0054], Δrecall
+  [-0.0663, +0.0526]. Q4 FPR 2.63% -> 5.26% (mean), 5.26% -> 10.53% shrunk.
+- Decision: **not promoted**; kill-level gain only. Recorded in
+  `segment-features.md` and `experiments.md` section 14.

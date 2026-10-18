@@ -115,3 +115,5 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [x] Rank-stratified FPR replication on all dev-80 matches via JSON ranks:
       Q4 FPR 3.37% (386 clean), 2.59% shrunk; supersedes the 19% subset
       estimate.
+- [x] Movement/pre-aim segment pilot: 24 rule-based features; kill AUC rises
+      but player recall/Q4 do not improve; not promoted.

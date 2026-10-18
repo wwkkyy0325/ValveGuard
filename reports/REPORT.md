@@ -491,3 +491,26 @@ a rare but possible draw. The 160-match subset is also harder than the full
 dev set at the same threshold (11.1%), so it is not representative.
 
 Details: `docs/llmwiki/rank-replication.md`.
+
+## 17. Movement / pre-aim segment pilot (dev 80% only)
+
+The champion uses view-derived features only. This pilot added 24 rule-based
+segment features describing travel (speed > 200), walk/silent approach
+(20-200), stop, and duel (last 64 ticks or error < 5 deg), plus pre-aim error,
+distance-to-victim, and state transitions.
+
+| Feature set | Player AUC | Recall@FPR=1% | Kill AUC | Q4 FPR (mean) |
+|---|---|---|---|---|
+| base (59) | 0.9294 | **0.1475** | 0.8472 | 2.63% |
+| base + segments (83) | **0.9311** | 0.1337 | **0.8677** | 5.26% |
+| segments only (24) | 0.9041 | 0.1050 | 0.8097 | -- |
+
+Paired base+segments vs base: ΔAUC [-0.0015, +0.0054],
+Δrecall@FPR=1% [-0.0663, +0.0526]. With shrinkage: base 0.9316/0.2386,
+base+segments 0.9334/0.2079.
+
+Decision: **not promoted**. Segments carry real signal (AUC 0.904 alone) and
+raise kill-level AUC by ~0.02, but player-level low-FPR recall does not
+improve and Q4 FPR doubles. The kill-level gain is useful for ranking kills
+in a review UI, not for flagging players. Details:
+`docs/llmwiki/segment-features.md`.

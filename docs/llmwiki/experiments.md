@@ -226,3 +226,14 @@ Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,075 kill windows,
   the same threshold).
 - Conclusion: the Q4 effect is real but modest (~3.4x the 1% target); the
   19% figure is superseded. Details: `rank-replication.md`.
+
+## 14. Movement / pre-aim segment features (dev-80 pilot)
+
+- 24 rule-based features: travel (speed > 200), walk/silent (20-200), stop,
+  duel (last 64 ticks or error < 5), pre-aim error/distance, transitions.
+- base + segments (83): player AUC 0.9311, recall@1% 0.1337, kill AUC 0.8677;
+  Q4 FPR 5.26% mean / 10.53% shrunk.
+- segments only (24): player AUC 0.9041, recall 0.1050, kill AUC 0.8097.
+- Paired base+seg vs base: ΔAUC [-0.0015, +0.0054], Δrecall [-0.0663, +0.0526].
+- Decision: **not promoted**. Kill-level AUC rises ~0.02 but player-level
+  recall does not improve and Q4 FPR doubles. Details: `segment-features.md`.

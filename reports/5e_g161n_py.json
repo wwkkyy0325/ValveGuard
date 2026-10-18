@@ -1,0 +1,362 @@
+{
+  "demo": "data\\raw\\5e_sample\\g161n.dem",
+  "map": "de_dust2",
+  "model_version": "valveguard-gbdt-2026-10-18",
+  "threshold": 0.7916080822111738,
+  "prior": 0.29009510119538684,
+  "k0": 5.0,
+  "players": [
+    {
+      "steamid": "76561198659293314",
+      "name": "\u4f60\u8fc7\u4e0d\u4e86\u4e2d\u95e8",
+      "kills": 7,
+      "mean_score": 0.605989,
+      "max_kill_score": 0.893707,
+      "shrunk_score": 0.474366,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198892578437",
+      "name": "\u54c8\u533b\u5927\u7b2c\u4e00tec9",
+      "kills": 3,
+      "mean_score": 0.471691,
+      "max_kill_score": 0.841614,
+      "shrunk_score": 0.358193,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199739701218",
+      "name": "dank6657",
+      "kills": 8,
+      "mean_score": 0.382486,
+      "max_kill_score": 0.75564,
+      "shrunk_score": 0.346951,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199377185747",
+      "name": "\u561b\u8c46\u7279\u8058",
+      "kills": 10,
+      "mean_score": 0.356463,
+      "max_kill_score": 0.757165,
+      "shrunk_score": 0.33434,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199764273042",
+      "name": "\u6211\u4eec\u4e00\u8d77\u73a9\u53ed",
+      "kills": 4,
+      "mean_score": 0.253696,
+      "max_kill_score": 0.467566,
+      "shrunk_score": 0.273918,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199665826806",
+      "name": "iioneny",
+      "kills": 1,
+      "mean_score": 0.180891,
+      "max_kill_score": 0.180891,
+      "shrunk_score": 0.271894,
+      "flagged": false,
+      "reliable": false
+    },
+    {
+      "steamid": "76561199212710323",
+      "name": "\u6f66\u6c34",
+      "kills": 5,
+      "mean_score": 0.242419,
+      "max_kill_score": 0.310036,
+      "shrunk_score": 0.266257,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561198989172771",
+      "name": "\u7528\u62370211K4s1Tj1Y",
+      "kills": 8,
+      "mean_score": 0.232728,
+      "max_kill_score": 0.498113,
+      "shrunk_score": 0.254792,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "steamid": "76561199657920061",
+      "name": "pash4",
+      "kills": 6,
+      "mean_score": 0.177665,
+      "max_kill_score": 0.293416,
+      "shrunk_score": 0.228769,
+      "flagged": false,
+      "reliable": true
+    }
+  ],
+  "kills": [
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 11536,
+      "score": 0.066347
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 19395,
+      "score": 0.566172
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 32006,
+      "score": 0.522119
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 36364,
+      "score": 0.686608
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 36458,
+      "score": 0.68545
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 36525,
+      "score": 0.893707
+    },
+    {
+      "steamid": "76561198659293314",
+      "kill_tick": 36606,
+      "score": 0.821519
+    },
+    {
+      "steamid": "76561198892578437",
+      "kill_tick": 6254,
+      "score": 0.113401
+    },
+    {
+      "steamid": "76561198892578437",
+      "kill_tick": 10455,
+      "score": 0.460058
+    },
+    {
+      "steamid": "76561198892578437",
+      "kill_tick": 24188,
+      "score": 0.841614
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 6814,
+      "score": 0.427828
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 10115,
+      "score": 0.498113
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 18952,
+      "score": 0.193132
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 19757,
+      "score": 0.180548
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 30114,
+      "score": 0.13378
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 31517,
+      "score": 0.206076
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 32205,
+      "score": 0.136516
+    },
+    {
+      "steamid": "76561198989172771",
+      "kill_tick": 40798,
+      "score": 0.085829
+    },
+    {
+      "steamid": "76561199212710323",
+      "kill_tick": 6147,
+      "score": 0.154836
+    },
+    {
+      "steamid": "76561199212710323",
+      "kill_tick": 19413,
+      "score": 0.301101
+    },
+    {
+      "steamid": "76561199212710323",
+      "kill_tick": 19884,
+      "score": 0.292547
+    },
+    {
+      "steamid": "76561199212710323",
+      "kill_tick": 30878,
+      "score": 0.310036
+    },
+    {
+      "steamid": "76561199212710323",
+      "kill_tick": 37137,
+      "score": 0.153572
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 6976,
+      "score": 0.652034
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 7159,
+      "score": 0.333402
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 10522,
+      "score": 0.708487
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 10620,
+      "score": 0.130215
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 18703,
+      "score": 0.757165
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 21933,
+      "score": 0.412053
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 25853,
+      "score": 0.118091
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 30992,
+      "score": 0.306827
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 40802,
+      "score": 0.115453
+    },
+    {
+      "steamid": "76561199377185747",
+      "kill_tick": 41109,
+      "score": 0.030904
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 10704,
+      "score": 0.085787
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 12094,
+      "score": 0.293416
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 12752,
+      "score": 0.173502
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 23827,
+      "score": 0.213034
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 37082,
+      "score": 0.134198
+    },
+    {
+      "steamid": "76561199657920061",
+      "kill_tick": 40653,
+      "score": 0.16605
+    },
+    {
+      "steamid": "76561199665826806",
+      "kill_tick": 18299,
+      "score": 0.180891
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 6305,
+      "score": 0.581315
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 7008,
+      "score": 0.462926
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 9988,
+      "score": 0.218398
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 18702,
+      "score": 0.75564
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 21972,
+      "score": 0.239691
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 25752,
+      "score": 0.192139
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 26460,
+      "score": 0.068674
+    },
+    {
+      "steamid": "76561199739701218",
+      "kill_tick": 41134,
+      "score": 0.541102
+    },
+    {
+      "steamid": "76561199764273042",
+      "kill_tick": 7098,
+      "score": 0.110895
+    },
+    {
+      "steamid": "76561199764273042",
+      "kill_tick": 29852,
+      "score": 0.167621
+    },
+    {
+      "steamid": "76561199764273042",
+      "kill_tick": 34202,
+      "score": 0.467566
+    },
+    {
+      "steamid": "76561199764273042",
+      "kill_tick": 41468,
+      "score": 0.2687
+    }
+  ]
+}
