@@ -21,6 +21,12 @@ experiments/**/oof/
 *.log
 _vizdoom.ini
 
+# ViZDoom scratch: per-run debug frames and ad-hoc output dirs
+reports/vizdoom/tmp*.png
+reports/vizdoom/switch*.png
+reports/vizdoom/predict_*.png
+reports/vizdoom_target/
+
 # Packaging
 *.egg-info/
 
