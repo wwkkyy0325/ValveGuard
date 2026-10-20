@@ -593,3 +593,5 @@
 - Decision: kill-level signal replicated; player-level low-FPR recall still
   not significant. Not promoted. Recorded in `experiments.md` section 17;
   artifacts under `reports/events_pilot_400/`.
+- Started the full 500+500 raw download (all available cheater and clean
+  matches, ~45 GB) for the full-cohort event run.
