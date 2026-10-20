@@ -1,0 +1,74 @@
+{
+  "folds": [
+    {
+      "player_auc": 0.9174755168661589,
+      "player_ap": 0.7266371283087207,
+      "player_recall_at_fpr1": 0.2,
+      "player_fpr": 0.01088139281828074,
+      "q4_fpr": 0.045454545454545456,
+      "q4_recall": 0.24324324324324326,
+      "players": 1144,
+      "positive_players": 225,
+      "fold": 0
+    },
+    {
+      "player_auc": 0.9579865102257694,
+      "player_ap": 0.8782616514224038,
+      "player_recall_at_fpr1": 0.46122448979591835,
+      "player_fpr": 0.010626992561105207,
+      "q4_fpr": 0.06329113924050633,
+      "q4_recall": 0.5319148936170213,
+      "players": 1186,
+      "positive_players": 245,
+      "fold": 1
+    },
+    {
+      "player_auc": 0.9687548829885693,
+      "player_ap": 0.9092330512493446,
+      "player_recall_at_fpr1": 0.5055350553505535,
+      "player_fpr": 0.010857763300760043,
+      "q4_fpr": 0.016666666666666666,
+      "q4_recall": 0.5824175824175825,
+      "players": 1192,
+      "positive_players": 271,
+      "fold": 2
+    },
+    {
+      "player_auc": 0.9407203146369294,
+      "player_ap": 0.8283885100533754,
+      "player_recall_at_fpr1": 0.3345323741007194,
+      "player_fpr": 0.010123734533183352,
+      "q4_fpr": 0.04938271604938271,
+      "q4_recall": 0.42342342342342343,
+      "players": 1167,
+      "positive_players": 278,
+      "fold": 3
+    },
+    {
+      "player_auc": 0.9519575225028617,
+      "player_ap": 0.8230703952765972,
+      "player_recall_at_fpr1": 0.30451127819548873,
+      "player_fpr": 0.01095290251916758,
+      "q4_fpr": 0.05128205128205128,
+      "q4_recall": 0.46236559139784944,
+      "players": 1179,
+      "positive_players": 266,
+      "fold": 4
+    }
+  ],
+  "overall": {
+    "player_auc": 0.9477688225220767,
+    "player_ap": 0.8283639764266754,
+    "player_recall_at_fpr1": 0.3175097276264591,
+    "player_fpr": 0.010037093606807768,
+    "q4_fpr": 0.054404145077720206,
+    "q4_recall": 0.4103671706263499,
+    "players": 5868,
+    "positive_players": 1285
+  },
+  "channels": 29,
+  "epochs": 12,
+  "train_k": 24,
+  "init_dir": "E:/ValveGuardWork/runs/cnn29_fixed_wide_seed42",
+  "players": 5868
+}
