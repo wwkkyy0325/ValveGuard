@@ -27,8 +27,9 @@ E:\ValveGuardWork\
   data\processed\mouse_resid_subset\
   data\processed\pro_windows\
   data\processed\5e_windows\
+  data\processed\events_cs2cd\  63 raw event features, 20,252 kill windows
   data\raw\5e_sample\        three 5E demos
-  data\raw\cs2cd_subset\     100 cheater + 100 clean matches
+  data\raw\cs2cd_subset\     100+100 matches complete; 200+200 in progress
   downloads\                 reserved for new datasets
   runs\                      experiment outputs
   logs\                      process logs
@@ -57,6 +58,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 - 5E demo `g161-20261017205155650208834_de_dust2.dem`: 10 players, 0 flagged,
   3.9 s end to end.
 - 90,707-window cache and 43-channel tensor cache loaded on the host.
+- Raw event pilot on 100+100 matches: 20,252 windows, 63 features; kill AUC
+  0.8276 -> 0.8459 (Δ +0.0183, bootstrap CI [0.0106, 0.0258]); player recall
+  gain not significant on 1,353 players. See `experiments.md` section 16.
 
 ## Commands
 
@@ -80,5 +84,17 @@ $env:HTTP_PROXY = 'http://192.168.3.129:7890'
 $env:HTTPS_PROXY = 'http://192.168.3.129:7890'
 $env:HF_ENDPOINT = 'https://huggingface.co'
 & $vpy "$root\repo\ValveGuard\scripts\download_raw_subset.py" `
-  --out "$root\data\raw\cs2cd_subset" --n 100 --workers 4
+  --out "$root\data\raw\cs2cd_subset" --n 200 --workers 4
+
+# raw event features and pilot
+& $vpy -m valveguard.scripts.build_event_features `
+  --cache "$root\data\processed\cw256" `
+  --raw "$root\data\raw\cs2cd_subset" `
+  --out "$root\data\processed\events_cs2cd" --n-matches 100 --workers 24
+
+& $vpy -m valveguard.scripts.run_event_pilot `
+  --index "$root\data\processed\cw256\index.parquet" `
+  --features "$root\repo\ValveGuard\reports\baseline_clean\summary_features.parquet" `
+  --events "$root\data\processed\events_cs2cd\event_features.parquet" `
+  --out "$root\runs\event_pilot"
 ```
