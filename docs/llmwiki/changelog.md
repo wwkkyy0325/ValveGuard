@@ -612,6 +612,9 @@
   +0.0057 [0.0030, 0.0084], Δrecall +0.0072 [-0.0353, 0.0493].
 - Rank/weapon layers: Q4 FPR 3.14% -> 2.86% (all), Q4 recall 24.5% -> 21.4%;
   sniper FPR ~5.6-6.0%; auto rifle FPR ~0%; pistol recall 4.0% -> 9.7%.
+- Group ablation: fire is the best single group (recall 0.2157), context adds
+  the most player AUC (+0.0043), aim-only lowers recall to 0.1908, recoil and
+  mouse are negligible.
 - Decision: not promoted. Event features improve ranking, not low-FPR recall;
   Q4 improves slightly but Q2/Q3 regress. Recorded in `experiments.md`
   section 18; artifacts under `reports/events_pilot_full/`.

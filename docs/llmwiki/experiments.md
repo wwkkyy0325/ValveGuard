@@ -382,8 +382,12 @@ existing OOF kill scores with context weights; no retraining.
 | Arm | Kill AUC | Player AUC | Recall@FPR1 |
 |---|---|---|---|
 | base | 0.8794 | 0.9284 | 0.2087 |
+| + recoil | 0.8818 | 0.9282 | 0.2126 |
+| + fire | 0.8906 | 0.9298 | **0.2157** |
+| + mouse | 0.8829 | 0.9292 | 0.1994 |
+| + context | 0.8891 | **0.9327** | 0.2111 |
 | + aim (recoil+fire+mouse) | 0.8937 | 0.9295 | 0.1908 |
-| + all events | **0.9005** | **0.9339** | **0.2111** |
+| + all events | **0.9005** | **0.9339** | 0.2111 |
 
 - 500-replicate match-grouped bootstrap:
   - all vs base: Δkill AUC **+0.0212** [0.0171, 0.0253]; Δplayer AUC
@@ -392,6 +396,10 @@ existing OOF kill scores with context weights; no retraining.
   - aim vs base: Δkill AUC **+0.0144** [0.0107, 0.0183]; Δplayer AUC
     +0.0013 [-0.0014, +0.0037]; Δplayer recall -0.0024
     [-0.0404, +0.0363].
+- Group read: **fire** is the best single group (recall 0.2087 -> 0.2157,
+  player AUC +0.0014); **context** gives the largest player AUC (+0.0043);
+  **aim-only lowers recall** (0.1908); recoil/mouse are negligible. The
+  all-feature player AUC gain comes from fire + context, not recoil.
 - The kill and player AUC gains replicate on the full cohort; the low-FPR
   recall gain does **not**. Aim-only features are a kill-level signal, not a
   player-level one.

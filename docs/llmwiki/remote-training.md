@@ -69,7 +69,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
   `experiments.md` section 17.
 - Full cohort: 700 matches / 67,067 clean windows; kill AUC 0.8794 -> 0.9005,
   player AUC 0.9284 -> 0.9339, recall@FPR1 0.2087 -> 0.2111 (CI crosses zero).
-  Q4 FPR 3.14% -> 2.86%; sniper FPR ~5.6%. See `experiments.md` section 18.
+  Q4 FPR 3.14% -> 2.86%; sniper FPR ~5.6%. Fire timing is the best single
+  group (recall 0.2157); aim-only lowers recall to 0.1908. See
+  `experiments.md` section 18.
 
 ## Commands
 
