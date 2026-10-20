@@ -48,33 +48,15 @@ Per-kill review card:
 - victim, weapon, headshot, through-smoke, wallbang, midair;
 - kill score and key feature percentiles (final error, time to target,
   straightness, submovements, lock ratio);
-- a 2D preview: yaw/pitch trajectory, target-error curve, top-down path;
-- a "play in CS2" action.
+- a 2D preview: yaw/pitch trajectory, target-error curve, top-down path.
 
 Export: CSV/JSON of the player table and the selected kills.
 
-## Video: what is and is not possible
+## Review segments
 
-A demo is a state log, **not a video**. There is no video stream to extract.
-Producing a clip requires rendering:
-
-1. **CS2 playback (recommended v1).** Launch CS2 with `playdemo` and seek with
-   `demo_gototick <tick>`; switch to the player with `spec_player` and
-   `spec_mode 4`. The analyst watches in-game. Recording is manual or via an
-   external capture tool.
-2. **Capture automation (v2).** OBS WebSocket or FFmpeg `gdigrab` can start
-   and stop a recording around a tick range. It is workable but fragile:
-   seeks are asynchronous and CS2 must be running.
-3. **HLAE (cinematic capture).** The standard tool for advanced camera work;
-   CS2 support is limited/experimental and must be verified before relying on
-   it.
-4. **2D preview (always available).** Rendered from tick data by the app:
-   trajectory, error curve, top-down path. Reliable, self-contained, and the
-   fastest way to triage before opening CS2.
-
-The app can therefore map every kill to a **tick-range review segment**
-`(demo, start_tick, kill_tick, end_tick, player)`; turning that segment into
-an actual video requires one of the render paths above.
+A demo is a state log, not a video. The app maps every kill to a tick-range
+segment `(demo, start_tick, kill_tick, end_tick, player)`; review uses 2D
+previews rendered from tick data, so CS2 does not need to be running.
 
 ## Rust/Tauri architecture
 
@@ -86,7 +68,6 @@ Tauri v2, Rust backend, web frontend (React/Svelte/vanilla).
 | Zip handling | `zip` crate, extract to temp |
 | Model | JSON tree ensemble, Rust traversal |
 | UI | Tauri webview; WebView2 is preinstalled on Windows 10/11 |
-| CS2 launch | `std::process::Command` with `+playdemo` and a generated cfg |
 | Charts | frontend canvas/SVG from the kill window data |
 
 Model export: `export_model_json.py` produces a ~931 KB JSON with 300 trees.
@@ -103,8 +84,7 @@ Port to Rust, in this order, with a Python-Rust golden comparison after each:
 3. window summary (the 59 features);
 4. validation: same demo, same kills, max feature difference < 1e-6.
 
-Effort estimate: 3-5 days for the feature port, 3-5 days for the Tauri UI,
-1-2 days for CS2 launch/seek, 3-5 days for capture automation.
+Effort estimate: 3-5 days for the feature port, 3-5 days for the Tauri UI.
 
 ## Alternatives
 
@@ -136,12 +116,11 @@ the whole first live round, so the Python warm-up filter was dropping
 first-round kills. Both pipelines now use explicit round/warm-up logic; the
 pro-demo results are re-run with the fix.
 
-Remaining work: Tauri UI (Chinese), 2D previews, CS2 launch, OBS capture.
+Remaining work: Tauri UI (Chinese), 2D previews.
 
 ## Decisions
 
 1. **Pure Rust** for the desktop app.
-2. v1 review = tick ranges + 2D preview + "open in CS2"; OBS background
-   capture is a later addition.
+2. v1 review = tick ranges + 2D preview; video capture and game launch are out of scope.
 3. Chinese UI by default.
 4. Single demo first; batch queue after the table/review flow is stable.

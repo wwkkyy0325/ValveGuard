@@ -2,7 +2,7 @@
 
 Status: detector-first (2026-10-17)
 
-> **Scope split (2026-10-20):** this repository is detector-only. The conditional generator was split into the sibling project `AimForge`; section 8 is kept as design history.
+> **Scope split (2026-10-20):** this repository is detector-only. The conditional generator, its design, and its demos were split into the sibling project `AimForge`.
 
 This document supersedes the model sketch in `design.md`. It is written to be implementation-ready and paper-grade: every modeling choice has a stated motivation, a verification step, and a leakage/robustness check.
 
@@ -314,22 +314,10 @@ This directly answers "single kill vs all kills": one anomalous kill is weak evi
 - **External context**: round phase, economy/buy type, score, player count, bomb state, weapon, opponent skill. Use conditioning; exclude `server`, `match_making_type`, and raw match IDs from features (they can leak label collection).
 - **Player history**: if available, a same-player style embedding from previous matches; otherwise within-match non-kill style only. Never use future matches.
 
-## 8. Model B: Conditional Trajectory Generator
+## 8. Model B (moved)
 
-Goal: given start and end aim points and context, generate human-like intermediate trajectories, and provide a human-likelihood score for detection.
-
-- **Representation**: signed `(dyaw, dpitch)` in target-centric coordinates; variable duration; endpoint constraint.
-- **Condition**: start and target view angles, target angular size/distance, victim velocity, weapon, skill, desired time budget.
-- **Model**: conditional flow matching (CFM) with a small 1D U-Net (64–128 channels, 4 blocks) or an autoregressive mixture-density Transformer. CVAE as a baseline. Avoid GAN training for the main model; use a GAN only as an evaluation baseline.
-- **Endpoint conditioning**: train a stochastic bridge between endpoints; at sampling, project the final point onto the target tolerance or use guided sampling.
-- **Training data**: human kill windows from clean players; also human non-kill reach/rotation segments for diversity.
-- **Evaluation**:
-  - endpoint error <= 1 degree;
-  - time-to-target, velocity profile, curvature, submovement count, PSD vs human;
-  - discriminator balanced accuracy near 50–60% (train a separate classifier on human vs generated; our detector is one discriminator, but use an independent one for the paper);
-  - blind human A/B by experienced CS players (optional, small n).
-- **Detection use**: human-likelihood percentile as an auxiliary feature; train the generator only on human data and compute out-of-fold for test players.
-- **Responsible release**: the generator is dual-use. Release the detector and evaluation code openly; release generator weights only with a dual-use statement and no game integration, or under controlled access. Do not publish a ready-to-use cheat.
+The conditional trajectory generator is no longer part of this repository. Its
+formulation, implementation, and evaluation live in `AimForge`.
 
 ## 9. Training Protocol
 
@@ -410,7 +398,6 @@ Leakage audits:
 ## 12. Compute Plan (RTX 3060 6 GB)
 
 - Detector: 3–6 M params, 256-tick batch 128 with AMP; 1024-tick macro batch 32. Training on ~90k windows: a few hours per run; 3–5 seeds feasible.
-- Generator: 1–2 M params, 64–128 step trajectories; a few hours per run.
 - Storage: raw CS2CD ~49 GB; processed windows ~10–25 GB; checkpoints < 1 GB. Current free space is ~104 GB; keep at least 30 GB headroom. Skip the 585 GB XGuardian raw data.
 - If 6 GB is tight: freeze the macro branch, use patch size 16, gradient checkpointing, and mixed precision.
 
@@ -427,13 +414,12 @@ Leakage audits:
 | Target visibility unavailable | Geometry/FOV/smoke proxy; do not claim wallhack detection beyond aim artifacts |
 | Pro false positives | Skill-conditioned scoring; high-rank FPR reporting; human review |
 | Humanized cheats | Adversarial tests; joint features; mouse–view residual |
-| Generator dual-use | Responsible release; no game integration; dual-use statement |
 | Overfitting to one dataset | Cross-dataset transfer; external validation |
 | Threshold tuning on test | Calibrate on validation only; lock test |
 
 ## 14. Detector-First Lean Execution Plan (current)
 
-The generator was split into `AimForge` on 2026-10-20. The first milestone here is a trustworthy detector on the 9.4 GB precomputed windows. Every step below has a stated reason, a cost, and a go/no-go check.
+The first milestone here is a trustworthy detector on the 9.4 GB precomputed windows. Every step below has a stated reason, a cost, and a go/no-go check.
 
 ### 14.0 Decisions and evidence
 

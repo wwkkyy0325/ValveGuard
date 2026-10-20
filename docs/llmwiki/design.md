@@ -8,12 +8,9 @@ Status: detector-first (2026-10-17)
 
 ## 1. Goal
 
-Build a CS2 aim-analysis system with two related capabilities:
+Build a CS2 aim-assist detector: given a player's crosshair/view-angle trajectory around a kill, estimate whether the movement is consistent with human behavior or with aim assistance.
 
-1. **Detection**: given a player's crosshair/view-angle trajectory around a kill, estimate whether the movement is consistent with human behavior or with aim assistance.
-2. **Synthesis**: given a start aim point and an end aim point (plus context), generate an intermediate trajectory that is statistically human-like.
-
-A single conditional generative model can serve both goals: sample from it for synthesis, and use its likelihood (or a supervised score) for detection. A dedicated discriminative detector is still expected to be stronger when labeled cheat data is available, so the working plan is a **two-model system with a shared preprocessing layer**.
+The project is detector-first. The offline trajectory generator, CS2 camera tooling, and ViZDoom sandbox live in the sibling `AimForge` project; they are not part of this repository.
 
 Non-goals (for now):
 
@@ -62,10 +59,6 @@ CS2 demo / dataset
         │                   input: window features
         │                   output: P(aim-assist), feature attributions
         │
-        ├──────────────► Generative model B (conditional)
-        │                   input: start aim, target aim, context, skill
-        │                   output: trajectory samples + likelihood
-        │
         └──────────────► Skill estimator
                             input: non-kill behavior, rank/rating if available
                             output: skill embedding / cohort
@@ -110,24 +103,7 @@ A weaker-than-expected deviation should not increase suspicion; it is used to up
 
 Implementation options: quantile regression, conditional normalizing flow, or per-skill-cohort empirical CDFs. Calibrate the final score on labeled data and report reliability diagrams.
 
-### 4.3 Generative model B
-
-Condition: start aim point, target aim point, target distance/width, weapon, time budget, skill embedding. Output: sequence of `(Δyaw, Δpitch)` at fixed dt, with exact endpoint conditioning.
-
-Candidate architectures, in increasing complexity:
-
-1. Parametric baseline: minimum-jerk / Fitts-law submovement model + signal-dependent noise + corrective submovements.
-2. Conditional VAE or autoregressive mixture-density network (easy likelihood, stable training).
-3. Conditional flow matching / diffusion over trajectories (best multimodality and realism; heavier).
-
-Endpoint conditioning: project the final sample onto the target tolerance, or use inpainting/guidance during sampling.
-
-Two uses:
-
-- **Synthesis**: sample multiple human-like paths for a given endpoint pair.
-- **Detection aid**: compute trajectory likelihood / percentile under the human model, and combine with model A.
-
-### 4.4 Aggregation and decision
+### 4.3 Aggregation and decision
 
 Window score → match score (attention or calibrated logistic regression) → player risk. Output must include:
 
@@ -146,13 +122,6 @@ Detection:
 - Cross-dataset generalization (Kaggle ↔ XGuardian).
 - Adversarial test: humanized/smoothed aimbot trajectories.
 
-Generation:
-
-- Endpoint error (degrees).
-- Time-to-target, peak velocity, velocity profile, curvature, submovement count, jerk distributions vs human.
-- Discriminator balanced accuracy (a strong detector should be near chance on generated data; GAN-Aimbots reported ~86% for its best detector on a simpler setting).
-- Distribution distance (e.g. Fréchet distance on summary features).
-
 Calibration:
 
 - Reliability diagram, ECE.
@@ -167,7 +136,6 @@ Calibration:
 5. Match timeline of suspicion scores with kill markers.
 6. Population scatter: skill estimate vs superhuman score (normal / pro / cheat).
 7. Model evaluation: ROC/PR, calibration, cross-dataset heatmap.
-8. Generator validation: human vs generated distributions and discriminator ROC.
 
 ## 7. Main Risks
 
@@ -206,9 +174,8 @@ Resolved:
 
 Remaining:
 
-1. Synthesis endpoints: use 2D view angles (yaw, pitch) plus target angular size; confirm whether the user also wants screen-pixel endpoints.
-2. Responsible release: detector/code open. The separate generator project carries its own dual-use policy.
-3. Target visibility: no raycast in v1; use a geometry/FOV/smoke proxy and state the limitation. Is a map-raycast module in scope for v2?
+1. Responsible release: detector and evaluation code open; no game integration.
+2. Target visibility: no raycast in v1; use a geometry/FOV/smoke proxy and state the limitation. Is a map-raycast module in scope for v2?
 
 ## 10. Current State (v2, 2026-10-17)
 

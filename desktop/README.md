@@ -52,4 +52,3 @@ Debug options:
 
 - Tauri UI and Chinese interface.
 - 2D trajectory/error previews.
-- "Open in CS2" launch and OBS background capture.
