@@ -69,6 +69,20 @@
     "positive_players": 466,
     "n_features": 90
   },
+  "aim": {
+    "kill_auc": 0.8375940616429014,
+    "kill_ap": 0.7226889142032255,
+    "kill_recall_at_fpr1": 0.06356854211998757,
+    "kill_fpr": 0.010000926011667747,
+    "kills": 17233,
+    "positive_kills": 6434,
+    "player_auc": 0.8674076188725074,
+    "player_recall_at_fpr1": 0.17167381974248927,
+    "player_fpr": 0.010146561443066516,
+    "players": 1353,
+    "positive_players": 466,
+    "n_features": 129
+  },
   "all": {
     "kill_auc": 0.8458553695277338,
     "kill_ap": 0.7324146058103198,

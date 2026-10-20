@@ -300,13 +300,16 @@ existing OOF kill scores with context weights; no retraining.
 | + recoil | 0.8280 | 0.8638 | 0.1738 |
 | + fire | 0.8348 | 0.8663 | 0.1695 |
 | + mouse | 0.8311 | 0.8643 | 0.1502 |
+| + aim (recoil+fire+mouse) | 0.8376 | 0.8674 | 0.1717 |
 | + context | 0.8401 | **0.8785** | 0.1352 |
 | + all | **0.8459** | 0.8731 | **0.1781** |
 
 - Permutation importance puts `ev_spotted_frac` (0.022), `ev_spray_max`
-  (0.017), and `ev_mouse_view_beta_pitch` (0.015) on top. The **context**
-  group (spotted/walking/ducking/airborne/velocity) drives most of the kill
-  AUC gain, not recoil. The recoil group adds almost nothing.
+  (0.017), and `ev_mouse_view_beta_pitch` (0.015) on top.
+- Aim-only events add +0.0100 kill AUC and +0.0150 player recall over base,
+  but player AUC is flat (+0.0006). The **context** group
+  (spotted/walking/ducking/airborne/velocity) gives the largest player AUC
+  (+0.0117) but a lower recall (-0.0215). Recoil alone adds almost nothing.
 - Caveat: `spotted` is visibility/team context, not aim. The event gain is
   therefore not yet a clean aim-assist claim; the next run must separate
   aim-specific features from movement/visibility context and check whether

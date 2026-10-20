@@ -567,10 +567,11 @@
 - 5-fold match-disjoint pilot: kill AUC 0.8276 -> 0.8459 (Δ +0.0183,
   bootstrap CI [0.0106, 0.0258]); player AUC 0.8668 -> 0.8731 (CI crosses
   zero); player recall@FPR1 0.1567 -> 0.1781 (CI crosses zero).
-- Group ablation: context (spotted/walking/ducking/velocity) drives most of
-  the gain; recoil adds almost nothing, fire adds ~0.007 kill AUC. The top
-  permutation feature is `ev_spotted_frac`, so the pilot is not yet a clean
-  aim-assist claim.
+- Group ablation: aim-only (recoil+fire+mouse) adds +0.0100 kill AUC and
+  +0.0150 recall, player AUC flat; context (spotted/walking/ducking/velocity)
+  gives +0.0117 player AUC but -0.0215 recall; recoil alone adds almost
+  nothing. The top permutation feature is `ev_spotted_frac`, so the pilot is
+  not yet a clean aim-assist claim.
 - Decision: pilot only. Kill-level signal is real; player-level needs more
   matches. A 200+200 subset is downloading.
 - Recorded in `experiments.md` section 16; artifacts under

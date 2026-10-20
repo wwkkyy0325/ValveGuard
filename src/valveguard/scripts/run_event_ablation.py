@@ -46,6 +46,10 @@ def main() -> None:
         arms[name] = base_columns + [
             column for column in event_columns if column.startswith(prefixes)
         ]
+    aim_prefixes = GROUPS["recoil"] + GROUPS["fire"] + GROUPS["mouse"]
+    arms["aim"] = base_columns + [
+        column for column in event_columns if column.startswith(aim_prefixes)
+    ]
     arms["all"] = base_columns + event_columns
 
     results = {}
