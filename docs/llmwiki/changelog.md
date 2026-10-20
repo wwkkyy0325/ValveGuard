@@ -954,3 +954,12 @@
   count and score, then below-threshold by score.
 - Clean + banned two-demo check: banned REVIEW ranks first with four
   reasons; below players are ordered by score.
+
+## 2026-10-20 (demo path regression tests)
+
+- Added `tests/test_demo_report.py` and `tests/test_artifact.py`.
+- Covered artifact checksum/channel validation, deterministic scoring,
+  behavior aggregation, review reason rules, review ordering, and batch
+  queue merging.
+- Refactored review ordering and batch merging into pure helpers.
+- `python -m pytest -q tests`: 11 passed.

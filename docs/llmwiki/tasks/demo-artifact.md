@@ -22,4 +22,5 @@ Champion: `artifacts/valveguard_cnn_v1` (aim-only 29-channel wide CNN,
       Verify: PyTorch vs ONNX max abs difference < 1e-5.
 - [ ] `compare_demos.py` human / synthetic / cheater harness.
       Verify: labeled demos produce grouped distributions and a summary table.
-- [ ] Regression tests for artifact load, schema, and a fixed demo.
+- [x] Regression tests for artifact load, schema, and review ordering.
+      Verify: `python -m pytest -q tests` passes (11 tests).

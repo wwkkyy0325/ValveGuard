@@ -925,3 +925,12 @@ Single seed (seed 42):
   aim score, not by behavior reasons.
 - Artifact: `reports/demo_mix/review_queue.csv`, `summary.json` (local;
   contains demo player identifiers and is not committed).
+
+### Regression tests for the demo path
+
+- `python -m pytest -q tests` -> 11 passed.
+- Covered: artifact load and deterministic scoring, missing-channel and
+  checksum rejection, behavior context aggregation, review reason rules,
+  single-demo review ordering, and batch queue merging.
+- Artifact tests skip automatically when `artifacts/valveguard_cnn_v1` is
+  absent, so the repository tests do not depend on the local binary bundle.
