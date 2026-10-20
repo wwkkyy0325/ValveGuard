@@ -911,3 +911,15 @@
   cohort.
 - Fixed demo parsing for NULL event fields and warmup flags; added
   `batch_score_demos.py`.
+
+## 2026-10-20 (player behavior fusion: negative for ranking)
+
+- Added `build_kill_ticks.py` and `analyze_behavior_fusion.py`.
+- Player behavior features have high global AUC (kill-per-shot 0.895,
+  headshot rate 0.806, sniper share 0.808, wallbang 0.788), but the
+  behavior-only recall@1% is 0.157 vs the champion's 0.312.
+- Best rank fusion (0.75 champion): AUC 0.9519, recall 0.2887, Q4 FPR
+  3.11%; bootstrap Δrecall -0.0554 [-0.1465, +0.0072].
+- High-kill/high-HS subgroup: champion recall 67.4%, behavior 27.5%.
+- Decision: not adopted as the default; outcome features are a review
+  queue signal, not a ranking replacement.

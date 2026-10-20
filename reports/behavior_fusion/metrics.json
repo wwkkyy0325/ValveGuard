@@ -1,0 +1,131 @@
+{
+  "metrics": {
+    "champion": {
+      "auc": 0.9500249186852784,
+      "ap": 0.8303970328185772,
+      "recall_at_fpr1": 0.3120622568093385,
+      "fpr": 0.010037093606807768,
+      "q4_fpr": 0.025906735751295335,
+      "q4_recall": 0.36069114470842334,
+      "threshold": 0.7149247183281877,
+      "players": 5868,
+      "positive_players": 1285
+    },
+    "behavior": {
+      "auc": 0.9195676629329675,
+      "ap": 0.7495926260697922,
+      "recall_at_fpr1": 0.15719844357976653,
+      "fpr": 0.010037093606807768,
+      "q4_fpr": 0.02849740932642487,
+      "q4_recall": 0.183585313174946,
+      "threshold": 0.9679207159474817,
+      "players": 5868,
+      "positive_players": 1285
+    },
+    "fused_0.25": {
+      "auc": 0.9364420702121102,
+      "ap": 0.7944027555028133,
+      "recall_at_fpr1": 0.2085603112840467,
+      "fpr": 0.010037093606807768,
+      "q4_fpr": 0.038860103626943004,
+      "q4_recall": 0.23974082073434125,
+      "threshold": 0.9372264826175872,
+      "players": 5868,
+      "positive_players": 1285
+    },
+    "fused_0.50": {
+      "auc": 0.947165000751381,
+      "ap": 0.8192134674565729,
+      "recall_at_fpr1": 0.2544747081712062,
+      "fpr": 0.010037093606807768,
+      "q4_fpr": 0.03626943005181347,
+      "q4_recall": 0.2937365010799136,
+      "threshold": 0.9260702113156101,
+      "players": 5868,
+      "positive_players": 1285
+    },
+    "fused_0.75": {
+      "auc": 0.9519167860244806,
+      "ap": 0.8327596402996488,
+      "recall_at_fpr1": 0.28871595330739297,
+      "fpr": 0.010037093606807768,
+      "q4_fpr": 0.031088082901554404,
+      "q4_recall": 0.3390928725701944,
+      "threshold": 0.9223994546693938,
+      "players": 5868,
+      "positive_players": 1285
+    }
+  },
+  "bootstrap_fused_vs_champion": {
+    "auc": {
+      "mean": -0.004913272491864331,
+      "ci95": [
+        -0.018050463687301177,
+        0.003225691872533299
+      ]
+    },
+    "recall_at_fpr1": {
+      "mean": -0.05541631001830278,
+      "ci95": [
+        -0.1464690724863601,
+        0.007225140080000334
+      ]
+    },
+    "q4_fpr": {
+      "mean": 0.005070256768463077,
+      "ci95": [
+        -0.01047423245614035,
+        0.023580480007413234
+      ]
+    }
+  },
+  "univariate_auc": {
+    "hs_rate": 0.8064358978495216,
+    "hs_count": 0.6575142783642135,
+    "shots_per_kill": 0.1022595771379765,
+    "kill_per_shot": 0.8946212147583141,
+    "max_multikill_4s": 0.6281818019732882,
+    "burst_frac": 0.6785266307305546,
+    "burst3_frac": 0.6233991124363343,
+    "log_min_gap": 0.395643517618402,
+    "log_median_gap": 0.24372970315775355,
+    "sniper_frac": 0.8082854840804836,
+    "pistol_frac": 0.532415516317706,
+    "rifle_frac": 0.18429715298714333,
+    "sniper_hs": 0.8073172660886221,
+    "smoke_rate": 0.4768891292553855,
+    "wallbang_rate": 0.7877143664923066,
+    "midair_rate": 0.5482133684713681,
+    "full_hp_rate": 0.5,
+    "victim_health": 0.5
+  },
+  "missed_by_champion": 884,
+  "rescued_by_behavior": 70,
+  "high_activity_subgroup": {
+    "players": 805,
+    "positive": 411,
+    "champion_recall": 0.6739659367396593,
+    "behavior_recall": 0.2749391727493917
+  },
+  "features": [
+    "hs_rate",
+    "hs_count",
+    "shots_per_kill",
+    "kill_per_shot",
+    "max_multikill_4s",
+    "burst_frac",
+    "burst3_frac",
+    "log_min_gap",
+    "log_median_gap",
+    "sniper_frac",
+    "pistol_frac",
+    "rifle_frac",
+    "sniper_hs",
+    "smoke_rate",
+    "wallbang_rate",
+    "midair_rate",
+    "full_hp_rate",
+    "victim_health"
+  ],
+  "players": 5868
+}

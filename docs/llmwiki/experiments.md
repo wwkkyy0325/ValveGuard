@@ -846,3 +846,37 @@ Single seed (seed 42):
 - Code fixes from this audit: missing event fields (`headshot`,
   `penetrated`, `is_warmup_period`, NULL victim ids) no longer crash demo
   parsing.
+
+### Player-level outcome/behavior fusion (negative for the primary metric)
+
+- Built player-level features from kill outcomes: headshot rate, shots per
+  kill, kill-per-shot efficiency, 4-second multikill bursts, burst share,
+  minimum/median kill gap, weapon mix, sniper headshot rate, smoke/wallbang/
+  midair rates, and full-health kill rate. Absolute kill count is included
+  but is not predictive (AUC 0.499).
+- Univariate player AUC: kill-per-shot 0.895, headshot rate 0.806, sniper
+  share 0.808, wallbang rate 0.788, burst share 0.679, max 4s multikill
+  0.628, median gap 0.244 (inverse).
+- OOF HistGradientBoosting behavior model on the fixed folds:
+
+| Score | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
+|---|---|---|---|---|
+| aim champion | **0.9500** | **0.3121** | **2.59%** | 36.1% |
+| behavior only | 0.9196 | 0.1572 | 2.85% | 18.4% |
+| rank fusion 0.75 champion | 0.9519 | 0.2887 | 3.11% | 33.9% |
+| rank fusion 0.50 | 0.9472 | 0.2545 | 3.63% | 29.4% |
+
+- 500-replicate match-grouped bootstrap for the best fusion vs champion:
+  ΔAUC -0.0049 [-0.0181, +0.0032]; Δrecall -0.0554 [-0.1465, +0.0072];
+  ΔQ4 FPR +0.0051 [-0.0105, +0.0236].
+- The behavior score has high global AUC but poor low-FPR recall: its top
+  1% tail is not cheat-specific. Of 884 champion misses, behavior catches
+  70, but the union raises FPR.
+- High-kill/high-headshot subgroup (>=15 kills, >=60% HS): champion recall
+  67.4%, behavior 27.5%. The champion already catches most of these; this
+  fusion would not fix the missed 5E case.
+- Decision: **not adopted as the default score**. Headshot rate and burst
+  patterns are useful as a human-review queue alongside the aim score, not
+  as a ranking replacement.
+- Artifact: `reports/behavior_fusion/metrics.json`, `univariate.csv`;
+  scripts `analyze_behavior_fusion.py`, `build_kill_ticks.py`.
