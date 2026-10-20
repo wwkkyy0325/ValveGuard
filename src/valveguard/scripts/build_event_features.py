@@ -53,6 +53,14 @@ def _work(job):
         if kill_idx >= len(kills[player]):
             continue
         kill_tick = int(kills[player][kill_idx])
+        kill_rows = deaths[
+            (deaths["attacker_steamid"] == player)
+            & (deaths["tick"] == kill_tick)
+        ]
+        if kill_rows.empty:
+            continue
+        victim_id = kill_rows.iloc[0]["user_steamid"]
+        victim = by_player.get(victim_id)
         start = kill_tick - KILL_ROW
         if start < int(ticks["tick"].min()):
             continue
@@ -63,7 +71,7 @@ def _work(job):
         frame = attacker.reindex(window_ticks)
         if frame[["pitch", "yaw"]].isna().any().any():
             continue
-        feat = event_summary(attacker, window_ticks, kill_tick)
+        feat = event_summary(attacker, victim, window_ticks, kill_tick)
         feat["row"] = int(row)
         feat["match_key"] = match_key
         feat["player_name"] = player

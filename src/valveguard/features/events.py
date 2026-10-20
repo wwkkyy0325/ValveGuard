@@ -11,10 +11,10 @@ import numpy as np
 import pandas as pd
 
 EVENT_COLUMNS = [
-    "tick", "steamid", "pitch", "yaw", "usercmd_mouse_dx", "usercmd_mouse_dy",
-    "aim_punch_angle", "shots_fired", "last_shot_time", "is_scoped",
-    "is_walking", "ducking", "is_airborne", "velocity", "health", "is_alive",
-    "spotted",
+    "tick", "steamid", "X", "Y", "Z", "pitch", "yaw",
+    "usercmd_mouse_dx", "usercmd_mouse_dy", "aim_punch_angle",
+    "shots_fired", "last_shot_time", "is_scoped", "is_walking", "ducking",
+    "is_airborne", "velocity", "health", "is_alive", "spotted",
 ]
 
 
@@ -54,16 +54,76 @@ def _mouse_residual(view: np.ndarray, mouse: np.ndarray) -> tuple[float, np.ndar
     return beta, residual
 
 
-def event_summary(attacker: pd.DataFrame, ticks: np.ndarray, kill_tick: int) -> dict:
+def event_summary(
+    attacker: pd.DataFrame,
+    victim: pd.DataFrame | None,
+    ticks: np.ndarray,
+    kill_tick: int,
+) -> dict:
     """Summarize one 256-tick attacker window; callers must ensure full ticks."""
     frame = attacker.reindex(ticks)
     out: dict[str, float] = {}
+    kill_index = int(np.argmin(np.abs(ticks - kill_tick)))
 
     pitch = frame["pitch"].to_numpy(dtype=float)
     yaw = frame["yaw"].to_numpy(dtype=float)
     d_pitch = np.diff(pitch, prepend=pitch[0])
     d_yaw = np.diff(yaw, prepend=yaw[0])
     d_yaw = (d_yaw + 180.0) % 360.0 - 180.0
+
+    err_pre = np.full(kill_index + 1, np.nan, dtype=float)
+    err_head_pre = np.full(kill_index + 1, np.nan, dtype=float)
+    victim_frame = victim.reindex(ticks) if victim is not None else None
+    has_target = (
+        victim_frame is not None
+        and all(column in frame.columns for column in ("X", "Y", "Z"))
+        and all(column in victim_frame.columns for column in ("X", "Y", "Z"))
+    )
+    if has_target:
+        ax = frame["X"].to_numpy(dtype=float)
+        ay = frame["Y"].to_numpy(dtype=float)
+        az = frame["Z"].to_numpy(dtype=float)
+        vx = victim_frame["X"].to_numpy(dtype=float)
+        vy = victim_frame["Y"].to_numpy(dtype=float)
+        vz = victim_frame["Z"].to_numpy(dtype=float)
+        dx, dy, dz = vx - ax, vy - ay, vz - az
+        horizontal = np.hypot(dx, dy)
+        valid = (
+            np.isfinite(dx) & np.isfinite(dy) & np.isfinite(dz)
+            & np.isfinite(pitch) & np.isfinite(yaw)
+        )
+        expected_yaw = np.degrees(np.arctan2(dy, dx))
+        expected_pitch = -np.degrees(
+            np.arctan2(dz, np.maximum(horizontal, 1e-6))
+        )
+        expected_pitch_head = -np.degrees(
+            np.arctan2(dz + 64.0, np.maximum(horizontal, 1e-6))
+        )
+        err_yaw = (yaw - expected_yaw + 180.0) % 360.0 - 180.0
+        err_pitch = pitch - expected_pitch
+        err_head = pitch - expected_pitch_head
+        err_origin = np.hypot(err_yaw, err_pitch)
+        err_origin[~valid] = np.nan
+        err_head[~valid] = np.nan
+        err_pre = err_origin[: kill_index + 1]
+        err_head_pre = err_head[: kill_index + 1]
+
+    finite_err = np.isfinite(err_pre)
+    out["ev_err_initial"] = float(err_pre[0]) if len(err_pre) and finite_err[0] else np.nan
+    out["ev_err_mean_pre"] = float(np.nanmean(err_pre)) if finite_err.any() else np.nan
+    out["ev_err_std_pre"] = float(np.nanstd(err_pre)) if finite_err.any() else np.nan
+    out["ev_err_min_pre"] = float(np.nanmin(err_pre)) if finite_err.any() else np.nan
+    out["ev_err_at_kill"] = (
+        float(err_pre[-1]) if len(err_pre) and finite_err[-1] else np.nan
+    )
+    out["ev_err_head_mean_pre"] = (
+        float(np.nanmean(err_head_pre)) if np.isfinite(err_head_pre).any() else np.nan
+    )
+    for lag in (8, 16, 32, 64):
+        index = kill_index - lag
+        out[f"ev_err_minus_{lag}"] = (
+            float(err_pre[index]) if index >= 0 and finite_err[index] else np.nan
+        )
 
     raw_punch = frame["aim_punch_angle"].to_numpy()
     punch = np.zeros((len(ticks), 3), dtype=float)
@@ -115,6 +175,63 @@ def event_summary(attacker: pd.DataFrame, ticks: np.ndarray, kill_tick: int) -> 
         out["ev_first_shot_offset"] = np.nan
         out["ev_last_shot_to_kill"] = np.nan
         out["ev_shots_before_kill"] = 0.0
+
+    acquire: dict[float, int | None] = {}
+    for threshold in (3.0, 5.0, 10.0):
+        hits = np.flatnonzero(np.isfinite(err_pre) & (err_pre <= threshold))
+        key = int(threshold)
+        if len(hits):
+            first = int(hits[0])
+            acquire[threshold] = first
+            out[f"ev_acquire_offset_{key}"] = float(first)
+            out[f"ev_acquire_to_kill_{key}"] = float(kill_index - first)
+            out[f"ev_time_on_target_{key}"] = float(len(hits))
+            out[f"ev_post_acquire_max_err_{key}"] = float(
+                np.nanmax(err_pre[first:])
+            )
+        else:
+            acquire[threshold] = None
+            out[f"ev_acquire_offset_{key}"] = np.nan
+            out[f"ev_acquire_to_kill_{key}"] = np.nan
+            out[f"ev_time_on_target_{key}"] = np.nan
+            out[f"ev_post_acquire_max_err_{key}"] = np.nan
+
+    before_kill = (
+        shot_index[ticks[shot_index] <= kill_tick]
+        if len(shot_index) else np.array([], dtype=int)
+    )
+    if len(before_kill):
+        first_shot = int(before_kill[0])
+        out["ev_first_shot_to_kill"] = float(kill_index - first_shot)
+        out["ev_error_at_first_shot"] = (
+            float(err_pre[first_shot])
+            if first_shot <= kill_index and np.isfinite(err_pre[first_shot])
+            else np.nan
+        )
+        out["ev_error_drop_before_shot"] = (
+            float(err_pre[first_shot] - err_pre[first_shot - 8])
+            if first_shot >= 8
+            and np.isfinite(err_pre[first_shot])
+            and np.isfinite(err_pre[first_shot - 8])
+            else np.nan
+        )
+        window = err_pre[: first_shot + 1]
+        out["ev_time_on_target_before_first_shot_5"] = float(
+            np.sum(np.isfinite(window) & (window <= 5.0))
+        )
+        for threshold in (3.0, 5.0, 10.0):
+            first = acquire.get(threshold)
+            out[f"ev_first_shot_after_acquire_{int(threshold)}"] = (
+                float(first_shot - first)
+                if first is not None and first_shot >= first else np.nan
+            )
+    else:
+        out["ev_first_shot_to_kill"] = np.nan
+        out["ev_error_at_first_shot"] = np.nan
+        out["ev_error_drop_before_shot"] = np.nan
+        out["ev_time_on_target_before_first_shot_5"] = np.nan
+        for threshold in (3.0, 5.0, 10.0):
+            out[f"ev_first_shot_after_acquire_{int(threshold)}"] = np.nan
 
     spray = frame["shots_fired"].to_numpy(dtype=float)
     out["ev_spray_max"] = float(np.nanmax(spray)) if np.isfinite(spray).any() else np.nan

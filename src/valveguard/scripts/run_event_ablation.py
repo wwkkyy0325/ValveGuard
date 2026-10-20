@@ -14,6 +14,11 @@ GROUPS = {
     "recoil": ("ev_punch_", "ev_view_punch_", "ev_recoil_"),
     "fire": ("ev_shot_", "ev_first_shot_", "ev_last_shot_", "ev_spray_", "ev_bursts"),
     "mouse": ("ev_mouse_",),
+    "acquire": (
+        "ev_err_", "ev_acquire_", "ev_first_shot_after_acquire_",
+        "ev_time_on_target_", "ev_post_acquire_", "ev_error_at_first_shot",
+        "ev_error_drop_before_shot", "ev_first_shot_to_kill",
+    ),
     "context": (
         "ev_scoped_", "ev_walking_", "ev_ducking_", "ev_airborne_",
         "ev_spotted_", "ev_velocity_", "ev_alive_",
@@ -50,6 +55,10 @@ def main() -> None:
     aim_prefixes = GROUPS["recoil"] + GROUPS["fire"] + GROUPS["mouse"]
     arms["aim"] = base_columns + [
         column for column in event_columns if column.startswith(aim_prefixes)
+    ]
+    aim_all_prefixes = aim_prefixes + GROUPS["acquire"]
+    arms["aim_all"] = base_columns + [
+        column for column in event_columns if column.startswith(aim_all_prefixes)
     ]
     arms["all"] = base_columns + event_columns
     if args.only:
