@@ -75,6 +75,10 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 - Target acquisition (26 features, 92 event total): all recall 0.2095,
   aim_all 0.1986, Q4 FPR 2.29% for aim_all; primary recall gain still not
   significant. See `experiments.md` section 19.
+- GPU 1D CNN on 43 channels: player AUC 0.9467, recall@FPR1 0.2872, kill AUC
+  0.9046; vs GBDT 0.9338 / 0.2296 / 0.8497. Recall CI [-0.0108, +0.1119];
+  Q4 FPR 3.11% vs 2.59%. Seeds 43/44 training for an ensemble. See
+  `experiments.md` section 20.
 
 ## Commands
 

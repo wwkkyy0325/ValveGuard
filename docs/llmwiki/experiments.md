@@ -461,3 +461,34 @@ existing OOF kill scores with context weights; no retraining.
   `bootstrap.json`, `aim_all_metrics.json`, `aim_all_bootstrap.json`,
   `ablation.json`, `layers_base.json`, `layers_all.json`,
   `layers_aim_all.json`, `oof.parquet`, `event_features.parquet`).
+
+## 20. GPU 1D CNN on the 43-channel windows (2026-10-20)
+
+- The summary GBDT has exhausted its feature space. First sequence baseline:
+  a 3-conv 1D CNN over the existing 43-channel, 256-tick cache.
+- Training: 5-fold match-disjoint GroupKFold, 8 epochs, batch 512, AdamW
+  lr 1e-3, balanced positive weight, AMP, RTX 5070 Ti.
+- Heavy-tailed channels (jerk, speed) contain inf; the CNN uses robust
+  median/IQR normalization and clips normalized inputs to [-10, 10].
+
+| Model | Kill AUC | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
+|---|---|---|---|---|---|
+| GBDT champion | 0.8497 | 0.9338 | 0.2296 | **2.59%** | 22.9% |
+| 43-channel CNN | **0.9046** | **0.9467** | **0.2872** | 3.11% | **30.0%** |
+
+- 500-replicate match-grouped paired bootstrap (CNN - GBDT):
+  - Δkill AUC **+0.0550** [0.0505, 0.0598] — large and significant.
+  - Δplayer AUC **+0.0127** [0.0084, 0.0174] — significant.
+  - Δplayer recall@FPR1 +0.0486 [-0.0108, +0.1119] — point estimate large,
+    CI still crosses zero.
+  - ΔQ4 FPR +0.0077 [-0.0065, +0.0224] — CNN Q4 FPR is worse in the point
+    estimate, not significant.
+- Per-fold player recall ranges 0.239-0.380, so the remaining recall
+  uncertainty is mostly model variance. A multi-seed ensemble is the next
+  test; seeds 43 and 44 are training in parallel.
+- Decision: **strong challenger, not promoted yet**. The sequence model
+  clearly beats the summary GBDT on kill and player AUC; the primary recall
+  gain is close but not significant, and Q4 FPR regresses.
+- Artifact: `reports/cnn43/metrics.json`, `comparison.json`, `oof.parquet`;
+  script `src/valveguard/scripts/train_channel_cnn.py`,
+  `compare_cnn_gbdt.py`.

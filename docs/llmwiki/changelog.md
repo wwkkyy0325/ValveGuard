@@ -633,3 +633,18 @@
 - Decision: not promoted. Summary-feature engineering is exhausted; next is
   a GPU sequence model over the raw channels. Recorded in `experiments.md`
   section 19; artifacts under `reports/events_pilot_full_acq/`.
+
+## 2026-10-20 (GPU 1D CNN on 43 channels)
+
+- Added `train_channel_cnn.py`: 3-conv 1D CNN on 256 x 43, 5-fold, 8 epochs,
+  RTX 5070 Ti. Robust median/IQR normalization handles inf in jerk/speed.
+- CNN vs GBDT on the same 79,533 OOF rows:
+  - kill AUC 0.8497 -> **0.9046**; player AUC 0.9338 -> **0.9467**;
+    recall@FPR1 0.2296 -> **0.2872**; Q4 FPR 2.59% -> 3.11%; Q4 recall
+    22.9% -> 30.0%.
+  - Bootstrap: Δkill AUC **+0.0550** [0.0505, 0.0598]; Δplayer AUC
+    **+0.0127** [0.0084, 0.0174]; Δrecall +0.0486 [-0.0108, +0.1119];
+    ΔQ4 FPR +0.0077 [-0.0065, +0.0224].
+- Decision: strong challenger, not promoted yet. Recall is near-significant
+  and Q4 FPR regresses. Seeds 43/44 are training in parallel for an ensemble.
+- Recorded in `experiments.md` section 20; artifacts under `reports/cnn43/`.
