@@ -309,6 +309,42 @@ def _behavior_table(players: pd.DataFrame, names: dict[str, str],
     plt.close(fig)
 
 
+def _add_review_order(players: pd.DataFrame, threshold: float,
+                      p95: float) -> pd.DataFrame:
+    players = players.copy()
+    players["tier"] = [
+        _tier(float(value), threshold, p95) for value in players["shrunk_score"]
+    ]
+    players["review_reasons"] = players.apply(_review_reasons, axis=1)
+    players["review_reason_count"] = players["review_reasons"].apply(len)
+    tier_rank = {"flag": 0, "review": 1, "below": 2}
+    players["_tier_rank"] = players["tier"].map(tier_rank)
+    players["_reason_sort"] = players["review_reason_count"].where(
+        players["tier"] != "below", 0
+    )
+    players = players.sort_values(
+        ["_tier_rank", "_reason_sort", "shrunk_score"],
+        ascending=[True, False, False],
+    ).reset_index(drop=True)
+    players["review_rank"] = np.arange(1, len(players) + 1)
+    return players.drop(columns=["_tier_rank", "_reason_sort"])
+
+
+def _combine_review_queues(queues: list[pd.DataFrame]) -> pd.DataFrame:
+    combined = pd.concat(queues, ignore_index=True)
+    tier_rank = {"flag": 0, "review": 1, "below": 2}
+    combined["_tier_rank"] = combined["tier"].map(tier_rank)
+    combined["_reason_sort"] = combined["review_reason_count"].where(
+        combined["tier"] != "below", 0
+    )
+    combined = combined.sort_values(
+        ["_tier_rank", "_reason_sort", "shrunk_score"],
+        ascending=[True, False, False],
+    ).reset_index(drop=True)
+    combined.insert(0, "queue_rank", np.arange(1, len(combined) + 1))
+    return combined.drop(columns=["_tier_rank", "_reason_sort"])
+
+
 def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
     frame, channels, names = demo_channels(demo)
     if len(frame) == 0:
@@ -329,21 +365,7 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
         float((detector.human_player_scores < value).mean() * 100.0)
         for value in players["shrunk_score"]
     ]
-    players["tier"] = [
-        _tier(float(value), threshold, p95) for value in players["shrunk_score"]
-    ]
-    players["review_reasons"] = players.apply(_review_reasons, axis=1)
-    players["review_reason_count"] = players["review_reasons"].apply(len)
-    tier_rank = {"flag": 0, "review": 1, "below": 2}
-    players["_tier_rank"] = players["tier"].map(tier_rank)
-    players["_reason_sort"] = players["review_reason_count"].where(
-        players["tier"] != "below", 0
-    )
-    players = players.sort_values(
-        ["_tier_rank", "_reason_sort", "shrunk_score"],
-        ascending=[True, False, False],
-    ).reset_index(drop=True)
-    players["review_rank"] = np.arange(1, len(players) + 1)
+    players = _add_review_order(players, threshold, p95)
 
     out.mkdir(parents=True, exist_ok=True)
     reference = {"human_player_scores": detector.human_player_scores,
@@ -441,19 +463,9 @@ def main() -> None:
                 queue.insert(0, "demo", path.stem)
                 queues.append(queue)
         if queues:
-            combined = pd.concat(queues, ignore_index=True)
-            tier_rank = {"flag": 0, "review": 1, "below": 2}
-            combined["_tier_rank"] = combined["tier"].map(tier_rank)
-            combined["_reason_sort"] = combined["review_reason_count"].where(
-                combined["tier"] != "below", 0
+            _combine_review_queues(queues).to_csv(
+                root / "review_queue.csv", index=False
             )
-            combined = combined.sort_values(
-                ["_tier_rank", "_reason_sort", "shrunk_score"],
-                ascending=[True, False, False],
-            ).reset_index(drop=True)
-            combined.insert(0, "queue_rank", np.arange(1, len(combined) + 1))
-            combined = combined.drop(columns=["_tier_rank", "_reason_sort"])
-            combined.to_csv(root / "review_queue.csv", index=False)
         (root / "summary.json").write_text(json.dumps(summaries, indent=2))
         print(json.dumps(summaries, indent=2))
     else:
