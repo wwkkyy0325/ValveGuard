@@ -396,7 +396,7 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
     (out / "result.json").write_text(json.dumps(result, indent=2))
     queue = players[[
         "review_rank", "steamid", "name", "tier", "shrunk_score",
-        "percentile", "kills", "review_reasons",
+        "percentile", "kills", "review_reason_count", "review_reasons",
     ]].copy()
     queue["review_reasons"] = queue["review_reasons"].apply(
         lambda values: "; ".join(values)
@@ -429,10 +429,32 @@ def main() -> None:
         demos = sorted(demo.rglob("*.dem"))
         if not demos:
             raise SystemExit(f"no .dem files under {demo}")
-        summaries = [
-            run_one(path, detector, Path(args.out) / path.stem, args.threshold)
-            for path in demos
-        ]
+        root = Path(args.out)
+        summaries = []
+        queues = []
+        for path in demos:
+            summary = run_one(path, detector, root / path.stem, args.threshold)
+            summaries.append(summary)
+            queue_path = root / path.stem / "review_queue.csv"
+            if queue_path.exists():
+                queue = pd.read_csv(queue_path)
+                queue.insert(0, "demo", path.stem)
+                queues.append(queue)
+        if queues:
+            combined = pd.concat(queues, ignore_index=True)
+            tier_rank = {"flag": 0, "review": 1, "below": 2}
+            combined["_tier_rank"] = combined["tier"].map(tier_rank)
+            combined["_reason_sort"] = combined["review_reason_count"].where(
+                combined["tier"] != "below", 0
+            )
+            combined = combined.sort_values(
+                ["_tier_rank", "_reason_sort", "shrunk_score"],
+                ascending=[True, False, False],
+            ).reset_index(drop=True)
+            combined.insert(0, "queue_rank", np.arange(1, len(combined) + 1))
+            combined = combined.drop(columns=["_tier_rank", "_reason_sort"])
+            combined.to_csv(root / "review_queue.csv", index=False)
+        (root / "summary.json").write_text(json.dumps(summaries, indent=2))
         print(json.dumps(summaries, indent=2))
     else:
         print(json.dumps(
