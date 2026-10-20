@@ -21,6 +21,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--index", required=True)
     parser.add_argument("--events", required=True)
+    parser.add_argument("--features", default=None)
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
@@ -30,6 +31,9 @@ def main() -> None:
     events = pd.read_parquet(args.events)
     events = events[["row"] + [c for c in events.columns if c.startswith("ev_")]]
     frame = index.merge(events, on="row", how="inner")
+    if args.features:
+        base = pd.read_parquet(args.features)[["row", "map"]]
+        frame = frame.merge(base, on="row", how="left")
     frame = frame[~((frame["source"] == "cdata") & (frame["label"] == 0))].copy()
 
     rows = []
@@ -61,10 +65,12 @@ def main() -> None:
     table.to_csv(out / "event_shortcuts.csv", index=False)
     top = table.head(15)
     by_map = {}
-    for feature in top["feature"].head(5):
-        by_map[feature] = (
-            frame.groupby("map")[feature].mean().sort_values(ascending=False).head(10).to_dict()
-        )
+    if "map" in frame.columns:
+        for feature in top["feature"].head(5):
+            by_map[feature] = (
+                frame.groupby("map")[feature].mean()
+                .sort_values(ascending=False).head(10).to_dict()
+            )
     report = {
         "rows": int(len(frame)),
         "top": top.to_dict(orient="records"),

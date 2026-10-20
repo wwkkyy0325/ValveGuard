@@ -322,3 +322,47 @@ existing OOF kill scores with context weights; no retraining.
   scripts `build_event_features.py`, `run_event_pilot.py`,
   `bootstrap_event_pilot.py`, `run_event_ablation.py`, `event_importance.py`,
   `features/events.py`.
+
+## 17. Raw event features: 400-match replication (2026-10-20)
+
+- Data: 200 cheater-present + 200 clean matches; 41,888 valid 256-tick windows
+  from 400 matches; the clean-label filter leaves 35,814 windows, 2,704 players,
+  837 cheater players.
+- Same 63 event features, same 79 base features, same 5-fold GroupKFold and
+  GBDT as section 16.
+
+| Arm | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| base | 0.8702 | 0.9144 | 0.1505 |
+| + recoil | 0.8735 | 0.9145 | 0.1541 |
+| + fire | 0.8829 | 0.9158 | 0.1565 |
+| + mouse | 0.8718 | 0.9136 | 0.1601 |
+| + context | 0.8807 | 0.9190 | 0.1720 |
+| + aim (recoil+fire+mouse) | 0.8847 | 0.9154 | **0.1852** |
+| + all | **0.8904** | **0.9188** | 0.1840 |
+
+- 500-replicate match-grouped bootstrap:
+  - all vs base: Δkill AUC **+0.0202** [0.0145, 0.0258]; Δplayer AUC
+    **+0.0048** [0.0009, 0.0087]; Δplayer recall +0.0314
+    [-0.0183, +0.0903].
+  - aim vs base: Δkill AUC **+0.0145** [0.0090, 0.0197]; Δplayer AUC
+    +0.0014 [-0.0025, +0.0058]; Δplayer recall +0.0122
+    [-0.0301, +0.0540].
+- The kill-level gain replicates and is significant. The all-feature player
+  AUC gain is now significant, but the aim-only player AUC/recall gains are
+  not. Low-FPR recall remains the bottleneck.
+- Shortcut audit (35,814 windows; SMD cheater - human):
+  - `ev_spray_max` -0.86 (5.45 -> 1.61), `ev_punch_delta_yaw_std` -0.78,
+    `ev_spotted_frac` -0.76 (0.163 -> 0.055), `ev_punch_yaw_max` -0.70,
+    `ev_shots_window` -0.70 (8.42 -> 3.45), `ev_walking_frac` -0.66,
+    `ev_scoped_frac` +0.60, `ev_velocity_max` +0.56.
+  - Cheater kills in this subset use fewer shots, have less recoil-yaw
+    movement, are spotted less, walk less, scope more, and move faster. Some
+    of this is aim-relevant (fewer shots to kill), but much is role/play-style
+    context. A weapon/rank/side-controlled run is required before calling
+    these aim features.
+- Decision: **replicated at kill level, not promoted at player level**. The
+  full raw dataset and a context-controlled design are the next requirements.
+- Artifact: `reports/events_pilot_400/` (`metrics.json`, `bootstrap.json`,
+  `ablation.json`, `aim_metrics.json`, `aim_bootstrap.json`,
+  `event_shortcuts.csv`, `oof.parquet`, `event_features.parquet`).

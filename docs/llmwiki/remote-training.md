@@ -62,6 +62,10 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 - Raw event pilot on 100+100 matches: 20,252 windows, 63 features; kill AUC
   0.8276 -> 0.8459 (Δ +0.0183, bootstrap CI [0.0106, 0.0258]); player recall
   gain not significant on 1,353 players. See `experiments.md` section 16.
+- 200+200 replication: 41,888 windows, 35,814 after the clean-label filter;
+  kill AUC 0.8702 -> 0.8904 (Δ +0.0202, CI [0.0145, 0.0258]); player AUC
+  +0.0048 (CI [0.0009, 0.0087]); player recall CI still crosses zero. See
+  `experiments.md` section 17.
 
 ## Commands
 

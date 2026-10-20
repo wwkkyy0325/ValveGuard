@@ -576,3 +576,20 @@
   matches. A 200+200 subset is downloading.
 - Recorded in `experiments.md` section 16; artifacts under
   `reports/events_pilot/`.
+
+## 2026-10-20 (400-match event replication)
+
+- Downloaded 200 cheater-present + 200 clean raw matches (800 files, ~22.9 GB)
+  through the local proxy; built 63 event features for 41,888 windows.
+- Clean-label 5-fold replication (35,814 windows, 2,704 players):
+  - all events vs base: kill AUC 0.8702 -> 0.8904 (Δ +0.0202, CI
+    [0.0145, 0.0258]); player AUC 0.9144 -> 0.9188 (Δ +0.0048, CI
+    [0.0009, 0.0087]); player recall 0.1505 -> 0.1840 (CI crosses zero).
+  - aim-only (recoil+fire+mouse): kill AUC 0.8847 (Δ +0.0145, CI
+    [0.0090, 0.0197]); player AUC and recall CIs cross zero.
+- Shortcut audit: cheater kills have much lower spray length
+  (5.45 -> 1.61), less recoil-yaw variation, lower spotted fraction, and
+  higher scope/velocity; part aim, part role/play style.
+- Decision: kill-level signal replicated; player-level low-FPR recall still
+  not significant. Not promoted. Recorded in `experiments.md` section 17;
+  artifacts under `reports/events_pilot_400/`.
