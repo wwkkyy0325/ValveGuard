@@ -700,3 +700,185 @@
   aim-specific. Aim seeds 43/44 training for the final ensemble.
 - Recorded in `experiments.md` section 20; artifacts under
   `reports/cnn43_aim_wide/`.
+
+## 2026-10-20 (aim-only ensemble, top-k aggregation, raw channels)
+
+- Aim-only wide seeds 42/43/44 completed. Ensemble: kill AUC 0.9113,
+  player AUC 0.9489, recall@FPR1 0.2872, Q4 FPR 3.37%, Q4 recall 31.5%.
+- Bootstrap vs GBDT: Δkill **+0.0616** [0.0569, 0.0663]; Δplayer AUC
+  **+0.0152** [0.0105, 0.0202]; Δrecall **+0.0720** **[0.0095, 0.1397]**;
+  ΔQ4 FPR +0.0057 [-0.0074, +0.0190].
+- Corrected the single-seed aim-only claim: the same-Q4 result was seed
+  variance and does not replicate. Aim-only remains the preferred
+  representation for shortcut safety, not a metric win over full-channel.
+- Added `--topk` to `compare_cnn_gbdt.py`. Top-5 player aggregation gives
+  recall 0.3401, Q4 FPR 3.11%, player AUC 0.9322; it improves CNN recall
+  in all five folds but costs 1.7 pp player AUC. Recorded as an optional
+  screening mode, not the default.
+- Added `build_raw_channels.py`: 23 per-tick mouse/recoil/shot/stance
+  channels aligned to the cached kill windows, for the next CNN iteration.
+- Recorded in `experiments.md` section 20 and `remote-training.md`;
+  artifacts under `reports/cnn43_aim_wide_ensemble/` and
+  `reports/cnn43_aim_wide_ensemble_top5/`.
+
+## 2026-10-20 (raw mouse/recoil/fire channels: negative)
+
+- Built 23 per-tick raw channels for 67,449 covered rows and merged them
+  with the 43-channel cache (`cw256_channels_aug`, 66 channels).
+- 66 vs 43 on the same rows: kill AUC **+0.0037 [0.0004, 0.0070]**;
+  player AUC +0.0011 [-0.0014, 0.0034]; recall +0.0183
+  [-0.0262, 0.0609]; Q4 FPR flat.
+- Aim-only ablations: 29 + 23 raw vs 29 gives kill **+0.0051
+  [0.0017, 0.0087]** but player AUC -0.0016 and recall +0.0011, both CIs
+  crossing zero; 29 + 8 compact raw is flat.
+- Decision: not adopted. No full raw-channel pipeline build; keep the
+  29-channel aim-only representation.
+- Added `--channel-index` to `train_channel_cnn.py` for subset ablations.
+- Artifacts under `reports/cnn66*/`, `reports/cnn37*/`,
+  `reports/cnn52*/`; recorded in `experiments.md` section 20.
+
+## 2026-10-20 (deploy ensemble, provenance correction, demo scoring)
+
+- Found a provenance error: the earlier "aim-only ensemble" mixed the
+  29-channel seed 42 with 43-channel seeds 43/44. Its recall 0.2872 and
+  the "no gain" conclusion are invalid; artifacts renamed
+  `reports/*_mixed_superseded`.
+- Retrained all three aim-only seeds on the full cohort and saved 5 fold
+  models each (`runs/cnn29_full_wide_seed42/43/44`). Corrected ensemble:
+  kill AUC 0.9027, player AUC **0.9480**, recall **0.3284**, Q4 FPR
+  **3.11%**, Q4 recall 36.5%.
+- Bootstrap vs GBDT: Δkill **+0.0530** [0.0482, 0.0579]; Δplayer AUC
+  **+0.0141** [0.0094, 0.0190]; Δrecall **+0.0879** **[0.0262, 0.1516]**;
+  ΔQ4 FPR +0.0024 [-0.0101, +0.0154]. The single-seed recall gain
+  replicates; the single-seed 2.59% Q4 claim does not.
+- Corrected top-5 aggregation: recall 0.3518, Q4 FPR 2.85%, player AUC
+  0.9255; optional screening mode only.
+- Added `--save-models` to `train_channel_cnn.py` and `score_demo_cnn.py`.
+  Deploy threshold 0.712435 from the OOF human 99th percentile.
+- Scored the 5E Dust2 demo: 10 players, 0 flagged, top shrunk score
+  0.2866 (human p95 0.4692). Feature/latency sanity check passed.
+
+## 2026-10-20 (longitudinal dataset proposal)
+
+- Added `docs/llmwiki/longitudinal-dataset.md`: cohort sizes, stable-id and
+  ban-date requirements, dense telemetry, time-forward evaluation, and a
+  5E feasibility pilot (20 banned + 40 control players x 10 matches).
+- One player's history is scoped as a case study/demo, not training data.
+
+## 2026-10-20 (player-view fusion: negative, stable-id audit)
+
+- Stable-id audit: CS2CD player ids are per-match pseudonyms (`Player_1..10`),
+  so person-disjoint evaluation and cross-match player models are impossible;
+  match-disjoint remains the strongest split.
+- Post-hoc player fusion on the corrected aim ensemble:
+  - mean: AUC 0.9480, recall 0.3284, Q4 FPR 3.37%, Q4 recall 37.2% (local
+    threshold convention).
+  - top-5: recall 0.3518 but AUC 0.9255; Δrecall +0.0268 [-0.0181, 0.0824]
+    vs mean, ΔAUC -0.0228 [-0.0286, -0.0174].
+  - rank fusion: recall 0.3323, AUC 0.9419, Δrecall +0.0177 [-0.0200, 0.0624].
+  - match-relative: AUC 0.7932, recall 0.1626. Dispersion: AUC 0.7807,
+    recall 0.0296. Both harmful.
+- Decision: no post-hoc fusion. Mean aggregation stays; the next experiment is
+  a player-level MIL model trained on player labels.
+- Added `src/valveguard/scripts/analyze_player_fusion.py`; artifacts under
+  `reports/player_fusion/`.
+
+## 2026-10-20 (fixed-fold retrain, authoritative ensemble)
+
+- Found that the GBDT used stratified match folds while the CNN used a
+  fresh GroupKFold. Added `--folds-from` to both trainers and retrained the
+  aim-only ensemble on the `cv_predictions` fold map.
+- Fixed-fold ensemble: kill AUC 0.9021, player AUC **0.9500**, recall
+  **0.3121**, Q4 FPR **2.59%** (same as GBDT), Q4 recall **33.9%**.
+- Bootstrap vs GBDT: Δkill **+0.0524** [0.0476, 0.0573]; ΔAUC **+0.0163**
+  [0.0120, 0.0207]; Δrecall **+0.0824 [0.0208, 0.1490]**; ΔQ4 FPR +0.0021
+  [-0.0098, +0.0162]. These supersede the earlier 0.3284/3.11% numbers.
+- Top-5 on fixed folds: recall 0.3230, AUC 0.9277, Q4 FPR 3.37%; mean stays
+  the default.
+- Re-scored the 5E demo with the fixed-fold models and threshold 0.714925:
+  10 players, 0 flagged, top shrunk 0.2769 (human p95 0.4717).
+- Artifacts under `reports/cnn29_fixed_deploy*/` and
+  `runs/cnn29_fixed_wide_seed42/43/44`.
+
+## 2026-10-20 (player-level MIL: negative)
+
+- Trained attention-pooled MIL on player labels with the fixed folds.
+  Frozen encoder: AUC 0.9478, recall 0.3175, Q4 FPR 5.44%; Δrecall +0.0148
+  [-0.0765, 0.1151], ΔQ4 **+0.0232 [0.0023, 0.0455]**.
+  Warm start + unfrozen: AUC 0.9329, recall 0.2856; ΔAUC **-0.0172**.
+- Decision: not adopted. 5,868 player labels are too few and the attention
+  pooling adds variance; keep window BCE + mean. Next: low-FPR loss.
+- Added `train_player_mil.py`, `compare_player_scores.py`; artifacts under
+  `reports/mil29*/`.
+
+## 2026-10-20 (hard-negative BCE: new champion)
+
+- Added `--hard-neg` to the window trainer: negative windows weighted by
+  `1 + alpha * p^2`, targeting the top of the human score distribution.
+- Alpha probes (fixed folds, seed 42): alpha=2 recall 0.3346, alpha=5
+  0.3432, alpha=10 0.3479; alpha=5 kept as the least aggressive near-peak.
+- 3-seed alpha=5 ensemble: kill AUC 0.9015, player AUC **0.9502**, recall
+  **0.3619**, Q4 FPR **3.11%**, Q4 recall **39.1%**.
+- Bootstrap vs GBDT: Δrecall **+0.1223 [0.0476, 0.1988]**; ΔAUC
+  **+0.0165**; ΔQ4 FPR +0.0030 [-0.0090, 0.0161].
+- Bootstrap vs previous mean ensemble: Δrecall **+0.0459 [0.0048,
+  0.0883]**, ΔAUC +0.0002, ΔQ4 FPR +0.0048 [-0.0057, 0.0158].
+- New champion. Export models for all three seeds are being written;
+  artifacts under `reports/cnn29_hn5_ensemble*/`.
+
+## 2026-10-20 (hn5 demo scoring)
+
+- Saved five fold models for hn5 seeds 42/43 and reused seed 44; rescored
+  the 5E Dust2 demo with the hn5 ensemble and threshold 0.608027.
+- 10 players, 0 flagged, top shrunk 0.2374 vs human mean 0.218 / p95 0.3973.
+
+## 2026-10-20 (visibility reaction channels: negative)
+
+- Extended `build_raw_channels.py` with five channels from
+  `approximate_spotted_by`: sees-victim, time-since-seen, onset flag,
+  victim-spotted, spotted-age. Rebuilt the 28-channel raw cache and the
+  71-channel combined cache.
+- 34ch (aim + reaction) vs 29ch on the same 67,449 rows with hn5:
+  kill AUC **+0.0074 [0.0048, 0.0101]**, player AUC **+0.0040
+  [0.0019, 0.0060]**, recall -0.0019 [-0.0394, 0.0366], Q4 FPR +0.0049
+  [-0.0048, 0.0165].
+- Decision: not adopted. Kill-level signal only; the primary low-FPR recall
+  does not move. Kept for longitudinal work.
+
+## 2026-10-20 (champion artifact and demo report)
+
+- Packaged the hn5 champion into `artifacts/valveguard_cnn_v1/`: manifest,
+  29 channel names, human reference distributions, 15 fold models, per-seed
+  normalization, checksums, README.
+- Added `valveguard/models/artifact.py` (`load_detector`, `score_channels`,
+  `aggregate`) with checksum and channel-name validation.
+- Added `demo_report.py`: accepts one `.dem` or a directory, writes
+  `result.json`, `players.png`, and `kill_windows.png`.
+- 5E Dust2 demo: 10 players, 0 flagged, top shrunk 0.2374 (human p72);
+  charts show each player against the human player distribution and each
+  player's kill windows against the human window distribution.
+- Directory drop-in tested with one demo.
+
+## 2026-10-20 (banned-player demo validation)
+
+- Scored a banned-player 5E demo (7 kills, all headshots; identifiers
+  omitted from the repository).
+  Champion gives shrunk 0.414 (p96), below the 0.608 p99 flag; max window
+  0.853 vs human window p99 0.863. Genuine strict-threshold false negative.
+- Added a p95-p99 review tier (amber) to `demo_report.py`, player names,
+  and a lobby-gap line. The banned player is surfaced as REVIEW, +0.115
+  over the second player.
+- Case recorded in `experiments.md`; next candidate is player-level
+  outcome/behavior fusion (headshot rate, burst multikills).
+
+## 2026-10-20 (visibility/pre-aim case study: inconclusive/negative)
+
+- Added `analyze_visibility.py`: nearest-enemy head error, approximate
+  visibility, unseen-moving tracking, reaction time, per-kill timelines.
+- Banned player vs strong human control: pre-aim 8.6% vs 10.6%,
+  unseen-moving 5.9% vs 7.8%, longest run 305 ticks both. No separation.
+- Decision: simple pre-aim metrics are confounded by normal angle holding
+  and approximate visibility; not adopted. A visibility model needs
+  raycast and a control cohort.
+- Next recommended: player-level outcome/behavior fusion (headshot rate,
+  burst multikills) validated on CS2CD OOF.

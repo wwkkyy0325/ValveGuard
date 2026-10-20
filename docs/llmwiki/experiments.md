@@ -22,6 +22,12 @@ Current champion: **aim-only GBDT**, 5-fold OOF:
   2026-10-18; the older 4.76% applied a kill-level threshold to player means).
   Player-score shrinkage reduces it to 4.76% (section 12).
 
+Champion: **aim-only 29-channel wide CNN, 3-seed ensemble, hard-negative
+BCE (alpha=5)** on the fixed `cv_predictions` match folds — player AUC
+0.9502, recall@FPR1 0.3619, Q4 FPR 3.11%, Q4 recall 39.1% (section 20).
+Δrecall vs GBDT +0.1223 [0.0476, 0.1988]; vs the previous mean ensemble
++0.0459 [0.0048, 0.0883]. Fold models are saved for demo scoring.
+
 ## 2. Verified ablations (existing)
 
 | Ablation | Result | Decision |
@@ -547,12 +553,14 @@ existing OOF kill scores with context weights; no retraining.
 - Artifact: `reports/cnn43_wide_ensemble/comparison.json`,
   `reports/cnn43_wide/seed43_metrics.json`, `seed44_metrics.json`.
 
-### Aim-only 29-channel wide CNN (the clean result)
+### Aim-only 29-channel wide CNN
 
 - Channel subset: attacker position/view/velocity, victim position/health/
   noise, angular dynamics, target errors, distance, speeds, t_norm. Dropped
   weapon one-hot, kill flags, kill outcome, flash, and shot.
 - This is the fair comparison to the aim-only GBDT.
+
+Single seed (seed 42):
 
 | Model | Kill AUC | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
 |---|---|---|---|---|---|
@@ -563,12 +571,224 @@ existing OOF kill scores with context weights; no retraining.
   - Δkill AUC **+0.0483** [0.0434, 0.0534].
   - Δplayer AUC **+0.0136** [0.0087, 0.0188].
   - Δplayer recall **+0.0930** **[0.0276, 0.1618]**.
-  - ΔQ4 FPR **0.0000** [-0.0090, +0.0174] — no Q4 regression.
-- Dropping the metadata/outcome channels **improved** low-FPR recall over
-  the full-channel model (0.2965 -> 0.3261) and removed the Q4 regression.
-  The sequence gain is aim-specific, not a weapon/kill shortcut.
-- Decision: **new champion candidate**. It improves recall and player AUC
-  with the same Q4 FPR. Aim-only seeds 43/44 are training for the final
-  ensemble.
-- Artifact: `reports/cnn43/aim_wide_metrics.json`,
-  `reports/cnn43_aim_wide/comparison.json`, `aim_wide_oof.parquet`.
+  - ΔQ4 FPR **0.0000** [-0.0090, +0.0174].
+- The single seed was not a free Q4 improvement; the ensemble settles it.
+
+### Aim-only 3-seed ensemble (fixed folds)
+
+- Fold audit: the GBDT uses stratified match folds from
+  `reports/cv_gbdt/cv_predictions.parquet`; the first CNN runs used a
+  fresh `GroupKFold`, so the two were not paired. `--folds-from` was
+  added and the CNN ensemble was retrained on the GBDT fold map.
+- Runs: `runs/cnn29_fixed_wide_seed42/43/44`, all 29-channel, 10 epochs,
+  5 fixed folds, models saved.
+- Seed player recall (training-script metric): 0.2864 / 0.2887 / 0.3253;
+  player AUC 0.9479 / 0.9462 / 0.9464; kill AUC 0.8983 / 0.8971 / 0.8969.
+- Ensemble on the fixed folds: kill AUC **0.9021**, player AUC
+  **0.9500**, recall **0.3121**, Q4 FPR **2.59%**, Q4 recall **33.9%**.
+- 500-replicate paired bootstrap vs GBDT on the same folds:
+  - Δkill AUC **+0.0524** [0.0476, 0.0573].
+  - Δplayer AUC **+0.0163** [0.0120, 0.0207].
+  - Δplayer recall **+0.0824** **[0.0208, 0.1490]**.
+  - ΔQ4 FPR **+0.0021** [-0.0098, +0.0162].
+- The Q4 point estimate now matches GBDT exactly (10/386) while Q4 recall
+  rises from 22.9% to 33.9%. The earlier 0.3284/3.11% numbers came from
+  a different GroupKFold split and are superseded.
+- **Provenance note**: an even earlier "aim-only ensemble" mixed the
+  29-channel seed 42 with 43-channel seeds 43/44 and reported recall
+  0.2872. Those artifacts are renamed `*_mixed_superseded`.
+- Decision: **champion-elect**. Δrecall and ΔAUC are both significant and
+  Q4 FPR is unchanged. Deployment artifact: 15 fold models + normalization
+  under `runs/cnn29_fixed_wide_seed*`.
+
+### Player aggregation: top-k windows
+
+- Replacing the shrunk mean with the mean of the top-k window scores
+  targets cheaters who toggle and have only a few blatant kills.
+
+| Aggregation | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
+|---|---|---|---|---|
+| mean (current) | **0.9500** | 0.3121 | **2.59%** | 33.9% |
+| top-5 | 0.9277 | **0.3230** | 3.37% | **36.1%** |
+
+- With top-5 applied to both models: CNN recall 0.3230 vs GBDT 0.1860;
+  Δrecall **+0.1146** **[0.0578, 0.1787]**, Δplayer AUC +0.0423
+  [0.0347, 0.0495], ΔQ4 FPR +0.0028 [-0.0120, +0.0163].
+- Top-5 buys +1.1 pp recall but costs 2.2 pp AUC and 0.8 pp Q4 FPR.
+  This repeats the earlier top-k result (section 2).
+- Decision: **not the default**. Mean aggregation stays the headline
+  and the deployed score.
+- Artifact: `reports/cnn29_fixed_deploy/`,
+  `reports/cnn29_fixed_deploy_compare/`, `reports/cnn29_fixed_deploy_top5/`;
+  script `src/valveguard/scripts/compare_cnn_gbdt.py` (`--topk`).
+
+### Raw mouse / recoil / fire channels (negative)
+
+- Added 23 per-tick raw channels (mouse dx/dy/speed/valid, recoil punch and
+  its derivative, shot and shot age, stance, spotted, velocity components,
+  mouse-view regression residuals and betas) for the 67,449 windows whose
+  raw match is local (`build_raw_channels.py`).
+- 43 + 23 = 66 channels vs 43 on the same rows, wide CNN, seed 42:
+  - kill AUC +0.0037 **[0.0004, 0.0070]**.
+  - player AUC +0.0011 [-0.0014, 0.0034].
+  - recall +0.0183 [-0.0262, 0.0609].
+  - Q4 FPR -0.0011 [-0.0136, 0.0101].
+- Aim-only combinations on the same rows:
+
+| Channels | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| 29 aim | 0.8907 | **0.9397** | **0.2825** |
+| 29 + 8 compact raw | 0.8908 | 0.9376 | 0.2825 |
+| 29 + 23 raw | **0.8958** | 0.9387 | 0.2770 |
+
+- 52 vs 29: Δkill **+0.0051 [0.0017, 0.0087]**; Δplayer AUC -0.0016
+  [-0.0045, 0.0012]; Δrecall +0.0011 [-0.0465, 0.0445].
+- 37 vs 29: Δkill +0.0001 [-0.0030, 0.0033]; Δrecall +0.0107
+  [-0.0318, 0.0521].
+- The raw stream carries a small kill-level signal but nothing at the
+  player level, consistent with the summary event ablation (section 18).
+  Mouse-view residual and recoil control are already captured by the
+  derived aim channels well enough for this cohort.
+- Decision: **not adopted**. Keep the 29-channel aim-only representation;
+  do not spend a full raw pipeline build on these channels.
+- Artifact: `reports/cnn66/`, `reports/cnn43_subset/`,
+  `reports/cnn29_subset/`, `reports/cnn37_subset/`, `reports/cnn52_subset/`,
+  `reports/cnn66_vs_43/`, `reports/cnn52_vs_29/`, `reports/cnn37_vs_29/`;
+  scripts `build_raw_channels.py`, `merge_channel_caches.py`.
+
+### Demo scoring (sanity check)
+
+- `score_demo_cnn.py` rebuilds the 256-tick kill windows from a demo,
+  selects the 29 aim channels, applies the saved normalization, and
+  averages the 15 fold models across three seeds.
+- 5E Dust2 demo `g161-20261017205155650208834`: 129 kill windows,
+  10 players, 0 flagged at 0.608027. Top shrunk score 0.2374 vs CS2CD
+  human mean 0.218 and p95 0.3973; the demo sits inside the human
+  distribution as expected for an unlabelled public match.
+- This validates the demo path only; specificity was established earlier
+  on 7 HLTV pro demos and 70 players (section 11).
+- Artifact: `reports/cnn29_hn5_ensemble/5e_g161_cnn.json`,
+  `artifact.json`; script `src/valveguard/scripts/score_demo_cnn.py`.
+
+### Player-level MIL (negative)
+
+- Trained the wide encoder with attention pooling directly on the 5,868
+  player labels, five fixed match folds. Two variants: warm start from the
+  window fold model with the encoder unfrozen, and a frozen-encoder
+  attention/head probe.
+- Compared with the window ensemble + mean (AUC 0.9500, recall 0.3121,
+  Q4 FPR 2.59%):
+
+| Variant | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
+|---|---|---|---|---|
+| frozen encoder | 0.9478 | 0.3175 | 5.44% | 41.0% |
+| warm start, unfrozen | 0.9329 | 0.2856 | 3.63% | 36.5% |
+
+- Frozen vs mean: ΔAUC -0.0024 [-0.0066, +0.0021]; Δrecall +0.0148
+  [-0.0765, +0.1151]; ΔQ4 FPR **+0.0232 [0.0023, 0.0455]**.
+- Warm vs mean: ΔAUC **-0.0172 [-0.0231, -0.0108]**; Δrecall -0.0316
+  [-0.1147, +0.0511]; ΔQ4 FPR +0.0090 [-0.0126, +0.0283].
+- Player-level supervision has 5,868 examples against 79,533 window labels;
+  attention pooling adds variance and, when unfrozen, degrades the window
+  representation. The mean of window scores remains stronger.
+- Decision: **not adopted**. Keep window training + mean aggregation; the
+  next lever is the window loss, not the pooling.
+- Artifact: `reports/mil29/`, `reports/mil29_frozen_vs_ensemble/`,
+  `reports/mil29_warm_vs_ensemble/`; script
+  `src/valveguard/scripts/train_player_mil.py`.
+
+### Hard-negative weighting (new champion)
+
+- The low-FPR metric cares about the top of the human score distribution.
+  Negative windows are weighted by `1 + alpha * p^2` during BCE, so
+  confidently-human windows carry more loss. `alpha=5` was selected after
+  `alpha=2` and `alpha=10` probes; all arms use the fixed folds.
+- Single-seed recall (training-script metric): 0.3183 / 0.3416 / 0.3440
+  for seeds 42/43/44; `alpha=10` seed 42 gives 0.3479, a negligible gain
+  over `alpha=5`, so `alpha=5` is kept as the less aggressive setting.
+- 3-seed `alpha=5` ensemble vs GBDT:
+  - kill AUC **0.9015**, player AUC **0.9502**, recall **0.3619**,
+    Q4 FPR **3.11%**, Q4 recall **39.1%**.
+  - Δkill **+0.0519** [0.0470, 0.0568].
+  - Δplayer AUC **+0.0165** [0.0120, 0.0211].
+  - Δrecall **+0.1223** **[0.0476, 0.1988]**.
+  - ΔQ4 FPR +0.0030 [-0.0090, +0.0161].
+- Against the previous 3-seed mean ensemble (recall 0.3121, AUC 0.9500):
+  Δrecall **+0.0459 [0.0048, 0.0883]**, ΔAUC +0.0002
+  [-0.0014, +0.0016], ΔQ4 FPR +0.0048 [-0.0057, +0.0158].
+- Decision: **new champion**. The recall gain is significant, AUC is
+  unchanged, and the Q4 FPR increase is 2 extra false positives out of
+  386 Q4 humans (CI crosses zero) for +11 Q4 true positives.
+- Artifact: `reports/cnn29_hn5_ensemble/`,
+  `reports/cnn29_hn5_ensemble_vs_gbdt/`,
+  `reports/cnn29_hn5_ensemble_vs_base/`; flag `--hard-neg 5` in
+  `train_channel_cnn.py`.
+
+### Visibility-onset reaction channels (negative)
+
+- Rebuilt the raw channel cache with five visibility channels from
+  `approximate_spotted_by`: attacker-sees-victim, time since first seen,
+  onset flag, victim team-spotted, and time since victim was spotted.
+- On the 67,449 raw-covered rows, aim 29 + reaction 5 = 34 channels vs the
+  29-channel baseline, both with hard-negative BCE alpha=5, fixed folds:
+  - 34ch: kill AUC 0.8976, player AUC 0.9461, recall 0.3136, Q4 FPR 3.13%.
+  - 29ch: kill AUC 0.8901, player AUC 0.9420, recall 0.3315, Q4 FPR 2.56%.
+- Paired bootstrap:
+  - Δkill **+0.0074** [0.0048, 0.0101].
+  - Δplayer AUC **+0.0040** [0.0019, 0.0060].
+  - Δrecall -0.0019 [-0.0394, +0.0366].
+  - ΔQ4 FPR +0.0049 [-0.0048, +0.0165].
+- First-visibility reaction adds a real kill-level signal but does not move
+  player-level low-FPR recall on this cohort. The derived angular error and
+  acquisition channels already capture most of it.
+- Decision: **not adopted**. `raw_channels_react` is kept for future
+  longitudinal work where per-attacker visibility can be measured more
+  precisely.
+- Artifact: `reports/cnn34_react/`, `reports/cnn29_subset_hn5/`,
+  `reports/cnn34_vs_29/`; code in `build_raw_channels.py`.
+
+### Demo validation: banned 5E player (2026-10-20)
+
+- A 5E demo from the local cache contains a player later banned by the
+  platform (identifiers omitted from the repository).
+- The player has 7 kills, all headshots: two SSG08 headshots (one no-scope)
+  and five Deagle headshots within about four seconds.
+- Champion score: shrunk 0.414, human percentile 96, below the 0.608 p99
+  flag line; highest single window 0.853, just below the human window p99
+  of 0.863. Not flagged at the strict 1% cut.
+- This is a genuine false negative at the strict threshold, not a scoring
+  bug. The player is the clear lobby leader (+0.115 over second), so the
+  demo report surfaces them in the new p95-p99 review band.
+- The aim-only model deliberately drops kill outcome and headshot flags to
+  avoid shortcuts, so an all-headshot multi-kill is not directly rewarded.
+  The next candidate is player-level outcome/behavior fusion (headshot
+  rate, burst multikills) calibrated on CS2CD OOF, not window-level
+  metadata.
+- Artifact: `reports/demo_g161n_cheater/` (`result.json`, `players.png`,
+  `kill_windows.png`).
+
+### Visibility / pre-aim case study (negative as a simple signal)
+
+- Added `analyze_visibility.py`: per-tick angular error to the nearest enemy
+  head, visibility from `approximate_spotted_by`, unseen-moving tracking
+  (error <5 degrees while the enemy is unseen and moving >50 units/s), and
+  reaction time after first visibility.
+- Banned player vs a strong human control in the same demo:
+
+| Metric | Banned player | Control |
+|---|---|---|
+| pre-aim fraction (error <5 deg, unseen) | 8.6% | 10.6% |
+| unseen-moving near fraction | 5.9% | 7.8% |
+| longest pre-aim run | 305 ticks | 305 ticks |
+| visible fraction | 0.8% | 1.6% |
+
+- The per-kill timelines look suspicious (crosshair already on the head
+  before the green visibility band), but the control shows the same angle
+  holding and even more unseen-moving proximity. Simple pre-aim metrics
+  are confounded by normal crosshair placement and by approximate
+  visibility.
+- Decision: **not adopted as a detector feature yet**. A credible
+  visibility model needs raycast visibility and a control cohort, not the
+  approximate team-spotted flag.
+- Artifact: `reports/visibility_g161n/`, `reports/visibility_g161n_control/`;
+  script `src/valveguard/scripts/analyze_visibility.py`.

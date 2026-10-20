@@ -116,3 +116,17 @@ Detailed spec: [`../model-design.md`](../model-design.md)
       estimate.
 - [x] Movement/pre-aim segment pilot: 24 rule-based features; kill AUC rises
       but player recall/Q4 do not improve; not promoted.
+
+## Phase 7 — GPU sequence models (2026-10-20)
+
+- [x] 1D CNN and wide attention CNN on the 43-channel cache.
+- [x] 3-seed ensembles; match-grouped paired bootstrap vs GBDT.
+- [x] Aim-only 29-channel ablation; ensemble corrected the single-seed Q4 claim.
+- [x] Top-k player aggregation sensitivity; recorded as an optional mode.
+- [x] Build 23 raw mouse/recoil/fire channels aligned to cached windows.
+- [x] Train 66-channel wide CNN vs 43-channel baseline on the covered rows.
+- [x] Decide whether raw channels are worth a full pipeline build (no; null at player level).
+- [x] Export a deployable CNN artifact and score one 5E demo end to end.
+- [ ] Package the CNN champion artifact with threshold and channel metadata.
+- [ ] Human vs bot vs cheater demo comparison harness.
+- [ ] 5E longitudinal pilot per `longitudinal-dataset.md`.

@@ -84,10 +84,28 @@ downloads, and results. Nothing else on the host is needed for the workspace.
   Δrecall **+0.0744 [0.0107, 0.1432]** — promotion candidate.
 - Wide 3-seed ensemble: player AUC 0.9501, recall 0.2965; Δrecall
   **+0.0822 [0.0135, 0.1532]**; Q4 FPR 3.11%.
-- Aim-only 29-channel wide CNN: player AUC 0.9474, recall **0.3261**, Q4 FPR
-  **2.59%** (same as GBDT); Δrecall **+0.0930 [0.0276, 0.1618]**. New
-  champion candidate; aim seeds 43/44 training for the ensemble. See
-  `experiments.md` section 20.
+- Aim-only 29-channel wide CNN, single seed: player AUC 0.9474, recall
+  0.3261, Q4 FPR 2.59%; Δrecall **+0.0930 [0.0276, 0.1618]**.
+- Aim-only 3-seed ensemble on the fixed `cv_predictions` folds: player AUC
+  0.9500, recall 0.3121, Q4 FPR 2.59%, Q4 recall 33.9%; Δrecall
+  **+0.0824 [0.0208, 0.1490]**, ΔAUC **+0.0163 [0.0120, 0.0207]**,
+  ΔQ4 FPR **+0.0021 [-0.0098, +0.0162]**. See `experiments.md` section 20.
+- Top-5 player aggregation: recall 0.3230, Q4 FPR 3.37%, player AUC
+  0.9277. Optional screening mode; mean stays the headline.
+- Hard-negative BCE (alpha=5) 3-seed ensemble is the champion: player AUC
+  0.9502, recall **0.3619**, Q4 FPR 3.11%, Q4 recall 39.1%; vs the mean
+  ensemble Δrecall **+0.0459 [0.0048, 0.0883]**, ΔAUC flat, ΔQ4 FPR
+  +0.0048 [-0.0057, +0.0158]. Fold models under
+  `runs/cnn29_fixed_hn5_seed44` and the `*_seed42_export` /
+  `*_seed43_export` runs.
+- Raw per-tick channel build (`runs/raw_channels`): mouse dx/dy, recoil
+  punch, shot timing, stance/visibility, velocities, mouse-view residuals;
+  23 channels for 67,449 covered rows / 700 matches. Combined cache
+  `data/processed/cw256_channels_aug` is 90,707 x 256 x 66.
+- Raw-channel ablation: 66 vs 43 kill AUC +0.0037 [0.0004, 0.0070], but
+  player AUC and recall CIs cross zero; 52 vs 29 also null at player level.
+  Not adopted; the 29-channel aim-only model stays. See `experiments.md`
+  section 20.
 
 ## Commands
 
