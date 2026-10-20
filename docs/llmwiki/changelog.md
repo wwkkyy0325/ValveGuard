@@ -1001,3 +1001,12 @@
   but are not available; the project will not collect or model them.
 - Recorded the boundary explicitly: subsequent work is engineering (ONNX
   distribution, packaging, demo/review integration), not longitudinal data.
+
+## 2026-10-20 (release asset plan)
+
+- Added `docs/releases/v1.0.0.md` with the model and desktop asset list,
+  SHA256 checksums, GitHub Release steps, and a release checklist.
+- Added a README Downloads section. The git tree keeps source/manifests;
+  the 28 MB ONNX bundle and 1.1 MB desktop zip are release assets.
+- Built `artifacts/valveguard_cnn_v1_onnx.zip` and
+  `artifacts/valveguard-desktop-v1-win64.zip` (local, ignored).

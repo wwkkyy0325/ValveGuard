@@ -12,6 +12,20 @@ worked example:
 - [中文版：基于击杀窗口视线轨迹的 CS2 辅助瞄准检测](docs/paper/valveguard-paper-zh.md)
 - [English: Detecting Aim Assist in CS2 from Kill-Centred View Trajectories](docs/paper/valveguard-paper-en.md)
 
+## Downloads
+
+Prebuilt binaries are published under
+[Releases](https://github.com/wwkkyy0325/ValveGuard/releases). The git tree
+keeps source, manifests, checksums, and docs; large binaries are not
+committed.
+
+- `valveguard_cnn_v1_onnx.zip` — CNN champion ONNX bundle (15 fold models,
+  normalization, checksums).
+- `valveguard-desktop-v1-win64.zip` — Rust CLI + GBDT baseline model. The
+  desktop app does not yet use the CNN.
+
+Release notes and SHA256: `docs/releases/v1.0.0.md`.
+
 ## Data
 
 Primary dataset: [`CS2CD/Context_window_256`](https://huggingface.co/datasets/CS2CD/Context_window_256)
