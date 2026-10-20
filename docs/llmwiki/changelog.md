@@ -686,3 +686,17 @@
   metadata/outcome shortcuts before the champion decision.
 - Recorded in `experiments.md` section 20; artifacts under
   `reports/cnn43_wide_ensemble/`.
+
+## 2026-10-20 (aim-only wide CNN)
+
+- Dropped weapon, kill outcome, kill flags, flash, and shot; 29 aim-only
+  channels. Wide CNN, 5-fold, 10 epochs.
+- New champion candidate: kill AUC 0.8979, player AUC 0.9474, recall@FPR1
+  **0.3261**, Q4 FPR **2.59%** (same as GBDT), Q4 recall **35.0%**.
+- Bootstrap vs GBDT: Δkill **+0.0483** [0.0434, 0.0534]; Δplayer AUC
+  **+0.0136** [0.0087, 0.0188]; Δrecall **+0.0930** **[0.0276, 0.1618]**;
+  ΔQ4 FPR **0.0000** [-0.0090, +0.0174].
+- The metadata/outcome channels were hurting low-FPR ranking; the gain is
+  aim-specific. Aim seeds 43/44 training for the final ensemble.
+- Recorded in `experiments.md` section 20; artifacts under
+  `reports/cnn43_aim_wide/`.

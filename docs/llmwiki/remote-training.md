@@ -83,8 +83,11 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 - Wide attention CNN: player AUC 0.9488, recall 0.2911, Q4 FPR 3.37%;
   Δrecall **+0.0744 [0.0107, 0.1432]** — promotion candidate.
 - Wide 3-seed ensemble: player AUC 0.9501, recall 0.2965; Δrecall
-  **+0.0822 [0.0135, 0.1532]**; Q4 FPR 3.11%. Aim-only channel ablation
-  running before promotion. See `experiments.md` section 20.
+  **+0.0822 [0.0135, 0.1532]**; Q4 FPR 3.11%.
+- Aim-only 29-channel wide CNN: player AUC 0.9474, recall **0.3261**, Q4 FPR
+  **2.59%** (same as GBDT); Δrecall **+0.0930 [0.0276, 0.1618]**. New
+  champion candidate; aim seeds 43/44 training for the ensemble. See
+  `experiments.md` section 20.
 
 ## Commands
 

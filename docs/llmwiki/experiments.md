@@ -546,3 +546,29 @@ existing OOF kill scores with context weights; no retraining.
   rule out a metadata/outcome shortcut before promotion.
 - Artifact: `reports/cnn43_wide_ensemble/comparison.json`,
   `reports/cnn43_wide/seed43_metrics.json`, `seed44_metrics.json`.
+
+### Aim-only 29-channel wide CNN (the clean result)
+
+- Channel subset: attacker position/view/velocity, victim position/health/
+  noise, angular dynamics, target errors, distance, speeds, t_norm. Dropped
+  weapon one-hot, kill flags, kill outcome, flash, and shot.
+- This is the fair comparison to the aim-only GBDT.
+
+| Model | Kill AUC | Player AUC | Recall@FPR1 | Q4 FPR | Q4 recall |
+|---|---|---|---|---|---|
+| aim-only GBDT | 0.8497 | 0.9338 | 0.2296 | 2.59% | 22.9% |
+| aim-only wide CNN | **0.8979** | **0.9474** | **0.3261** | **2.59%** | **35.0%** |
+
+- 500-replicate paired bootstrap vs GBDT:
+  - Δkill AUC **+0.0483** [0.0434, 0.0534].
+  - Δplayer AUC **+0.0136** [0.0087, 0.0188].
+  - Δplayer recall **+0.0930** **[0.0276, 0.1618]**.
+  - ΔQ4 FPR **0.0000** [-0.0090, +0.0174] — no Q4 regression.
+- Dropping the metadata/outcome channels **improved** low-FPR recall over
+  the full-channel model (0.2965 -> 0.3261) and removed the Q4 regression.
+  The sequence gain is aim-specific, not a weapon/kill shortcut.
+- Decision: **new champion candidate**. It improves recall and player AUC
+  with the same Q4 FPR. Aim-only seeds 43/44 are training for the final
+  ensemble.
+- Artifact: `reports/cnn43/aim_wide_metrics.json`,
+  `reports/cnn43_aim_wide/comparison.json`, `aim_wide_oof.parquet`.
