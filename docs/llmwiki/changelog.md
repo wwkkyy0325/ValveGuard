@@ -613,3 +613,17 @@
   firing.
 - 900-frame run: 6 kills / 6 hits; the next live monster is boxed and the
   crosshair transfers to it after each kill.
+
+## 2026-10-18 (object-based ViZDoom targeting)
+
+- Replaced colour-blob detection with ViZDoom object positions
+  (`set_objects_info_enabled`, `POSITION_X/Y`, `ANGLE`). Blood, the player's
+  pistol and muzzle flash can no longer be locked.
+- Target selection prefers monsters in view (+/-50 deg) by distance, then the
+  nearest overall; after a kill the entity disappears and the next live monster
+  is locked immediately. Added a 4-frame ceasefire and HUD target line.
+- 900-frame run: 3 kills / 5 hits, DOUBLE KILL at frame 41 switching to
+  ChaingunGuy (627 u, +13.5 deg) on the kill frame. Video:
+  `reports/vizdoom_objects/vizdoom_objects_slow2.mp4`.
+- `predict_position` object info confirms a moving non-attacking Cacodemon, but
+  it is not killable (KILLCOUNT stays 0); tracking-only.
