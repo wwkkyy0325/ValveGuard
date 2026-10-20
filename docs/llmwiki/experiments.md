@@ -912,3 +912,16 @@ Single seed (seed 42):
   reasons shown for context.
 - Artifact: `review_queue.csv`, `behavior.png`, `result.json`; the
   `behavior.png` table uses short reason codes.
+
+### Batch review queue
+
+- Directory mode now writes a combined `review_queue.csv` at the output
+  root with `queue_rank`, `demo`, per-demo rank, tier, score, reason count,
+  and full reasons, plus `summary.json`.
+- Ordering is identical to the single-demo queue: FLAG first, REVIEW by
+  reason count then aim score, below-threshold players by aim score.
+- Two-demo check (clean + banned 5E): banned REVIEW ranks first with four
+  reasons; all below-threshold players across both demos are ordered by
+  aim score, not by behavior reasons.
+- Artifact: `reports/demo_mix/review_queue.csv`, `summary.json` (local;
+  contains demo player identifiers and is not committed).

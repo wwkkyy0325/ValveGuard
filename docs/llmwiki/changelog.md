@@ -945,3 +945,12 @@
 - The flag rule and risk score are unchanged.
 - Banned 5E case: REVIEW with 4 reasons, queue rank 1; second player has
   HS 100% but one reason and stays below.
+
+## 2026-10-20 (batch review queue)
+
+- Directory mode writes a combined `review_queue.csv` with `queue_rank`
+  and `demo`, plus `summary.json`.
+- Combined order matches the single-demo rule: FLAG, then REVIEW by reason
+  count and score, then below-threshold by score.
+- Clean + banned two-demo check: banned REVIEW ranks first with four
+  reasons; below players are ordered by score.
