@@ -897,3 +897,17 @@
   (585 GB) would be required for a fair external test.
 - Decision: do not use the processed CSV; prefer a HAWK data request or a
   raw XGUARDIAN sample with all players relabeled.
+
+## 2026-10-20 (XGUARDIAN raw prefix: not worth full download)
+
+- Decompressed the first 2 GB of raw part 1 (zstd window 1 GB), extracted
+  20 demos, and joined 9 to processed labels (1 cheater, 8 humans).
+- The labeled cheater (52 kills, 69% HS) scores 0.304, p89.5, rank 4/10;
+  not flagged. None of the 8 labeled humans were flagged.
+- Raw demos carry no per-player labels; only the processed tracked-player
+  rows are labeled, with the same 22-vs-4.6 window-count confound. Further
+  raw downloads would not give a fair validation set.
+- Decision: stop XGUARDIAN raw; request HAWK or collect a small labeled
+  cohort.
+- Fixed demo parsing for NULL event fields and warmup flags; added
+  `batch_score_demos.py`.

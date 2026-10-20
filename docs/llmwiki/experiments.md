@@ -820,3 +820,29 @@ Single seed (seed 42):
   part and label all players in the match rather than only the tracked one.
 - Artifact: `reports/xguardian_external/metrics.json`; script
   `src/valveguard/scripts/evaluate_xguardian.py`.
+
+### XGUARDIAN raw prefix audit (not worth the full download)
+
+- Downloaded the first 2 GB of raw part 1 and decompressed the zstd
+  prefix with a 1 GB window. The 2 GB yielded 21 demo zips; 20 were
+  complete and 13 demos were unpacked.
+- Only 9 of the 20 demos appear in the processed label CSVs. They contain
+  8 labeled humans and 1 labeled cheater. Raw demos do not carry
+  per-player labels; labels come from the processed tracked-player rows.
+- Champion scores on the 9 labeled demos:
+  - labeled cheater: 52 kills, 69% headshots, score 0.304, p89.5,
+    rank 4/10, **not flagged**.
+  - 8 labeled humans: 0.235-0.371, p71-94, none flagged.
+  - no false positives, one false negative; one positive is anecdotal.
+- Visibility check on the labeled cheater: pre-aim 5.4%, unseen-moving
+  4.1%, longest run 220 ticks, lower than the earlier banned-demo case and
+  its control. No clear wallhack signature.
+- The raw archive adds full telemetry for the tracked players, not more
+  labels. The same activity confound applies (cheater player-matches have
+  22 windows vs 4.6 for humans), so downloading 48 GB or 585 GB would not
+  produce a fair external validation set.
+- Decision: **stop the XGUARDIAN raw download**. Prefer the HAWK data
+  request or a directly collected labeled cohort.
+- Code fixes from this audit: missing event fields (`headshot`,
+  `penetrated`, `is_warmup_period`, NULL victim ids) no longer crash demo
+  parsing.
