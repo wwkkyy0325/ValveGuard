@@ -72,7 +72,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 
 ## Deferred
 
-- [ ] Conditional trajectory generator.
 - [ ] Map raycast / true visibility.
 - [ ] Cross-dataset transfer.
 - [ ] True person-disjoint evaluation (needs stable IDs).

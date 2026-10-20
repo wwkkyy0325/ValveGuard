@@ -2,7 +2,7 @@
 
 Status: detector-first (2026-10-17)
 
-> **Scope:** the conditional generator (section 8) is deferred. Build and validate the detector first; the same feature pipeline and human-likelihood calibration will be reused when the generator is added.
+> **Scope split (2026-10-20):** this repository is detector-only. The conditional generator was split into the sibling project `AimForge`; section 8 is kept as design history.
 
 This document supersedes the model sketch in `design.md`. It is written to be implementation-ready and paper-grade: every modeling choice has a stated motivation, a verification step, and a leakage/robustness check.
 
@@ -433,7 +433,7 @@ Leakage audits:
 
 ## 14. Detector-First Lean Execution Plan (current)
 
-The generator is deferred. The first milestone is a trustworthy detector on the 9.4 GB precomputed windows. Every step below has a stated reason, a cost, and a go/no-go check.
+The generator was split into `AimForge` on 2026-10-20. The first milestone here is a trustworthy detector on the 9.4 GB precomputed windows. Every step below has a stated reason, a cost, and a go/no-go check.
 
 ### 14.0 Decisions and evidence
 
@@ -497,7 +497,6 @@ The generator is deferred. The first milestone is a trustworthy detector on the 
 - Raw mouse deltas / mouse–view residual (needs a raw subset).
 - True person-disjoint evaluation (needs a stable-ID dataset).
 - 1024-tick macro branch (needs the 1024 dataset or raw matches).
-- Conditional generator.
 - Map raycast / true visibility.
 - Cross-dataset transfer (CS2CD vs Kaggle/CS:GO) — after the in-domain baseline is stable.
 

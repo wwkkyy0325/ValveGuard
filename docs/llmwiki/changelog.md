@@ -627,3 +627,13 @@
   `reports/vizdoom_objects/vizdoom_objects_slow2.mp4`.
 - `predict_position` object info confirms a moving non-attacking Cacodemon, but
   it is not killable (KILLCOUNT stays 0); tracking-only.
+
+## 2026-10-20 (detector/generator split)
+
+- Split the repository into the detector-only `ValveGuard` and the sibling
+  `AimForge` project.
+- Moved `src/valveguard/generator`, the generator/demo scripts, generator
+  docs, generator reports, and `data/raw/aim_maps` to `AimForge`.
+- Detector imports were re-checked; no detector code referenced the generator
+  package. The KB index, design note, model-design scope, and root README now
+  state the split.

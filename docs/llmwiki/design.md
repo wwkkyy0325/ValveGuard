@@ -4,7 +4,7 @@ Status: detector-first (2026-10-17)
 
 > Detailed, implementation-ready model specification: [`model-design.md`](model-design.md). It supersedes the model sketch below where they differ. Key updates: raw CS2CD is the primary dataset because it contains `usercmd_mouse_dx/dy`; the 96-tick window is replaced by a 64/256/1024/match multi-scale pyramid; CS2CD player IDs are per-match pseudonyms, so evaluation is match-disjoint (a true person-disjoint check needs a stable-ID dataset).
 >
-> **Scope change:** the generator is offline-only. It produces per-tick view angles for evaluation and detector stress-testing; it does not drive a game client. Live input injection is out of scope. The detector remains the primary deliverable. See `generator.md`.
+> **Scope split (2026-10-20):** this repository is the detector only. The offline aim generator, CS2 camera/overlay tooling, and ViZDoom sandbox moved to the sibling project `AimForge`. The detector remains the primary deliverable.
 
 ## 1. Goal
 
@@ -38,7 +38,7 @@ The public CS2 datasets listed below share the same limitation, so training and 
 | **CS2CD raw (primary)** | 795 CS2 matches; per-tick pitch/yaw **and raw mouse deltas** (`usercmd_mouse_dx/dy`), positions, weapon, economy, rank | 317 matches with manually reviewed cheaters; 478 matches with no VAC-banned player | ~48.9 GB, CC-BY-4.0, Hugging Face | Primary dataset. Non-cheater labels inside cheater matches have only ~55.6% precision and must be excluded. |
 | Kaggle `emstatsl/csgo-cheating-dataset` | View angles around engagements: `(players, 30, 192, 5)` = `AttackerDeltaYaw`, `AttackerDeltaPitch`, `CrosshairToVictimYaw`, `CrosshairToVictimPitch`, `Firing` | 10,000 clean, 2,000 cheaters | ~1.4 GB, public | CS:GO-era, precomputed windows, provenance/label quality unverified. Cross-domain baseline only. |
 | XGuardian (USENIX Security '26) | CS2, real 5EPlay matches; elimination windows with pitch/yaw; raw demos released across 13 Zenodo records | Manually re-verified cheater/normal per match | ~585 GB raw + 22 GB artifact; GPL-3.0-or-later | State of the art for CS2 aim-assist detection, but too large for the current disk. Use only a subset for external validation. |
-| RekaCS2-10k / OpenCS2 | Pro HLTV demos, rendered first-person video + per-tick parquet (`mouse_x_delta`, `mouse_y_delta`, yaw, pitch, position, actions) | None (all human/pro) | Reka: 10k+ hours, CC BY-NC 4.0, sample subset on HF. OpenCS2: ~11 TB total, tick sidecars much smaller, CC-BY-4.0 | Pro-only human reference distribution and generator training. Skill mismatch with average players. |
+| RekaCS2-10k / OpenCS2 | Pro HLTV demos, rendered first-person video + per-tick parquet (`mouse_x_delta`, `mouse_y_delta`, yaw, pitch, position, actions) | None (all human/pro) | Reka: 10k+ hours, CC BY-NC 4.0, sample subset on HF. OpenCS2: ~11 TB total, tick sidecars much smaller, CC-BY-4.0 | Pro-only human reference distribution. Skill mismatch with average players. |
 | PureSkill.gg CS2 dataset | CS2 demos via Steam/FACEIT APIs, mixed skill | None | Application/request, documented ethics | Potential non-pro human baseline. |
 | HLTV raw demos | Pro matches | None | Scraping/terms risk | Upstream source for the rendered datasets. |
 | Self-collected | Own/community demos; optional private-server sessions with open-source cheats | Controllable | Small | Ethical/legal review required; keep offline, never on live servers. |
@@ -207,7 +207,7 @@ Resolved:
 Remaining:
 
 1. Synthesis endpoints: use 2D view angles (yaw, pitch) plus target angular size; confirm whether the user also wants screen-pixel endpoints.
-2. Responsible release: detector/code open; generator weights restricted or released with a dual-use statement. Confirm the intended release policy.
+2. Responsible release: detector/code open. The separate generator project carries its own dual-use policy.
 3. Target visibility: no raycast in v1; use a geometry/FOV/smoke proxy and state the limitation. Is a map-raycast module in scope for v2?
 
 ## 10. Current State (v2, 2026-10-17)
@@ -244,8 +244,8 @@ Remaining:
   closer to cheater windows in feature space; the 64 Hz data cannot say
   whether they are unusual styles or undetected cheats.
   Details: `docs/llmwiki/label-noise-audit.md`.
-- The offline aim generator is active for detector stress-testing; it does not
-  drive a game client. v0/v1 results are in `generator.md`.
+- The offline aim generator and demos were split into the sibling project
+  `AimForge` on 2026-10-20; this repository is detector-only.
 
 ## 11. Player Identity and Temporal Scope (verified 2026-10-17)
 

@@ -1,7 +1,7 @@
 # ValveGuard
 
-CS2 aim-assist detection from kill-centred view trajectories. Detector-first;
-the conditional trajectory generator is deferred.
+CS2 aim-assist detection from kill-centred view trajectories. Detector only;
+the offline generator/demo work lives in the sibling project `AimForge`.
 
 ## Data
 

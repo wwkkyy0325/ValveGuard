@@ -13,9 +13,6 @@ Start here when resuming work.
 | `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |
 | `windows-app.md` | Windows/Tauri app plan, 5E demo handling, review UX, and video rendering options. |
 | `segment-features.md` | Movement/pre-aim segmentation pilot and its negative result. |
-| `generator.md` | Offline aim-trajectory generator: formulation, human-likeness evaluation, and render. |
-| `failed-attempts.md` | Superseded roads: synthetic renders, per-tick camera, tick bases, live-camera limits, map install pitfalls. |
-| `../AIM_MAP_PIPELINE.md` | End-to-end no-VAC CS2 Aim Botz pipeline: HLAE launch, VConsole, map install, recording, limitations. |
 | `next-session.md` | Frozen-state record, executed v2 protocol, and remaining work. |
 | `changelog.md` | Append-only dated record of changes, results, and corrections. |
 | `tasks/aimbot-detection-and-synthesis.md` | Task breakdown with checkboxes and verify steps. |
@@ -35,6 +32,5 @@ recall@FPR=1% 0.1735. Player-score shrinkage (k0=5) raises recall to 0.2288
 and cuts the replicated Q4 FPR from 3.37% to 2.59%; it is dev-validated only
 because the holdout was already spent.
 
-Offline aim generator (evaluation only): v2 chunk MDN lowers the detector's
-window flag rate from 47.2% (v0) to 20.5%, but a human-vs-generated
-discriminator still separates it at AUC ~1.0. Details: `generator.md`.
+The offline aim generator and its CS2/ViZDoom demos were split into the sibling
+project `AimForge` on 2026-10-20. This repository contains the detector only.
