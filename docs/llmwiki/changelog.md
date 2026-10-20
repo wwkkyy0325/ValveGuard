@@ -535,3 +535,14 @@
 - Renamed the task doc to `tasks/aimbot-detection.md`.
 - Demo parsing/scoring and 2D review previews stay in scope; game launch,
   camera scripting, and capture are out of scope.
+
+## 2026-10-20 (remote training workspace)
+
+- Set up `E:\ValveGuardWork` on `DESKTOP-BC3OC2K` (192.168.3.143): Python
+  3.12.10, venv, editable install, PyTorch 2.9.0+cu128, `cw256` and
+  `cw256_channels` caches, and three 5E demos.
+- Verified the full clean-label baseline on 79,533 windows (test player AUC
+  0.9430, kill AUC 0.9006) and 5E demo scoring (10 players, 0 flagged, 3.9 s).
+- Started the 100+100 CS2CD raw subset download through `hf-mirror.com`;
+  `huggingface.co` is unreachable from the host.
+- Layout, commands, and cleanup are recorded in `remote-training.md`.
