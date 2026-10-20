@@ -1,0 +1,241 @@
+{
+  "all": {
+    "splits": {
+      "validation": {
+        "window": {
+          "auc": 0.7223451294585772,
+          "ap": 0.43080691430083384,
+          "recall_at_fpr1": 0.0286231884057971,
+          "fpr": 0.01011653220642848,
+          "windows": 10569,
+          "positive_windows": 2760
+        },
+        "player": {
+          "auc": 0.8980355423724403,
+          "ap": 0.28011989957232913,
+          "recall_at_fpr1": 0.017391304347826087,
+          "fpr": 0.010173548773189706,
+          "windows": 1786,
+          "positive_windows": 115
+        }
+      },
+      "test": {
+        "window": {
+          "auc": 0.701834936168057,
+          "ap": 0.41276269950745875,
+          "recall_at_fpr1": 0.030689655172413795,
+          "fpr": 0.009549461312438785,
+          "windows": 11068,
+          "positive_windows": 2900
+        },
+        "player": {
+          "auc": 0.8582048680630998,
+          "ap": 0.22801072576875667,
+          "recall_at_fpr1": 0.007874015748031496,
+          "fpr": 0.010262257696693273,
+          "windows": 1881,
+          "positive_windows": 127
+        }
+      }
+    },
+    "threshold": 0.4980259688475978,
+    "features": [
+      "ac_abs_mean",
+      "ac_abs_std",
+      "ac_abs_p95",
+      "ac_abs_max",
+      "ac_large_frac",
+      "ac_sign_flips",
+      "speed_mean",
+      "speed_std",
+      "speed_p95",
+      "accel_mean",
+      "accel_p95",
+      "dist_mean",
+      "dist_std",
+      "dist_min",
+      "dist_max",
+      "dist_kill",
+      "dist_slope",
+      "fire_count",
+      "fire_pre_count",
+      "first_fire_rel",
+      "last_fire_rel",
+      "crouch_frac",
+      "walk_frac",
+      "strafe_frac",
+      "path_len",
+      "x_range",
+      "y_range",
+      "kill_frac"
+    ]
+  },
+  "aim_only": {
+    "splits": {
+      "validation": {
+        "window": {
+          "auc": 0.6227594600061986,
+          "ap": 0.3545168020003057,
+          "recall_at_fpr1": 0.02826086956521739,
+          "fpr": 0.01011653220642848,
+          "windows": 10569,
+          "positive_windows": 2760
+        },
+        "player": {
+          "auc": 0.7803398121406083,
+          "ap": 0.13824634224531637,
+          "recall_at_fpr1": 0.017391304347826087,
+          "fpr": 0.010173548773189706,
+          "windows": 1786,
+          "positive_windows": 115
+        }
+      },
+      "test": {
+        "window": {
+          "auc": 0.6200681591745754,
+          "ap": 0.34763743161367244,
+          "recall_at_fpr1": 0.02724137931034483,
+          "fpr": 0.011753183153770812,
+          "windows": 11068,
+          "positive_windows": 2900
+        },
+        "player": {
+          "auc": 0.7677479596692375,
+          "ap": 0.12952876040944156,
+          "recall_at_fpr1": 0.0,
+          "fpr": 0.010262257696693273,
+          "windows": 1881,
+          "positive_windows": 127
+        }
+      }
+    },
+    "threshold": 0.3710204073755251,
+    "features": [
+      "ac_abs_mean",
+      "ac_abs_std",
+      "ac_abs_p95",
+      "ac_abs_max",
+      "ac_large_frac",
+      "ac_sign_flips",
+      "speed_mean",
+      "speed_std",
+      "speed_p95",
+      "accel_mean",
+      "accel_p95"
+    ]
+  },
+  "no_distance": {
+    "splits": {
+      "validation": {
+        "window": {
+          "auc": 0.7174039012956065,
+          "ap": 0.4241002601213353,
+          "recall_at_fpr1": 0.02463768115942029,
+          "fpr": 0.01011653220642848,
+          "windows": 10569,
+          "positive_windows": 2760
+        },
+        "player": {
+          "auc": 0.8861291077979861,
+          "ap": 0.2508368151310617,
+          "recall_at_fpr1": 0.017391304347826087,
+          "fpr": 0.010173548773189706,
+          "windows": 1786,
+          "positive_windows": 115
+        }
+      },
+      "test": {
+        "window": {
+          "auc": 0.6942040004728293,
+          "ap": 0.3994196209882487,
+          "recall_at_fpr1": 0.02379310344827586,
+          "fpr": 0.00881488736532811,
+          "windows": 11068,
+          "positive_windows": 2900
+        },
+        "player": {
+          "auc": 0.8445487928604135,
+          "ap": 0.20454158832438427,
+          "recall_at_fpr1": 0.023622047244094488,
+          "fpr": 0.010262257696693273,
+          "windows": 1881,
+          "positive_windows": 127
+        }
+      }
+    },
+    "threshold": 0.43056016828606514,
+    "features": [
+      "ac_abs_mean",
+      "ac_abs_std",
+      "ac_abs_p95",
+      "ac_abs_max",
+      "ac_large_frac",
+      "ac_sign_flips",
+      "speed_mean",
+      "speed_std",
+      "speed_p95",
+      "accel_mean",
+      "accel_p95",
+      "fire_count",
+      "fire_pre_count",
+      "first_fire_rel",
+      "last_fire_rel",
+      "crouch_frac",
+      "walk_frac",
+      "strafe_frac",
+      "path_len",
+      "x_range",
+      "y_range",
+      "kill_frac"
+    ]
+  },
+  "distance_only": {
+    "splits": {
+      "validation": {
+        "window": {
+          "auc": 0.5822468175887725,
+          "ap": 0.32243727582533144,
+          "recall_at_fpr1": 0.025,
+          "fpr": 0.01011653220642848,
+          "windows": 10569,
+          "positive_windows": 2760
+        },
+        "player": {
+          "auc": 0.7257461036088778,
+          "ap": 0.1116170646378752,
+          "recall_at_fpr1": 0.0,
+          "fpr": 0.010173548773189706,
+          "windows": 1786,
+          "positive_windows": 115
+        }
+      },
+      "test": {
+        "window": {
+          "auc": 0.5885625992096998,
+          "ap": 0.3329918397858236,
+          "recall_at_fpr1": 0.02482758620689655,
+          "fpr": 0.00930460333006856,
+          "windows": 11068,
+          "positive_windows": 2900
+        },
+        "player": {
+          "auc": 0.7181829608813152,
+          "ap": 0.11721998326829589,
+          "recall_at_fpr1": 0.0,
+          "fpr": 0.010262257696693273,
+          "windows": 1881,
+          "positive_windows": 127
+        }
+      }
+    },
+    "threshold": 0.42159672490078576,
+    "features": [
+      "dist_mean",
+      "dist_std",
+      "dist_min",
+      "dist_max",
+      "dist_kill",
+      "dist_slope"
+    ]
+  }
+}

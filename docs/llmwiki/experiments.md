@@ -792,3 +792,31 @@ Single seed (seed 42):
   approximate team-spotted flag.
 - Artifact: `reports/visibility_g161n/`, `reports/visibility_g161n_control/`;
   script `src/valveguard/scripts/analyze_visibility.py`.
+
+### XGUARDIAN processed data audit (not usable for fair validation)
+
+- Downloaded the three processed CSVs from the XGUARDIAN artifact
+  (`Train/Validation/Test_cleaned.csv`, 527 MB total). Each row is a
+  96-tick elimination window; labels are window-level `isCheater`.
+- Split sizes: 10,334 / 10,569 / 11,068 windows; 2,385 / 2,760 / 2,900
+  positive windows; 971 / 944 / 988 matches.
+- HistGradientBoosting on 28 summary features (angle change, speed,
+  acceleration, distance, firing, stance, path):
+  - test window AUC 0.702, player AUC 0.858, recall@1% 3.1% / 0.8%.
+  - aim-only window AUC 0.620; distance-only 0.589.
+- **Activity confound**: cheater player-matches have 22.1 windows on
+  average vs 4.6 for humans. Using window count alone as the score gives
+  player AUC **0.9705**, higher than any feature model. Within window-count
+  bins the model AUC falls to 0.44-0.68; sampling five windows per player
+  gives window AUC 0.743.
+- CS2CD control: window count alone gives player AUC 0.499 and recall
+  6.8% at 1% FPR, and the champion stays at AUC 0.88-0.96 within count
+  bins. The confound is specific to the XGUARDIAN processed sample.
+- The processed `angle` is a coarse 2D direction derived from positions,
+  not the paper's pitch/yaw trajectory. Raw demos (585 GB, 13 parts) would
+  be needed to extract all ten players and the full aim channels.
+- Decision: **do not use the processed CSV for external validation**.
+  Prefer requesting the HAWK demo datasets, or download a raw XGUARDIAN
+  part and label all players in the match rather than only the tracked one.
+- Artifact: `reports/xguardian_external/metrics.json`; script
+  `src/valveguard/scripts/evaluate_xguardian.py`.

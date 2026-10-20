@@ -882,3 +882,18 @@
   raycast and a control cohort.
 - Next recommended: player-level outcome/behavior fusion (headshot rate,
   burst multikills) validated on CS2CD OOF.
+
+## 2026-10-20 (XGUARDIAN processed data audit: confounded)
+
+- Downloaded the XGUARDIAN processed CSVs (527 MB) and built a 96-tick
+  window baseline on 28 summary features.
+- Test window AUC 0.702, player AUC 0.858, recall@1% 3.1% / 0.8%; aim-only
+  window AUC 0.620.
+- Found an activity confound: cheater player-matches average 22.1 windows
+  vs 4.6 for humans; window count alone gives player AUC 0.9705. Within
+  count bins the model AUC is 0.44-0.68.
+- CS2CD has no such confound: window count alone is AUC 0.499.
+- The processed angle is a coarse 2D direction, not pitch/yaw. Raw demos
+  (585 GB) would be required for a fair external test.
+- Decision: do not use the processed CSV; prefer a HAWK data request or a
+  raw XGUARDIAN sample with all players relabeled.
