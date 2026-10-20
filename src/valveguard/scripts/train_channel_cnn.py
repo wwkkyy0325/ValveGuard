@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit
 from torch.utils.data import DataLoader, Dataset
@@ -83,11 +84,13 @@ class WideCNN(nn.Module):
             nn.Linear(256, 128), nn.ReLU(), nn.Dropout(0.2), nn.Linear(128, 1)
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def embed(self, x: torch.Tensor) -> torch.Tensor:
         h = self.features(x.transpose(1, 2)).transpose(1, 2)
         weights = torch.softmax(self.attention(h).squeeze(-1), dim=1)
-        pooled = (h * weights.unsqueeze(-1)).sum(dim=1)
-        return self.head(pooled).squeeze(1)
+        return (h * weights.unsqueeze(-1)).sum(dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.head(self.embed(x)).squeeze(1)
 
 
 def _kill_metrics(labels: np.ndarray, scores: np.ndarray) -> dict:
@@ -136,7 +139,14 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--folds", type=int, default=5)
+    parser.add_argument("--folds-from", default=None,
+                        help="predictions parquet whose match->fold map is reused")
     parser.add_argument("--arch", choices=["cnn", "wide"], default="cnn")
+    parser.add_argument("--channel-index", default=None,
+                        help="comma-separated channel indices to keep")
+    parser.add_argument("--save-models", action="store_true")
+    parser.add_argument("--hard-neg", type=float, default=0.0)
+    parser.add_argument("--focal-gamma", type=float, default=0.0)
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -147,6 +157,9 @@ def main() -> None:
         raise SystemExit("CUDA is not available")
 
     channels = np.load(args.channels)
+    if args.channel_index:
+        keep = [int(x) for x in args.channel_index.split(",")]
+        channels = channels[:, :, keep]
     index = pd.read_parquet(args.index)
     index = index[~((index["source"] == "cdata") & (index["label"] == 0))].copy()
     index = index.reset_index(drop=True)
@@ -171,13 +184,36 @@ def main() -> None:
     center[~np.isfinite(center)] = 0.0
     mean_t = torch.tensor(center, dtype=torch.float32, device=device).view(1, -1, 1)
     std_t = torch.tensor(scale, dtype=torch.float32, device=device).view(1, -1, 1)
+    out = Path(args.out)
+    if args.save_models:
+        out.mkdir(parents=True, exist_ok=True)
+        np.savez(out / "norm.npz", center=center, scale=scale)
+        (out / "model_meta.json").write_text(json.dumps({
+            "arch": args.arch,
+            "channels": int(channels.shape[2]),
+            "channel_index": args.channel_index,
+            "seed": args.seed,
+            "epochs": args.epochs,
+        }, indent=2))
 
-    folds = GroupKFold(n_splits=args.folds)
+    if args.folds_from:
+        reference = pd.read_parquet(args.folds_from)[["match_key", "fold"]].drop_duplicates()
+        fold_of = dict(zip(reference["match_key"], reference["fold"].astype(int)))
+        index["fold"] = index["match_key"].map(fold_of)
+        if index["fold"].isna().any():
+            raise SystemExit("--folds-from does not cover every match")
+        splits = [
+            (np.where(index["fold"].to_numpy() != k)[0],
+             np.where(index["fold"].to_numpy() == k)[0])
+            for k in range(args.folds)
+        ]
+    else:
+        splits = list(GroupKFold(n_splits=args.folds).split(
+            index, groups=index["match_key"]
+        ))
     oof = np.full(len(index), np.nan, dtype=float)
     fold_metrics = []
-    for fold, (train_idx, test_idx) in enumerate(
-        folds.split(index, groups=index["match_key"])
-    ):
+    for fold, (train_idx, test_idx) in enumerate(splits):
         train_frame = index.iloc[train_idx].reset_index(drop=True)
         test_frame = index.iloc[test_idx].reset_index(drop=True)
         train_labels = train_frame["label"].to_numpy(dtype=int)
@@ -193,6 +229,25 @@ def main() -> None:
         optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
         criterion = nn.BCEWithLogitsLoss(pos_weight=positive_weight)
+
+        def compute_loss(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+            if args.hard_neg <= 0 and args.focal_gamma <= 0:
+                return criterion(logits, target)
+            bce = F.binary_cross_entropy_with_logits(
+                logits, target, pos_weight=positive_weight, reduction="none"
+            )
+            if args.focal_gamma > 0:
+                probability = torch.sigmoid(logits)
+                pt = torch.where(target > 0.5, probability, 1.0 - probability)
+                bce = bce * (1.0 - pt).pow(args.focal_gamma)
+            weight = torch.ones_like(bce)
+            if args.hard_neg > 0:
+                weight = torch.where(
+                    target > 0.5, torch.ones_like(bce),
+                    1.0 + args.hard_neg * torch.sigmoid(logits).detach().pow(2),
+                )
+            return (bce * weight).sum() / weight.sum()
+
         scaler = torch.amp.GradScaler("cuda")
         loader = DataLoader(
             WindowDataset(channels, rows[train_idx], train_labels),
@@ -215,7 +270,7 @@ def main() -> None:
                 optimizer.zero_grad(set_to_none=True)
                 with torch.amp.autocast("cuda"):
                     logits = model(x)
-                    loss = criterion(logits, y)
+                    loss = compute_loss(logits, y)
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
@@ -251,6 +306,12 @@ def main() -> None:
         metrics.update(_player_metrics(test_frame, scores, prior))
         metrics["fold"] = fold
         fold_metrics.append(metrics)
+        if args.save_models:
+            torch.save({
+                "state_dict": model.state_dict(),
+                "arch": args.arch,
+                "channels": int(channels.shape[2]),
+            }, out / f"fold{fold}.pt")
         print("fold", fold, json.dumps(metrics), flush=True)
 
     valid = np.isfinite(oof)

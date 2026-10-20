@@ -14,12 +14,25 @@ PRIOR = 0.3018746014732038
 WEAPONS = ["knife", "auto_rifle", "sniper", "pistol", "grenade", "smg", "shotgun"]
 
 
-def _players(frame: pd.DataFrame, column: str) -> pd.DataFrame:
-    grouped = frame.groupby(["match_key", "player_name"], sort=False).agg(
-        label=("label", "max"),
-        n=(column, "size"),
-        total=(column, "sum"),
-    )
+def _players(frame: pd.DataFrame, column: str, topk: int = 0) -> pd.DataFrame:
+    keys = ["match_key", "player_name"]
+    if topk > 0:
+        ranked = frame[keys + ["label", column]].copy()
+        ranked["rank"] = ranked.groupby(keys)[column].rank(
+            ascending=False, method="first"
+        )
+        top = ranked[ranked["rank"] <= topk]
+        grouped = top.groupby(keys, sort=False).agg(
+            label=("label", "max"),
+            n=("rank", "size"),
+            total=(column, "sum"),
+        )
+    else:
+        grouped = frame.groupby(keys, sort=False).agg(
+            label=("label", "max"),
+            n=(column, "size"),
+            total=(column, "sum"),
+        )
     grouped["score"] = (grouped["total"] + K0 * PRIOR) / (grouped["n"] + K0)
     return grouped.reset_index()
 
@@ -86,8 +99,8 @@ def _weapons(frame: pd.DataFrame, column: str) -> dict:
     return result
 
 
-def _evaluate(frame: pd.DataFrame, column: str, ranks: pd.DataFrame) -> dict:
-    players = _players(frame, column)
+def _evaluate(frame: pd.DataFrame, column: str, ranks: pd.DataFrame, topk: int) -> dict:
+    players = _players(frame, column, topk)
     result = _kill_metrics(frame["label"].to_numpy(dtype=int), frame[column].to_numpy(dtype=float))
     result.update(_player_metrics(players))
     result.update(_q4(players, ranks))
@@ -104,6 +117,8 @@ def main() -> None:
     parser.add_argument("--out", required=True)
     parser.add_argument("--bootstrap", type=int, default=500)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--topk", type=int, default=0,
+                        help="player aggregation over the k highest window scores; 0 = mean")
     args = parser.parse_args()
 
     cnn = pd.read_parquet(args.cnn)
@@ -120,8 +135,8 @@ def main() -> None:
     ranks = pd.read_parquet(args.ranks)[["match_key", "player_name", "rank_q"]]
 
     point = {
-        "cnn": _evaluate(frame, "cnn", ranks),
-        "gbdt": _evaluate(frame, "gbdt", ranks),
+        "cnn": _evaluate(frame, "cnn", ranks, args.topk),
+        "gbdt": _evaluate(frame, "gbdt", ranks, args.topk),
     }
     matches = frame["match_key"].unique()
     groups = {
@@ -134,7 +149,7 @@ def main() -> None:
         index = np.concatenate([groups[match] for match in chosen])
         sample = frame.loc[index]
         for column in ("cnn", "gbdt"):
-            players = _players(sample, column)
+            players = _players(sample, column, args.topk)
             values = {
                 "kill_auc": float(roc_auc_score(
                     sample["label"].to_numpy(dtype=int), sample[column].to_numpy(dtype=float)
@@ -160,6 +175,7 @@ def main() -> None:
         "point": point,
         "bootstrap": {},
         "replicates": args.bootstrap,
+        "topk": args.topk,
         "rows": int(len(frame)),
         "matches": int(len(matches)),
     }
