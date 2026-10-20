@@ -28,6 +28,7 @@ def main() -> None:
     parser.add_argument("--events", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--only", default=None, help="run one arm only")
     args = parser.parse_args()
 
     index = pd.read_parquet(args.index)[
@@ -51,6 +52,10 @@ def main() -> None:
         column for column in event_columns if column.startswith(aim_prefixes)
     ]
     arms["all"] = base_columns + event_columns
+    if args.only:
+        if args.only not in arms:
+            raise SystemExit(f"unknown arm: {args.only}")
+        arms = {args.only: arms[args.only]}
 
     results = {}
     for name, columns in arms.items():
@@ -61,7 +66,8 @@ def main() -> None:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "ablation.json").write_text(json.dumps(results, indent=2))
+    filename = f"ablation_{args.only}.json" if args.only else "ablation.json"
+    (out / filename).write_text(json.dumps(results, indent=2))
     print(json.dumps(results, indent=2))
 
 
