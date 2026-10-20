@@ -1,0 +1,32 @@
+{
+  "base": {
+    "kill_auc": 0.8275940279645161,
+    "kill_ap": 0.7119446006846469,
+    "kill_recall_at_fpr1": 0.048803232825613926,
+    "kill_fpr": 0.010000926011667747,
+    "kills": 17233,
+    "positive_kills": 6434,
+    "player_auc": 0.8667640839788843,
+    "player_recall_at_fpr1": 0.15665236051502146,
+    "player_fpr": 0.010146561443066516,
+    "players": 1353,
+    "positive_players": 466
+  },
+  "base_plus_events": {
+    "kill_auc": 0.8458553695277338,
+    "kill_ap": 0.7324146058103198,
+    "kill_recall_at_fpr1": 0.05004662729250855,
+    "kill_fpr": 0.010000926011667747,
+    "kills": 17233,
+    "positive_kills": 6434,
+    "player_auc": 0.8731316923999981,
+    "player_recall_at_fpr1": 0.1781115879828326,
+    "player_fpr": 0.010146561443066516,
+    "players": 1353,
+    "positive_players": 466
+  },
+  "rows": 17233,
+  "matches": 200,
+  "base_features": 79,
+  "event_features": 63
+}

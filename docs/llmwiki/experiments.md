@@ -271,3 +271,30 @@ existing OOF kill scores with context weights; no retraining.
   next feature candidate is the event stream (fire timing, hit offset).
 - Artifact: `reports/reliability/metrics.json`, `player_scores.csv`; script
   `src/valveguard/scripts/analyze_reliability_weighting.py`.
+
+## 16. Raw event features: recoil / fire / mouse (2026-10-20 pilot)
+
+- Raw CS2CD parquet: 100 cheater-present + 100 clean matches (`with_cheater_present`,
+  `no_cheater_present`), joined to the cached kill index. 20,252 valid
+  256-tick windows, 1,353 players, 466 cheater players.
+- 63 features from `aim_punch_angle`, `last_shot_time` / `shots_fired`,
+  `usercmd_mouse_dx/dy`, scope/walk/duck/air/spotted, and velocity.
+- Base = 79 summary features; 5-fold match-disjoint GroupKFold; same GBDT and
+  balanced sample weights for both arms.
+
+| Arm | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| base | 0.8276 | 0.8668 | 0.1567 |
+| base + events | **0.8459** | **0.8731** | **0.1781** |
+
+- 500-replicate match-grouped paired bootstrap (events - base):
+  - Δkill AUC **+0.0183** [0.0106, 0.0258] — significant.
+  - Δplayer AUC +0.0064 [-0.0005, +0.0126] — borderline.
+  - Δplayer recall@FPR1 +0.0318 [-0.0362, +0.0866] — not significant on
+    1,353 players.
+- Decision: **pilot only, not promoted**. The kill-level signal is real; the
+  player-level estimate needs more matches. A 200+200 raw subset is downloading
+  for the next run; the full raw dataset (794 matches) is the eventual target.
+- Artifact: `reports/events_pilot/metrics.json`, `bootstrap.json`, `oof.parquet`,
+  `event_features.parquet`; scripts `build_event_features.py`,
+  `run_event_pilot.py`, `bootstrap_event_pilot.py`, `features/events.py`.

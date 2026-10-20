@@ -557,3 +557,17 @@
   0.0259 -> 0.0233, AUC 0.9338 -> 0.9321.
 - Decision: not promoted. Recorded in `experiments.md` section 15; artifact
   under `reports/reliability/`.
+
+## 2026-10-20 (raw event feature pilot)
+
+- Added `features/events.py` and `build_event_features.py`: 63 features from
+  `aim_punch_angle`, fire timing, mouse-view residual, scope/movement/spotted.
+- Built event features for 100 cheater-present + 100 clean raw matches:
+  20,252 kill windows.
+- 5-fold match-disjoint pilot: kill AUC 0.8276 -> 0.8459 (Δ +0.0183,
+  bootstrap CI [0.0106, 0.0258]); player AUC 0.8668 -> 0.8731 (CI crosses
+  zero); player recall@FPR1 0.1567 -> 0.1781 (CI crosses zero).
+- Decision: pilot only. Kill-level signal is real; player-level needs more
+  matches. A 200+200 subset is downloading.
+- Recorded in `experiments.md` section 16; artifacts under
+  `reports/events_pilot/`.
