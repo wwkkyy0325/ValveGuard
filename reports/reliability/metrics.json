@@ -1,0 +1,175 @@
+{
+  "_bootstrap": {
+    "difficulty": {
+      "delta_auc": [
+        -0.0037332101510193644,
+        -0.0011912738162318498
+      ],
+      "delta_q4_fpr": [
+        -0.010830269607843137,
+        0.010571983023398668
+      ],
+      "delta_recall_at_fpr1": [
+        -0.015932568091722183,
+        0.05344157665643022
+      ],
+      "replicates": 500
+    },
+    "difficulty_soft": {
+      "delta_auc": [
+        -0.0014471419603996004,
+        -0.00023717534580072785
+      ],
+      "delta_q4_fpr": [
+        -0.0083178810236993,
+        0.007066553694843163
+      ],
+      "delta_recall_at_fpr1": [
+        -0.011604612836230007,
+        0.03494083629893239
+      ],
+      "replicates": 500
+    },
+    "distance": {
+      "delta_auc": [
+        -0.006959105904750734,
+        -0.002835697796814863
+      ],
+      "delta_q4_fpr": [
+        -0.009967739934239097,
+        0.007928987267549
+      ],
+      "delta_recall_at_fpr1": [
+        -0.02280255233725267,
+        0.05220094290865574
+      ],
+      "replicates": 500
+    },
+    "info": {
+      "delta_auc": [
+        -0.010601558012471127,
+        -0.005402445607787379
+      ],
+      "delta_q4_fpr": [
+        -0.010689759586818412,
+        0.011469265367316342
+      ],
+      "delta_recall_at_fpr1": [
+        -0.02899847043958237,
+        0.07020952942833995
+      ],
+      "replicates": 500
+    },
+    "no_smoke_wall": {
+      "delta_auc": [
+        -0.0028005247482711104,
+        -0.0007478797882510548
+      ],
+      "delta_q4_fpr": [
+        -0.01201580185955186,
+        0.006368057797868895
+      ],
+      "delta_recall_at_fpr1": [
+        -0.03705242962936444,
+        0.04581286927621862
+      ],
+      "replicates": 500
+    }
+  },
+  "difficulty": {
+    "auc": 0.9313483852946645,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 0.9927755277378261,
+    "median_weight": 0.9844280586979173,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.031088082901554404,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.2634989200863931,
+    "recall_at_fpr1": 0.24046692607003892,
+    "threshold": 0.6516267851741531
+  },
+  "difficulty_soft": {
+    "auc": 0.9329489544764911,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 0.9963797712150537,
+    "median_weight": 0.9922140293489586,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.02849740932642487,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.2591792656587473,
+    "recall_at_fpr1": 0.24280155642023346,
+    "threshold": 0.6512052269168712
+  },
+  "distance": {
+    "auc": 0.9289139103997093,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 1.09184689773184,
+    "median_weight": 1.0,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.02849740932642487,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.2634989200863931,
+    "recall_at_fpr1": 0.2490272373540856,
+    "threshold": 0.6709373712639504
+  },
+  "info": {
+    "auc": 0.9259506669462767,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 0.7898122391628828,
+    "median_weight": 0.7023868790396995,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.031088082901554404,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.2937365010799136,
+    "recall_at_fpr1": 0.2607003891050584,
+    "threshold": 0.6281925262074326
+  },
+  "no_smoke_wall": {
+    "auc": 0.9321130111195919,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 0.9110369280675946,
+    "median_weight": 1.0,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.023316062176165803,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.2591792656587473,
+    "recall_at_fpr1": 0.2443579766536965,
+    "threshold": 0.6118611914488996
+  },
+  "uniform": {
+    "auc": 0.9337779358838407,
+    "fpr": 0.010037093606807768,
+    "human_players": 4583,
+    "mean_weight": 1.0,
+    "median_weight": 1.0,
+    "players": 5868,
+    "positive_players": 1285,
+    "prior": 0.3018746014732038,
+    "q4_fpr": 0.025906735751295335,
+    "q4_human_players": 386,
+    "q4_positive_players": 463,
+    "q4_recall": 0.22894168466522677,
+    "recall_at_fpr1": 0.22957198443579765,
+    "threshold": 0.6529243678373355
+  }
+}

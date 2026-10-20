@@ -546,3 +546,14 @@
 - Started the 100+100 CS2CD raw subset download through `hf-mirror.com`;
   `huggingface.co` is unreachable from the host.
 - Layout, commands, and cleanup are recorded in `remote-training.md`.
+
+## 2026-10-20 (kill-information weighting)
+
+- Re-aggregated the existing OOF kill scores with context weights (distance,
+  victim speed/health, smoke, wallbang, flash); no retraining.
+- 500-replicate paired match-grouped bootstrap: every variant loses AUC with a
+  CI below zero; recall@FPR=1% and Q4 FPR changes have CIs crossing zero.
+  Best point estimate (`no_smoke_wall`): recall 0.2296 -> 0.2444, Q4 FPR
+  0.0259 -> 0.0233, AUC 0.9338 -> 0.9321.
+- Decision: not promoted. Recorded in `experiments.md` section 15; artifact
+  under `reports/reliability/`.

@@ -237,3 +237,37 @@ Data: 7 HLTV pro demos (`blanchon/opencs2_dataset_demo`), 1,075 kill windows,
 - Paired base+seg vs base: ΔAUC [-0.0015, +0.0054], Δrecall [-0.0663, +0.0526].
 - Decision: **not promoted**. Kill-level AUC rises ~0.02 but player-level
   recall does not improve and Q4 FPR doubles. Details: `segment-features.md`.
+
+## 15. Kill-information weighting (2026-10-20)
+
+Hypothesis: low-information kills (close range, stationary or already-damaged
+victim, smoke/wallbang/flash) add noise to the player mean. Re-aggregate the
+existing OOF kill scores with context weights; no retraining.
+
+- Data: `reports/cv_gbdt/cv_predictions.parquet` (79,533 clean windows),
+  `reports/baseline_clean/summary_features.parquet`, and the rank replication
+  table (386 clean Q4 players, 463 cheater Q4 players).
+- Aggregation: `(Σ w_i s_i + k0 prior) / (Σ w_i + k0)`, `k0=5`, prior = human
+  OOF mean; same rule as the champion, only `w` changes.
+- Weights use context only (distance, victim speed/health, smoke, wallbang,
+  flash), never the label or the kill score.
+- Paired match-grouped bootstrap, 500 replicates, vs uniform weights.
+
+| Variant | Player AUC | Recall@FPR1 | Q4 FPR | ΔAUC 95% CI | ΔRecall 95% CI | ΔQ4 FPR 95% CI |
+|---|---|---|---|---|---|---|
+| uniform | **0.9338** | 0.2296 | 0.0259 | reference | reference | reference |
+| no_smoke_wall | 0.9321 | 0.2444 | **0.0233** | [-0.0028, -0.0007] | [-0.0371, +0.0458] | [-0.0120, +0.0064] |
+| difficulty_soft | 0.9329 | 0.2428 | 0.0285 | [-0.0014, -0.0002] | [-0.0116, +0.0349] | [-0.0083, +0.0071] |
+| distance | 0.9289 | 0.2490 | 0.0285 | [-0.0070, -0.0028] | [-0.0228, +0.0522] | [-0.0100, +0.0079] |
+| info | 0.9260 | 0.2607 | 0.0311 | [-0.0106, -0.0054] | [-0.0290, +0.0702] | [-0.0107, +0.0115] |
+| difficulty | 0.9313 | 0.2405 | 0.0311 | [-0.0037, -0.0012] | [-0.0159, +0.0534] | [-0.0108, +0.0106] |
+
+- `no_smoke_wall` has the best point estimates (recall +0.0148, Q4 FPR
+  -0.0026), but the recall and Q4 CIs cross zero and every variant loses AUC
+  with a CI entirely below zero.
+- Decision: **not promoted**. Hand-designed kill reliability does not clear the
+  decision rule. The aggregation rule is not the main bottleneck; the next
+  aggregation candidate is a learned attention/MIL pooling over kills, and the
+  next feature candidate is the event stream (fire timing, hit offset).
+- Artifact: `reports/reliability/metrics.json`, `player_scores.csv`; script
+  `src/valveguard/scripts/analyze_reliability_weighting.py`.
