@@ -618,3 +618,18 @@
 - Decision: not promoted. Event features improve ranking, not low-FPR recall;
   Q4 improves slightly but Q2/Q3 regress. Recorded in `experiments.md`
   section 18; artifacts under `reports/events_pilot_full/`.
+
+## 2026-10-20 (target acquisition and first-shot features)
+
+- Added 26 target-acquisition features: target error trajectory, time to
+  enter 3/5/10 degrees, time on target, first-shot-to-kill, error at first
+  shot, acquire-to-first-shot reaction.
+- Full cohort (700 matches / 67,067 windows): base recall 0.2087; +acquire
+  0.2150; +fire 0.2173; +aim_all 0.1986; +all 0.2095. Kill AUC and player
+  AUC improve, but the primary low-FPR recall gain is not significant
+  (+0.0052, CI [-0.0361, +0.0492]).
+- Q4 FPR: base 3.14%, all 2.86%, aim_all 2.29%; overall recall falls in
+  aim_all. Sniper FPR stays ~5.6%.
+- Decision: not promoted. Summary-feature engineering is exhausted; next is
+  a GPU sequence model over the raw channels. Recorded in `experiments.md`
+  section 19; artifacts under `reports/events_pilot_full_acq/`.

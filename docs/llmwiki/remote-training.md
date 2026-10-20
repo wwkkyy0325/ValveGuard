@@ -72,6 +72,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
   Q4 FPR 3.14% -> 2.86%; sniper FPR ~5.6%. Fire timing is the best single
   group (recall 0.2157); aim-only lowers recall to 0.1908. See
   `experiments.md` section 18.
+- Target acquisition (26 features, 92 event total): all recall 0.2095,
+  aim_all 0.1986, Q4 FPR 2.29% for aim_all; primary recall gain still not
+  significant. See `experiments.md` section 19.
 
 ## Commands
 

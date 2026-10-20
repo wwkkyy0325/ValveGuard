@@ -420,3 +420,44 @@ existing OOF kill scores with context weights; no retraining.
   `aim_metrics.json`, `aim_bootstrap.json`, `layers_base.json`,
   `layers_all.json`, `layers_aim.json`, `oof.parquet`,
   `event_features.parquet`).
+
+## 19. Target-acquisition and first-shot features (2026-10-20)
+
+- Added 26 features from raw attacker/victim positions: target error at
+  0/-8/-16/-32/-64 ticks, time to enter 3/5/10 degrees, time on target,
+  post-acquire error, first-shot-to-kill, error at first shot, and
+  acquire-to-first-shot reaction.
+- Full cohort: 700 matches / 67,067 clean windows / 4,947 players; 92 event
+  features total, 79 base features.
+
+| Arm | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| base | 0.8794 | 0.9284 | 0.2087 |
+| + acquire | 0.8809 | 0.9286 | 0.2150 |
+| + fire | 0.8912 | 0.9297 | **0.2173** |
+| + aim (recoil+fire+mouse) | 0.8942 | 0.9302 | 0.1931 |
+| + aim_all (+ acquisition) | 0.8950 | 0.9306 | 0.1986 |
+| + all | **0.9005** | **0.9334** | 0.2095 |
+
+- Bootstrap (500 match-grouped):
+  - all vs base: Δkill AUC **+0.0212** [0.0171, 0.0253]; Δplayer AUC
+    **+0.0052** [0.0026, 0.0078]; Δplayer recall +0.0052
+    [-0.0361, +0.0492].
+  - aim_all vs base: Δkill AUC **+0.0157** [0.0120, 0.0195]; Δplayer AUC
+    +0.0024 [-0.0001, +0.0049]; Δplayer recall +0.0034
+    [-0.0390, +0.0432].
+- Acquisition alone gives recall +0.0063 over base but no player-AUC gain;
+  adding it to aim raises that arm from 0.1931 to 0.1986 but it remains below
+  base. Fire timing is still the best single group (0.2173).
+- Rank/weapon layers: Q4 FPR base 3.14% / all 2.86% / aim_all **2.29%**;
+  Q4 recall 24.5% / 21.9% / 22.7%; overall recall 20.9% / 21.0% / 19.9%.
+  Sniper FPR remains ~5.6-6.0%; auto rifle FPR ~0; pistol recall 4.0% ->
+  9.1% (all) / 6.1% (aim_all).
+- Decision: **not promoted**. Acquisition is a thin kill-level signal and does
+  not fix low-FPR player recall; aim_all trades overall recall for a lower Q4
+  FPR. Summary-feature engineering is now exhausted. The next step is a GPU
+  sequence model over the 256-tick recoil/mouse/fire/error channels.
+- Artifact: `reports/events_pilot_full_acq/` (`metrics.json`,
+  `bootstrap.json`, `aim_all_metrics.json`, `aim_all_bootstrap.json`,
+  `ablation.json`, `layers_base.json`, `layers_all.json`,
+  `layers_aim_all.json`, `oof.parquet`, `event_features.parquet`).
