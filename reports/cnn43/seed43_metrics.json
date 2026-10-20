@@ -1,0 +1,90 @@
+{
+  "folds": [
+    {
+      "kill_auc": 0.8965781853961261,
+      "kill_ap": 0.7735366976065656,
+      "kill_recall_at_fpr1": 0.2732053641861688,
+      "kill_fpr": 0.010079312623925975,
+      "kills": 15907,
+      "positive_kills": 3803,
+      "player_auc": 0.944144345978957,
+      "player_recall_at_fpr1": 0.24242424242424243,
+      "player_fpr": 0.01095290251916758,
+      "players": 1177,
+      "positive_players": 264,
+      "fold": 0
+    },
+    {
+      "kill_auc": 0.8993086137379651,
+      "kill_ap": 0.7593626231933431,
+      "kill_recall_at_fpr1": 0.22878228782287824,
+      "kill_fpr": 0.01007348691272397,
+      "kills": 15905,
+      "positive_kills": 3794,
+      "player_auc": 0.9455379446980791,
+      "player_recall_at_fpr1": 0.24615384615384617,
+      "player_fpr": 0.010078387458006719,
+      "players": 1153,
+      "positive_players": 260,
+      "fold": 1
+    },
+    {
+      "kill_auc": 0.9197100542320229,
+      "kill_ap": 0.8254287912719129,
+      "kill_recall_at_fpr1": 0.37104781813430887,
+      "kill_fpr": 0.010018214936247723,
+      "kills": 15905,
+      "positive_kills": 3827,
+      "player_auc": 0.9542987928679537,
+      "player_recall_at_fpr1": 0.3612167300380228,
+      "player_fpr": 0.010787486515641856,
+      "players": 1190,
+      "positive_players": 263,
+      "fold": 2
+    },
+    {
+      "kill_auc": 0.9104620477305883,
+      "kill_ap": 0.7640480862661737,
+      "kill_recall_at_fpr1": 0.25545533895839395,
+      "kill_fpr": 0.010022450288646569,
+      "kills": 15909,
+      "positive_kills": 3437,
+      "player_auc": 0.9493543179983858,
+      "player_recall_at_fpr1": 0.2669491525423729,
+      "player_fpr": 0.010822510822510822,
+      "players": 1160,
+      "positive_players": 236,
+      "fold": 3
+    },
+    {
+      "kill_auc": 0.8993268238680696,
+      "kill_ap": 0.7659739940167154,
+      "kill_recall_at_fpr1": 0.2807411566535654,
+      "kill_fpr": 0.010044552450384771,
+      "kills": 15907,
+      "positive_kills": 3562,
+      "player_auc": 0.9360336669249667,
+      "player_recall_at_fpr1": 0.29389312977099236,
+      "player_fpr": 0.01079913606911447,
+      "players": 1188,
+      "positive_players": 262,
+      "fold": 4
+    }
+  ],
+  "overall": {
+    "kill_auc": 0.9045466159517064,
+    "kill_ap": 0.7757407492836619,
+    "kill_recall_at_fpr1": 0.26629756282907235,
+    "kill_fpr": 0.010014727540500737,
+    "kills": 79533,
+    "positive_kills": 18423,
+    "player_auc": 0.94576556399008,
+    "player_recall_at_fpr1": 0.2669260700389105,
+    "player_fpr": 0.010037093606807768,
+    "players": 5868,
+    "positive_players": 1285
+  },
+  "channels": 43,
+  "epochs": 8,
+  "rows": 79533
+}

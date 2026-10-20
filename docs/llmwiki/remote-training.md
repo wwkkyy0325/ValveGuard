@@ -77,8 +77,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
   significant. See `experiments.md` section 19.
 - GPU 1D CNN on 43 channels: player AUC 0.9467, recall@FPR1 0.2872, kill AUC
   0.9046; vs GBDT 0.9338 / 0.2296 / 0.8497. Recall CI [-0.0108, +0.1119];
-  Q4 FPR 3.11% vs 2.59%. Seeds 43/44 training for an ensemble. See
-  `experiments.md` section 20.
+  Q4 FPR 3.11% vs 2.59%. See `experiments.md` section 20.
+- 3-seed CNN ensemble: player AUC 0.9475, recall 0.2794, Q4 FPR 3.11%;
+  Δrecall +0.0535 [-0.0056, +0.1174]. Still not promoted.
 
 ## Commands
 

@@ -492,3 +492,19 @@ existing OOF kill scores with context weights; no retraining.
 - Artifact: `reports/cnn43/metrics.json`, `comparison.json`, `oof.parquet`;
   script `src/valveguard/scripts/train_channel_cnn.py`,
   `compare_cnn_gbdt.py`.
+
+### 3-seed ensemble (seeds 42/43/44)
+
+- Individual seed player recall: 0.2872 / 0.2669 / 0.2786; player AUC
+  0.9446 / 0.9458 / 0.9430.
+- Ensemble point: kill AUC 0.9089, player AUC **0.9475**, recall 0.2794,
+  Q4 FPR 3.11%, Q4 recall 31.1%.
+- 500-replicate paired bootstrap vs GBDT:
+  - Δkill AUC **+0.0592** [0.0546, 0.0638].
+  - Δplayer AUC **+0.0137** [0.0090, 0.0187].
+  - Δplayer recall +0.0535 **[-0.0056, +0.1174]**.
+  - ΔQ4 FPR +0.0079 [-0.0064, +0.0224].
+- The ensemble improves AUC and seed stability but does not move the recall CI
+  past zero; Q4 FPR stays worse than GBDT. Not promoted.
+- Next: event-channel CNN (recoil / mouse / punch / target error / first-shot
+  sequence) and a larger model, then a Q4-aware calibration or second stage.

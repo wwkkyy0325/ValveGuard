@@ -648,3 +648,15 @@
 - Decision: strong challenger, not promoted yet. Recall is near-significant
   and Q4 FPR regresses. Seeds 43/44 are training in parallel for an ensemble.
 - Recorded in `experiments.md` section 20; artifacts under `reports/cnn43/`.
+
+## 2026-10-20 (CNN 3-seed ensemble)
+
+- Seeds 42/43/44 ensemble: kill AUC 0.9089, player AUC 0.9475, recall@FPR1
+  0.2794, Q4 FPR 3.11%, Q4 recall 31.1%.
+- Bootstrap vs GBDT: Δkill **+0.0592** [0.0546, 0.0638]; Δplayer AUC
+  **+0.0137** [0.0090, 0.0187]; Δrecall +0.0535 [-0.0056, +0.1174];
+  ΔQ4 FPR +0.0079 [-0.0064, +0.0224].
+- Ensemble improves AUC/stability but recall CI still crosses zero and Q4 FPR
+  remains worse. Not promoted. Next: event-channel CNN and Q4-aware stage.
+- Recorded in `experiments.md` section 20; artifacts under
+  `reports/cnn43_ensemble/`.
