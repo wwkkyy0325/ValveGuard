@@ -951,3 +951,31 @@
 - Scrubbed external demo source paths and unrelated sandbox material from the
   docs; the README, design notes, model card, and task docs now describe the
   dataset demo path only.
+
+## 2026-10-20 (final paper draft, bilingual)
+
+- Added `docs/paper/valveguard-paper-zh.md` and
+  `docs/paper/valveguard-paper-en.md`: abstract, related work, data,
+  method with formulas, fixed-fold results, negative results, demo system,
+  limitations, reproducibility, and references.
+- Added `make_paper_figures.py` and `reports/paper_figures/` (architecture,
+  ROC, low-FPR region, score distribution, rank strata, demo queue) for the
+  current champion rather than the earlier GBDT figures.
+- Linked both versions from the root README and the KB index.
+
+## 2026-10-20 (paper formatting and worked example)
+
+- Normalized both paper versions to a journal-style layout: title block,
+  numbered tables and figures, table captions, cross-references, data/code
+  availability, and a notation appendix.
+- Added Section 7, a worked example on `cdata:0`: command, `result.json`
+  excerpt, intermediate tensor shapes, shrinkage arithmetic for three
+  players, the full 10-player output, and per-kill/window figures.
+- Added `fig6_worked_kills.png` and `fig7_example_windows.png` to the paper
+  figure generator.
+
+## 2026-10-20 (Chinese paper figures)
+
+- Generated `_zh.png` variants for all eight paper figures with Chinese
+  titles, axis labels, legends, and annotations; the Chinese paper now
+  points to them. English figures are unchanged.

@@ -4,6 +4,14 @@ CS2 aim-assist detection from kill-centred view trajectories. The repository
 contains the detector, the packaged scoring artifact, and a dataset-backed
 demo report; it does not include game-client or overlay tooling.
 
+## Paper
+
+Final bilingual write-up with formulas, figures, and a one-match end-to-end
+worked example:
+
+- [中文版：基于击杀窗口视线轨迹的 CS2 辅助瞄准检测](docs/paper/valveguard-paper-zh.md)
+- [English: Detecting Aim Assist in CS2 from Kill-Centred View Trajectories](docs/paper/valveguard-paper-en.md)
+
 ## Data
 
 Primary dataset: [`CS2CD/Context_window_256`](https://huggingface.co/datasets/CS2CD/Context_window_256)

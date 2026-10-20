@@ -10,6 +10,8 @@ Start here when resuming work.
 | `label-noise-audit.md` | Audit of the excluded cdata label-0 windows and the residual Q4 false positives. |
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
+| `../paper/valveguard-paper-zh.md` | Final bilingual paper (Chinese). |
+| `../paper/valveguard-paper-en.md` | Final bilingual paper (English). |
 | `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |
 | `windows-app.md` | Windows/Tauri app plan, demo input handling, and review UX. |
 | `remote-training.md` | LAN training box layout, environment, commands, and cleanup. |
