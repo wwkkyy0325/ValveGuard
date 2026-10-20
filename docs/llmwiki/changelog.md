@@ -595,3 +595,5 @@
   artifacts under `reports/events_pilot_400/`.
 - Started the full 500+500 raw download (all available cheater and clean
   matches, ~45 GB) for the full-cohort event run.
+- Full raw download complete: 317 cheater-present + 431 clean matches
+  (1,496 files, ~43.5 GB). Full-cohort event build started.
