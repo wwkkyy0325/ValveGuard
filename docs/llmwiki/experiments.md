@@ -526,3 +526,23 @@ existing OOF kill scores with context weights; no retraining.
   ensemble plus Q4 mitigation is required before replacing the champion.
 - Artifact: `reports/cnn43/wide_metrics.json`,
   `reports/cnn43_wide/comparison.json`, `wide_oof.parquet`.
+
+### Wide 3-seed ensemble
+
+- Wide seed player recall: 0.2911 / 0.2981 / 0.3051; player AUC 0.9488 /
+  0.9471 / 0.9477.
+- Ensemble: kill AUC 0.9086, player AUC **0.9501**, recall **0.2965**,
+  Q4 FPR 3.11%, Q4 recall 33.5%.
+- 500-replicate paired bootstrap vs GBDT:
+  - Δkill AUC **+0.0590** [0.0538, 0.0639].
+  - Δplayer AUC **+0.0164** [0.0117, 0.0214].
+  - Δplayer recall **+0.0822** **[0.0135, 0.1532]**.
+  - ΔQ4 FPR +0.0057 [-0.0091, +0.0209].
+- The ensemble stabilises the recall gain; it remains a **promotion
+  candidate**. The Q4 FPR point estimate is 0.5 pp worse but Q4 recall is
+  33.5% vs 22.9%, so the trade-off favours recall under the project rule.
+- Critical check in progress: train the same wide CNN on the **aim-only
+  29-channel subset** (drop weapon, kill outcome, kill flags, flash, shot) to
+  rule out a metadata/outcome shortcut before promotion.
+- Artifact: `reports/cnn43_wide_ensemble/comparison.json`,
+  `reports/cnn43_wide/seed43_metrics.json`, `seed44_metrics.json`.

@@ -673,3 +673,16 @@
   candidate; Q4 point regression is the trade-off. Wide seeds 43/44 training
   for an ensemble before the champion decision.
 - Recorded in `experiments.md` section 20; artifacts under `reports/cnn43_wide/`.
+
+## 2026-10-20 (wide CNN 3-seed ensemble)
+
+- Wide seeds 42/43/44 recall 0.2911 / 0.2981 / 0.3051; ensemble kill AUC
+  0.9086, player AUC **0.9501**, recall **0.2965**, Q4 FPR 3.11%, Q4 recall
+  33.5%.
+- Bootstrap vs GBDT: Δkill **+0.0590** [0.0538, 0.0639]; Δplayer AUC
+  **+0.0164** [0.0117, 0.0214]; Δrecall **+0.0822** **[0.0135, 0.1532]**;
+  ΔQ4 FPR +0.0057 [-0.0091, +0.0209].
+- Promotion candidate. Running the aim-only 29-channel ablation to rule out
+  metadata/outcome shortcuts before the champion decision.
+- Recorded in `experiments.md` section 20; artifacts under
+  `reports/cnn43_wide_ensemble/`.
