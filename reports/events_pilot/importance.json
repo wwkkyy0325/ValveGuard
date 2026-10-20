@@ -1,0 +1,158 @@
+{
+  "test_kill_auc": 0.8051476577518127,
+  "train_rows": 14010,
+  "test_rows": 3223,
+  "features": 142,
+  "top": [
+    {
+      "feature": "ev_spotted_frac",
+      "importance_mean": 0.02207214563619775,
+      "importance_std": 0.002412219607089705
+    },
+    {
+      "feature": "ev_spray_max",
+      "importance_mean": 0.01657860608098366,
+      "importance_std": 0.0009390460636918285
+    },
+    {
+      "feature": "ev_mouse_view_beta_pitch",
+      "importance_mean": 0.014934675056438806,
+      "importance_std": 0.0023553004467072314
+    },
+    {
+      "feature": "headshot",
+      "importance_mean": 0.01071497190066767,
+      "importance_std": 3.434362841631122e-05
+    },
+    {
+      "feature": "ev_ducking_frac",
+      "importance_mean": 0.006043517940342968,
+      "importance_std": 6.916758730013406e-05
+    },
+    {
+      "feature": "wallbang",
+      "importance_mean": 0.0053835438781881795,
+      "importance_std": 0.0003467985974350274
+    },
+    {
+      "feature": "final_err",
+      "importance_mean": 0.0036034391661462495,
+      "importance_std": 4.274941159509993e-05
+    },
+    {
+      "feature": "ev_walking_frac",
+      "importance_mean": 0.0031091791152312864,
+      "importance_std": 0.0009457706902348817
+    },
+    {
+      "feature": "final_err_pitch",
+      "importance_mean": 0.0026425380661894704,
+      "importance_std": 5.355684711078057e-05
+    },
+    {
+      "feature": "ev_shot_interval_mean",
+      "importance_mean": 0.002146837023872472,
+      "importance_std": 3.4343628416422245e-05
+    },
+    {
+      "feature": "weapon_2",
+      "importance_mean": 0.002118017195830768,
+      "importance_std": 0.00039651280080682527
+    },
+    {
+      "feature": "speed_last16_max",
+      "importance_mean": 0.001766895624189413,
+      "importance_std": 0.00020293962246020758
+    },
+    {
+      "feature": "weapon_1",
+      "importance_mean": 0.0015966184735097255,
+      "importance_std": 0.00031269513425230544
+    },
+    {
+      "feature": "ev_punch_pitch_min",
+      "importance_mean": 0.0014974302319995525,
+      "importance_std": 0.0006794274460828476
+    },
+    {
+      "feature": "std_err",
+      "importance_mean": 0.0013108218454295772,
+      "importance_std": 0.0002872376194821835
+    },
+    {
+      "feature": "ev_velocity_max",
+      "importance_mean": 0.001229886161679128,
+      "importance_std": 1.4169748787151715e-05
+    },
+    {
+      "feature": "final_err_yaw",
+      "importance_mean": 0.00116984485325905,
+      "importance_std": 0.00043253758585898305
+    },
+    {
+      "feature": "lock_ratio",
+      "importance_mean": 0.0010980354483886012,
+      "importance_std": 0.00019885681348763562
+    },
+    {
+      "feature": "ev_recoil_resid_std_yaw",
+      "importance_mean": 0.0010807435515635122,
+      "importance_std": 0.0004788894759595319
+    },
+    {
+      "feature": "psd_slope",
+      "importance_mean": 0.0010202219126759227,
+      "importance_std": 1.1047600749325426e-05
+    },
+    {
+      "feature": "weapon_3",
+      "importance_mean": 0.000928718958643493,
+      "importance_std": 0.0001818050818963024
+    },
+    {
+      "feature": "attacker_vel_std",
+      "importance_mean": 0.0008230462558239671,
+      "importance_std": 0.00022071184975258618
+    },
+    {
+      "feature": "victim_speed_p95",
+      "importance_mean": 0.0007524376771218533,
+      "importance_std": 0.0002615399394784168
+    },
+    {
+      "feature": "submovements",
+      "importance_mean": 0.0006724626543061496,
+      "importance_std": 0.0001503434362842282
+    },
+    {
+      "feature": "jerk_min",
+      "importance_mean": 0.0005706325952254954,
+      "importance_std": 0.00015178442768626343
+    },
+    {
+      "feature": "straightness",
+      "importance_mean": 0.0005588644987751801,
+      "importance_std": 0.00012560641721504062
+    },
+    {
+      "feature": "dist_final",
+      "importance_mean": 0.0005120322782074527,
+      "importance_std": 7.829386617991263e-05
+    },
+    {
+      "feature": "ev_mouse_view_resid_pitch_min",
+      "importance_mean": 0.0005038666602622532,
+      "importance_std": 3.17018108457745e-05
+    },
+    {
+      "feature": "ev_punch_delta_pitch_min",
+      "importance_mean": 0.0004872952591383206,
+      "importance_std": 0.00016211153273443246
+    },
+    {
+      "feature": "ev_velocity_mean",
+      "importance_mean": 0.0004308564292232475,
+      "importance_std": 5.763965608329702e-05
+    }
+  ]
+}

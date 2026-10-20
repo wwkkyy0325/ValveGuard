@@ -292,9 +292,30 @@ existing OOF kill scores with context weights; no retraining.
   - Δplayer AUC +0.0064 [-0.0005, +0.0126] — borderline.
   - Δplayer recall@FPR1 +0.0318 [-0.0362, +0.0866] — not significant on
     1,353 players.
+- Group ablation (same folds; base is the reference):
+
+| Arm | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| base | 0.8276 | 0.8668 | 0.1567 |
+| + recoil | 0.8280 | 0.8638 | 0.1738 |
+| + fire | 0.8348 | 0.8663 | 0.1695 |
+| + mouse | 0.8311 | 0.8643 | 0.1502 |
+| + context | 0.8401 | **0.8785** | 0.1352 |
+| + all | **0.8459** | 0.8731 | **0.1781** |
+
+- Permutation importance puts `ev_spotted_frac` (0.022), `ev_spray_max`
+  (0.017), and `ev_mouse_view_beta_pitch` (0.015) on top. The **context**
+  group (spotted/walking/ducking/airborne/velocity) drives most of the kill
+  AUC gain, not recoil. The recoil group adds almost nothing.
+- Caveat: `spotted` is visibility/team context, not aim. The event gain is
+  therefore not yet a clean aim-assist claim; the next run must separate
+  aim-specific features from movement/visibility context and check whether
+  the context gain survives a map/side/rank control.
 - Decision: **pilot only, not promoted**. The kill-level signal is real; the
   player-level estimate needs more matches. A 200+200 raw subset is downloading
   for the next run; the full raw dataset (794 matches) is the eventual target.
-- Artifact: `reports/events_pilot/metrics.json`, `bootstrap.json`, `oof.parquet`,
-  `event_features.parquet`; scripts `build_event_features.py`,
-  `run_event_pilot.py`, `bootstrap_event_pilot.py`, `features/events.py`.
+- Artifact: `reports/events_pilot/metrics.json`, `bootstrap.json`,
+  `ablation.json`, `importance.csv`, `oof.parquet`, `event_features.parquet`;
+  scripts `build_event_features.py`, `run_event_pilot.py`,
+  `bootstrap_event_pilot.py`, `run_event_ablation.py`, `event_importance.py`,
+  `features/events.py`.
