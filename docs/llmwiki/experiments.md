@@ -880,3 +880,18 @@ Single seed (seed 42):
   as a ranking replacement.
 - Artifact: `reports/behavior_fusion/metrics.json`, `univariate.csv`;
   scripts `analyze_behavior_fusion.py`, `build_kill_ticks.py`.
+
+### Demo report behavior context (review only)
+
+- The demo report now shows per-player HS%, shots per kill, maximum
+  4-second multikill, burst share, median kill gap, and sniper share.
+  These columns are descriptive; the risk score, threshold, and flag are
+  unchanged.
+- On the banned 5E case the context is stark: 7 kills, HS 100%,
+  0.9 shots per kill, 4 kills in four seconds, burst 50%. The second
+  player also has HS 100% but 4.3 shots per kill and no burst, so the
+  context separates the two without moving the score.
+- The clean 5E demo shows ordinary human values (HS 38-100%, 1.2-4.9
+  shots per kill, at most 2 in four seconds).
+- Artifact: demo reports `players.png`, `behavior.png`,
+  `kill_windows.png`, `result.json`.

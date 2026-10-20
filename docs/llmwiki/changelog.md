@@ -923,3 +923,14 @@
 - High-kill/high-HS subgroup: champion recall 67.4%, behavior 27.5%.
 - Decision: not adopted as the default; outcome features are a review
   queue signal, not a ranking replacement.
+
+## 2026-10-20 (demo behavior context)
+
+- Added per-kill headshot, weapon class, shot count, smoke, wallbang, and
+  midair context to `demo_channels`.
+- `demo_report.py` now aggregates per-player HS%, shots per kill, maximum
+  4-second multikill, burst share, median kill gap, and sniper share.
+- Added `behavior.png` table and a second line in `players.png`; the risk
+  score and flag logic are unchanged.
+- Banned 5E case: HS 100%, 0.9 shots/kill, 4 kills in 4s, burst 50%.
+- Clean 5E demo: HS 38-100%, 1.2-4.9 shots/kill, max 2 in 4s.
