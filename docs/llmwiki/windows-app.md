@@ -1,17 +1,18 @@
 # Windows Application Plan
 
-Status: design validated on a real 5E demo, 2026-10-18. No app code yet.
+Status: design validated on a local CS2 demo, 2026-10-18. No app code yet.
 
 ## Target input
 
-Example: `D:\5EDemocache\g161-20261017205155650208834_de_dust2.zip`.
+The app accepts a `.dem` file or a `.zip` containing one `.dem`.
 
 Validated on 2026-10-18:
 
 - The zip contains one standard `.dem` (189 MB uncompressed).
-- The Rust crate `awpy` 3.0 parses it: map `de_dust2`, 11 roster entries
-  (10 players plus a `5EGOTV` spectator with steamid 0), 145 kill events.
-- Chinese nicknames are UTF-8 and parse correctly.
+- The Rust crate `awpy` 3.0 parses the header, roster, and 145 kill events.
+- A broadcast spectator entry (`steamid 0`, no kills) is present; it is
+  filtered and must never appear in the player table.
+- Player names are UTF-8 and parse correctly.
 - The Python reference pipeline (parse -> windows -> features -> score)
   finishes in **6 s** on this demo.
 
@@ -64,7 +65,7 @@ Tauri v2, Rust backend, web frontend (React/Svelte/vanilla).
 
 | Concern | Choice |
 |---|---|
-| Demo parsing | `awpy` 3.0 crate (validated on the 5E demo) |
+| Demo parsing | `awpy` 3.0 crate (validated on a local CS2 demo) |
 | Zip handling | `zip` crate, extract to temp |
 | Model | JSON tree ensemble, Rust traversal |
 | UI | Tauri webview; WebView2 is preinstalled on Windows 10/11 |
@@ -102,9 +103,9 @@ Implemented in `desktop/`:
 - `.zip` / `.dem` input, temp extraction, `awpy` parsing, per-tick snapshots;
 - port of the 59 aim features;
 - JSON tree-ensemble scoring;
-- player aggregation and JSON output; Chinese names preserved.
+- player aggregation and JSON output; player names preserved.
 
-Validated on the 5E dust2 sample:
+Validated on a local Dust2 demo:
 
 - 129 of 145 kills used; 10 players; 0 flagged;
 - **3.9 s** end to end, including zip extraction;

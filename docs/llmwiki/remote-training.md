@@ -26,11 +26,9 @@ E:\ValveGuardWork\
   data\processed\raw1024\    1024-tick pilot features
   data\processed\mouse_resid_subset\
   data\processed\pro_windows\
-  data\processed\5e_windows\
   data\processed\events_cs2cd\  63 raw event features, 20,252 kill windows
   data\processed\events_cs2cd_400\  200+200 match event features
   data\processed\events_cs2cd_full\ 78,202 windows / 701 matches
-  data\raw\5e_sample\        three 5E demos
   data\raw\cs2cd_subset\     748 matches (1,496 files, ~43.5 GB)
   downloads\                 reserved for new datasets
   runs\                      experiment outputs
@@ -57,8 +55,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 
 - Full clean-label baseline on 79,533 windows, 79 features: test player AUC
   0.9430, test kill AUC 0.9006, recall@FPR=1% 0.2626 (single split).
-- 5E demo `g161-20261017205155650208834_de_dust2.dem`: 10 players, 0 flagged,
-  3.9 s end to end.
+- CS2CD dataset demo (`cdata:0` + `ncdata:36`): 20 players across two matches,
+  1 flagged (the labelled cheater), 0 flagged in the clean match. The report
+  loads the cached channels directly and does not need a raw demo.
 - 90,707-window cache and 43-channel tensor cache loaded on the host.
 - Raw event pilot on 100+100 matches: 20,252 windows, 63 features; kill AUC
   0.8276 -> 0.8459 (Δ +0.0183, bootstrap CI [0.0106, 0.0258]); player recall
@@ -118,11 +117,14 @@ $vpy = "$root\venv\Scripts\python.exe"
   --cache "$root\data\processed\cw256" `
   --out "$root\runs\baseline_full" --jobs 24
 
-# score a 5E demo
-& $vpy -m valveguard.scripts.score_demo `
-  --demo "$root\data\raw\5e_sample\g161-20261017205155650208834_de_dust2.dem" `
-  --model "$root\repo\ValveGuard\artifacts\valveguard_gbdt_v1.joblib" `
-  --out "$root\runs\5e_g161_result.json" --include-kills
+# score two CS2CD matches and write a combined review queue
+& $vpy -m valveguard.scripts.demo_report_dataset `
+  --match cdata:0 --match ncdata:36 `
+  --artifact "$root\repo\ValveGuard\artifacts\valveguard_cnn_v1" `
+  --cache "$root\data\processed\cw256" `
+  --channels "$root\data\processed\cw256_channels" `
+  --kill-ticks "$root\data\processed\kill_ticks.parquet" `
+  --out "$root\runs\demo_dataset"
 
 # CS2CD raw subset through the local proxy
 $env:HTTP_PROXY = 'http://192.168.3.129:7890'

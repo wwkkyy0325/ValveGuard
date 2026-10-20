@@ -3,14 +3,13 @@
 Status: detector-first (2026-10-17)
 
 > Detailed, implementation-ready model specification: [`model-design.md`](model-design.md). It supersedes the model sketch below where they differ. Key updates: raw CS2CD is the primary dataset because it contains `usercmd_mouse_dx/dy`; the 96-tick window is replaced by a 64/256/1024/match multi-scale pyramid; CS2CD player IDs are per-match pseudonyms, so evaluation is match-disjoint (a true person-disjoint check needs a stable-ID dataset).
->
-> **Scope split (2026-10-20):** this repository is the detector only. The offline aim generator, CS2 camera/overlay tooling, and ViZDoom sandbox moved to the sibling project `AimForge`. The detector remains the primary deliverable.
 
 ## 1. Goal
 
 Build a CS2 aim-assist detector: given a player's crosshair/view-angle trajectory around a kill, estimate whether the movement is consistent with human behavior or with aim assistance.
 
-The project is detector-first. The offline trajectory generator, CS2 camera tooling, and ViZDoom sandbox live in the sibling `AimForge` project; they are not part of this repository.
+The project is detector-first. Training, evaluation, and demonstration use the
+CS2CD dataset only.
 
 Non-goals (for now):
 
@@ -34,7 +33,7 @@ The public CS2 datasets listed below share the same limitation, so training and 
 |---|---|---|---|---|
 | **CS2CD raw (primary)** | 795 CS2 matches; per-tick pitch/yaw **and raw mouse deltas** (`usercmd_mouse_dx/dy`), positions, weapon, economy, rank | 317 matches with manually reviewed cheaters; 478 matches with no VAC-banned player | ~48.9 GB, CC-BY-4.0, Hugging Face | Primary dataset. Non-cheater labels inside cheater matches have only ~55.6% precision and must be excluded. |
 | Kaggle `emstatsl/csgo-cheating-dataset` | View angles around engagements: `(players, 30, 192, 5)` = `AttackerDeltaYaw`, `AttackerDeltaPitch`, `CrosshairToVictimYaw`, `CrosshairToVictimPitch`, `Firing` | 10,000 clean, 2,000 cheaters | ~1.4 GB, public | CS:GO-era, precomputed windows, provenance/label quality unverified. Cross-domain baseline only. |
-| XGuardian (USENIX Security '26) | CS2, real 5EPlay matches; elimination windows with pitch/yaw; raw demos released across 13 Zenodo records | Manually re-verified cheater/normal per match | ~585 GB raw + 22 GB artifact; GPL-3.0-or-later | State of the art for CS2 aim-assist detection, but too large for the current disk. Use only a subset for external validation. |
+| XGuardian (USENIX Security '26) | CS2, real matches; elimination windows with pitch/yaw; raw demos released across 13 Zenodo records | Manually re-verified cheater/normal per match | ~585 GB raw + 22 GB artifact; GPL-3.0-or-later | State of the art for CS2 aim-assist detection, but too large for the current disk. Use only a subset for external validation. |
 | RekaCS2-10k / OpenCS2 | Pro HLTV demos, rendered first-person video + per-tick parquet (`mouse_x_delta`, `mouse_y_delta`, yaw, pitch, position, actions) | None (all human/pro) | Reka: 10k+ hours, CC BY-NC 4.0, sample subset on HF. OpenCS2: ~11 TB total, tick sidecars much smaller, CC-BY-4.0 | Pro-only human reference distribution. Skill mismatch with average players. |
 | PureSkill.gg CS2 dataset | CS2 demos via Steam/FACEIT APIs, mixed skill | None | Application/request, documented ethics | Potential non-pro human baseline. |
 | HLTV raw demos | Pro matches | None | Scraping/terms risk | Upstream source for the rendered datasets. |
@@ -150,7 +149,7 @@ Calibration:
 
 ## 8. References
 
-- GAN-Aimbots: Kanervisto et al., "GAN-Aimbots: Using Machine Learning for Cheating in First Person Shooters", IEEE Transactions on Games, 2022. https://arxiv.org/abs/2205.07060 — conditional GAN that generates human-like aim; also evaluates detectors. ViZDoom, not CS2.
+- GAN-Aimbots: Kanervisto et al., "GAN-Aimbots: Using Machine Learning for Cheating in First Person Shooters", IEEE Transactions on Games, 2022. https://arxiv.org/abs/2205.07060 — conditional GAN that generates human-like aim; also evaluates detectors.
 - XGuardian: Zhang et al., "XGuardian: Towards Generalized, Explainable and More Effective Server-side Anti-cheat in First-Person Shooter Games", USENIX Security '26. https://www.usenix.org/conference/usenixsecurity26/presentation/zhang-jiayi — CS2 detection from pitch/yaw elimination windows; 0.889 accuracy, 0.062 FPR on their CS2 split.
 - HAWK: "Identify As A Human Does: A Pathfinder of Next-Generation Anti-Cheat Framework for First-Person Shooter Games". https://arxiv.org/abs/2409.14830
 - Kaggle CS:GO cheating dataset: https://www.kaggle.com/datasets/emstatsl/csgo-cheating-dataset
@@ -211,8 +210,7 @@ Remaining:
   closer to cheater windows in feature space; the 64 Hz data cannot say
   whether they are unusual styles or undetected cheats.
   Details: `docs/llmwiki/label-noise-audit.md`.
-- The offline aim generator and demos were split into the sibling project
-  `AimForge` on 2026-10-20; this repository is detector-only.
+- The repository is detector-only; demonstration uses CS2CD match windows.
 
 ## 11. Player Identity and Temporal Scope (verified 2026-10-17)
 

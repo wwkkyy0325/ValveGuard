@@ -1,0 +1,669 @@
+{
+  "source": "CS2CD",
+  "match": "cdata:0",
+  "map": "mirage",
+  "artifact": "valveguard_cnn_v1",
+  "threshold": 0.608027,
+  "human_reference": {
+    "players": 4583,
+    "p95": 0.3972915776955656,
+    "p99": 0.6080266899791817
+  },
+  "players": [
+    {
+      "player": "Player_3",
+      "dataset_label": 1,
+      "tier": "flag",
+      "review_rank": 1,
+      "review_reasons": [
+        "HS>=80%",
+        "smoke>=20%",
+        "4s multikill>=3",
+        "burst>=30%"
+      ],
+      "review_reason_count": 4,
+      "kills": 29,
+      "headshot_rate": 0.9655,
+      "headshot_kills": 28,
+      "shots_per_kill": 1.862,
+      "kill_per_shot": 0.354,
+      "max_multikill_4s": 4,
+      "burst_fraction": 0.3571,
+      "median_kill_gap_s": 6.711,
+      "sniper_share": 0.4483,
+      "wallbang_rate": 0.1724,
+      "behavior_context": "HS 97% \u00b7 1.9 shots/kill \u00b7 multi 4 \u00b7 burst 36%",
+      "mean_score": 0.779114,
+      "max_kill_score": 0.976842,
+      "shrunk_score": 0.708932,
+      "percentile": 99.8,
+      "flagged": true,
+      "reliable": true
+    },
+    {
+      "player": "Player_2",
+      "dataset_label": 0,
+      "tier": "review",
+      "review_rank": 2,
+      "review_reasons": [
+        "<=1.5 shots/kill",
+        "wallbang>=20%"
+      ],
+      "review_reason_count": 2,
+      "kills": 4,
+      "headshot_rate": 0.5,
+      "headshot_kills": 2,
+      "shots_per_kill": 0.75,
+      "kill_per_shot": 0.667,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 13.406,
+      "sniper_share": 0.5,
+      "wallbang_rate": 0.25,
+      "behavior_context": "HS 50% \u00b7 0.8 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.540922,
+      "max_kill_score": 0.878317,
+      "shrunk_score": 0.408118,
+      "percentile": 95.3,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_4",
+      "dataset_label": 1,
+      "tier": "review",
+      "review_rank": 3,
+      "review_reasons": [
+        "<=1.5 shots/kill"
+      ],
+      "review_reason_count": 1,
+      "kills": 19,
+      "headshot_rate": 0.4211,
+      "headshot_kills": 8,
+      "shots_per_kill": 1.316,
+      "kill_per_shot": 0.442,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.1111,
+      "median_kill_gap_s": 49.055,
+      "sniper_share": 0.3684,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 42% \u00b7 1.3 shots/kill \u00b7 multi 2 \u00b7 burst 11%",
+      "mean_score": 0.424761,
+      "max_kill_score": 0.752903,
+      "shrunk_score": 0.39916,
+      "percentile": 95.1,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_5",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 4,
+      "review_reasons": [
+        "4s multikill>=3",
+        "burst>=30%"
+      ],
+      "review_reason_count": 2,
+      "kills": 5,
+      "headshot_rate": 0.2,
+      "headshot_kills": 1,
+      "shots_per_kill": 1.6,
+      "kill_per_shot": 0.417,
+      "max_multikill_4s": 3,
+      "burst_fraction": 0.5,
+      "median_kill_gap_s": 21.844,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 20% \u00b7 1.6 shots/kill \u00b7 multi 3 \u00b7 burst 50%",
+      "mean_score": 0.378947,
+      "max_kill_score": 0.710158,
+      "shrunk_score": 0.340411,
+      "percentile": 92.7,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_7",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 5,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 2,
+      "headshot_rate": 0.5,
+      "headshot_kills": 1,
+      "shots_per_kill": 3.5,
+      "kill_per_shot": 0.25,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 140.422,
+      "sniper_share": 0.5,
+      "wallbang_rate": 0.5,
+      "behavior_context": "HS 50% \u00b7 3.5 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.338091,
+      "max_kill_score": 0.444964,
+      "shrunk_score": 0.312222,
+      "percentile": 90.6,
+      "flagged": false,
+      "reliable": false
+    },
+    {
+      "player": "Player_6",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 6,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 2,
+      "headshot_rate": 0.5,
+      "headshot_kills": 1,
+      "shots_per_kill": 0.5,
+      "kill_per_shot": 1.0,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 155.281,
+      "sniper_share": 0.5,
+      "wallbang_rate": 0.5,
+      "behavior_context": "HS 50% \u00b7 0.5 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.23621,
+      "max_kill_score": 0.239091,
+      "shrunk_score": 0.283113,
+      "percentile": 85.9,
+      "flagged": false,
+      "reliable": false
+    },
+    {
+      "player": "Player_9",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 7,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 7,
+      "headshot_rate": 0.5714,
+      "headshot_kills": 4,
+      "shots_per_kill": 2.429,
+      "kill_per_shot": 0.304,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 53.43,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 57% \u00b7 2.4 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.262584,
+      "max_kill_score": 0.493632,
+      "shrunk_score": 0.278955,
+      "percentile": 85.1,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_8",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 8,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 2,
+      "headshot_rate": 1.0,
+      "headshot_kills": 2,
+      "shots_per_kill": 4.5,
+      "kill_per_shot": 0.2,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 321.375,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 100% \u00b7 4.5 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.20119,
+      "max_kill_score": 0.291274,
+      "shrunk_score": 0.273108,
+      "percentile": 83.7,
+      "flagged": false,
+      "reliable": false
+    },
+    {
+      "player": "Player_10",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 9,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 2,
+      "headshot_rate": 0.5,
+      "headshot_kills": 1,
+      "shots_per_kill": 2.0,
+      "kill_per_shot": 0.4,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 171.562,
+      "sniper_share": 0.5,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 50% \u00b7 2.0 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.136654,
+      "max_kill_score": 0.143411,
+      "shrunk_score": 0.254669,
+      "percentile": 78.5,
+      "flagged": false,
+      "reliable": false
+    },
+    {
+      "player": "Player_1",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 10,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 6,
+      "headshot_rate": 0.6667,
+      "headshot_kills": 4,
+      "shots_per_kill": 8.333,
+      "kill_per_shot": 0.109,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.2,
+      "median_kill_gap_s": 33.125,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.1667,
+      "behavior_context": "HS 67% \u00b7 8.3 shots/kill \u00b7 multi 2 \u00b7 burst 20%",
+      "mean_score": 0.12343,
+      "max_kill_score": 0.191305,
+      "shrunk_score": 0.204541,
+      "percentile": 54.7,
+      "flagged": false,
+      "reliable": true
+    }
+  ],
+  "kills": [
+    {
+      "player": "Player_1",
+      "kill_tick": 3496,
+      "score": 0.191305
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 5616,
+      "score": 0.156166
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 6312,
+      "score": 0.149931
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 6401,
+      "score": 0.113006
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 21268,
+      "score": 0.091324
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 38931,
+      "score": 0.038845
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 14855,
+      "score": 0.143411
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 25835,
+      "score": 0.129897
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 2503,
+      "score": 0.878317
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 2845,
+      "score": 0.407442
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 22731,
+      "score": 0.372405
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 23589,
+      "score": 0.505525
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 17201,
+      "score": 0.7017
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 17833,
+      "score": 0.426281
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 18560,
+      "score": 0.725613
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 18856,
+      "score": 0.773559
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 25825,
+      "score": 0.389149
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 31129,
+      "score": 0.956548
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 31927,
+      "score": 0.404052
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 34595,
+      "score": 0.50967
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 35678,
+      "score": 0.638568
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 35991,
+      "score": 0.880084
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 38710,
+      "score": 0.874401
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 39022,
+      "score": 0.80883
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 41223,
+      "score": 0.803779
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 41373,
+      "score": 0.7361
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 41669,
+      "score": 0.617876
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 42218,
+      "score": 0.890979
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 45180,
+      "score": 0.910147
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 45314,
+      "score": 0.883053
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 45373,
+      "score": 0.938055
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 45452,
+      "score": 0.870822
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 48134,
+      "score": 0.718088
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 48680,
+      "score": 0.905538
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 48734,
+      "score": 0.966815
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 48918,
+      "score": 0.937678
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 52307,
+      "score": 0.908993
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 52359,
+      "score": 0.951061
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 52448,
+      "score": 0.976842
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 52538,
+      "score": 0.630281
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 52652,
+      "score": 0.859751
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 2542,
+      "score": 0.653862
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 2721,
+      "score": 0.529849
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 6249,
+      "score": 0.625814
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 6904,
+      "score": 0.41052
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 12045,
+      "score": 0.137515
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 12922,
+      "score": 0.287152
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 14758,
+      "score": 0.181567
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 17826,
+      "score": 0.333864
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 21401,
+      "score": 0.159514
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 21522,
+      "score": 0.383826
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 26489,
+      "score": 0.220487
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 27892,
+      "score": 0.714173
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 28257,
+      "score": 0.395719
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 31468,
+      "score": 0.408107
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 32097,
+      "score": 0.546471
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 35356,
+      "score": 0.585728
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 38737,
+      "score": 0.111962
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 42511,
+      "score": 0.631429
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 54630,
+      "score": 0.752903
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 49353,
+      "score": 0.347087
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 56051,
+      "score": 0.125721
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 58772,
+      "score": 0.258451
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 58847,
+      "score": 0.453319
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 58915,
+      "score": 0.710158
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 11986,
+      "score": 0.239091
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 21924,
+      "score": 0.233328
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 11991,
+      "score": 0.231217
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 20978,
+      "score": 0.444964
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 11320,
+      "score": 0.291274
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 31888,
+      "score": 0.111107
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 15294,
+      "score": 0.239935
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 17214,
+      "score": 0.446415
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 22133,
+      "score": 0.082185
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 31456,
+      "score": 0.147588
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 55069,
+      "score": 0.248599
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 55346,
+      "score": 0.493632
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 56019,
+      "score": 0.17973
+    }
+  ]
+}

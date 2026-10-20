@@ -5,7 +5,7 @@ Status: proposal (2026-10-20)
 ## Why the current data is not enough
 
 - The champion scores 256-tick kill windows and aggregates them per player.
-  OOF: player AUC 0.9480, recall@FPR1 0.3284, Q4 FPR 3.11%.
+  Fixed-fold OOF: player AUC 0.9502, recall@FPR1 0.3619, Q4 FPR 3.11%.
 - Remaining errors are player-level: cheaters who toggle and have only a few
   blatant kills, and elite humans whose aim looks synthetic in short windows.
 - CS2CD provides roughly one match per player and only kill windows. There is
@@ -34,16 +34,18 @@ Status: proposal (2026-10-20)
   last 30% for testing, to measure detection after the model has seen history.
 - Cluster bootstrap by player, not by match, for confidence intervals.
 
-## 5E pilot
+## Pilot design
 
 - One player's full history is useful for a **case study and demo**, not for
   training: a temporal model needs cohort-level variance.
-- If 5E access is available, the smallest informative pilot is 20 banned and
-  40 never-banned players with 10 matches each (600 demos). At 100 MB per
-  demo this is about 60 GB, well inside the training box capacity.
+- The smallest informative pilot is 20 banned and 40 never-banned players
+  with 10 matches each (600 demos). At 100 MB per demo this is about 60 GB,
+  well inside the training box capacity.
 - Record the platform ban status and date at download time; a later ban list
   cannot reconstruct what was known when a match was played.
 - Keep the download manual and local; do not automate platform login.
+- No accessible dataset currently provides stable cross-match player ids,
+  so this proposal is not on the active path.
 
 ## Features
 

@@ -1,0 +1,18 @@
+[
+  {
+    "match": "cdata:0",
+    "map": "mirage",
+    "players": 10,
+    "flagged": 1,
+    "top": 0.708932,
+    "out": "reports\\demo_dataset\\cdata_0"
+  },
+  {
+    "match": "ncdata:36",
+    "map": "dust2",
+    "players": 10,
+    "flagged": 0,
+    "top": 0.227498,
+    "out": "reports\\demo_dataset\\ncdata_36"
+  }
+]

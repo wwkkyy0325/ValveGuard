@@ -596,7 +596,7 @@ Single seed (seed 42):
   a different GroupKFold split and are superseded.
 - **Provenance note**: an even earlier "aim-only ensemble" mixed the
   29-channel seed 42 with 43-channel seeds 43/44 and reported recall
-  0.2872. Those artifacts are renamed `*_mixed_superseded`.
+  0.2872. Those artifacts were superseded and later removed.
 - Decision: **champion-elect**. Δrecall and ΔAUC are both significant and
   Q4 FPR is unchanged. Deployment artifact: 15 fold models + normalization
   under `runs/cnn29_fixed_wide_seed*`.
@@ -656,19 +656,24 @@ Single seed (seed 42):
   `reports/cnn66_vs_43/`, `reports/cnn52_vs_29/`, `reports/cnn37_vs_29/`;
   scripts `build_raw_channels.py`, `merge_channel_caches.py`.
 
-### Demo scoring (sanity check)
+### Dataset demo report (sanity check)
 
-- `score_demo_cnn.py` rebuilds the 256-tick kill windows from a demo,
-  selects the 29 aim channels, applies the saved normalization, and
-  averages the 15 fold models across three seeds.
-- 5E Dust2 demo `g161-20261017205155650208834`: 129 kill windows,
-  10 players, 0 flagged at 0.608027. Top shrunk score 0.2374 vs CS2CD
-  human mean 0.218 and p95 0.3973; the demo sits inside the human
-  distribution as expected for an unlabelled public match.
-- This validates the demo path only; specificity was established earlier
-  on 7 HLTV pro demos and 70 players (section 11).
-- Artifact: `reports/cnn29_hn5_ensemble/5e_g161_cnn.json`,
-  `artifact.json`; script `src/valveguard/scripts/score_demo_cnn.py`.
+- `demo_report_dataset.py` reads the cached 256-tick CS2CD windows for one
+  match, selects the 29 aim channels by name, applies the saved
+  normalization, and averages the 15 fold models across three seeds. No raw
+  demo file is needed, and player names are the dataset pseudonyms.
+- `cdata:0` (Mirage, 78 kill windows, 10 players): **1 FLAG** at the 0.608027
+  human-p99 threshold. `Player_3` (dataset label 1) scores 0.709, human
+  percentile 99.8, with four behavior reasons. The second labelled cheater,
+  `Player_4`, scores 0.399 (p95.1) and lands in REVIEW but is not flagged.
+- `ncdata:36` (Dust2, 232 kill windows, 10 players): **0 FLAG / 0 REVIEW**;
+  top shrunk score 0.227 (p67.5). All ten players are below the human p95.
+- This is a path and presentation check, not a held-out metric: the artifact
+  fold models overlap the demonstration matches. Held-out numbers are the
+  fixed-fold table above.
+- Artifact: `reports/demo_dataset/cdata_0/`, `reports/demo_dataset/ncdata_36/`,
+  combined `reports/demo_dataset/review_queue.csv` and `summary.json`;
+  script `src/valveguard/scripts/demo_report_dataset.py`.
 
 ### Player-level MIL (negative)
 
@@ -746,52 +751,6 @@ Single seed (seed 42):
   precisely.
 - Artifact: `reports/cnn34_react/`, `reports/cnn29_subset_hn5/`,
   `reports/cnn34_vs_29/`; code in `build_raw_channels.py`.
-
-### Demo validation: banned 5E player (2026-10-20)
-
-- A 5E demo from the local cache contains a player later banned by the
-  platform (identifiers omitted from the repository).
-- The player has 7 kills, all headshots: two SSG08 headshots (one no-scope)
-  and five Deagle headshots within about four seconds.
-- Champion score: shrunk 0.414, human percentile 96, below the 0.608 p99
-  flag line; highest single window 0.853, just below the human window p99
-  of 0.863. Not flagged at the strict 1% cut.
-- This is a genuine false negative at the strict threshold, not a scoring
-  bug. The player is the clear lobby leader (+0.115 over second), so the
-  demo report surfaces them in the new p95-p99 review band.
-- The aim-only model deliberately drops kill outcome and headshot flags to
-  avoid shortcuts, so an all-headshot multi-kill is not directly rewarded.
-  The next candidate is player-level outcome/behavior fusion (headshot
-  rate, burst multikills) calibrated on CS2CD OOF, not window-level
-  metadata.
-- Artifact: `reports/demo_g161n_cheater/` (`result.json`, `players.png`,
-  `kill_windows.png`).
-
-### Visibility / pre-aim case study (negative as a simple signal)
-
-- Added `analyze_visibility.py`: per-tick angular error to the nearest enemy
-  head, visibility from `approximate_spotted_by`, unseen-moving tracking
-  (error <5 degrees while the enemy is unseen and moving >50 units/s), and
-  reaction time after first visibility.
-- Banned player vs a strong human control in the same demo:
-
-| Metric | Banned player | Control |
-|---|---|---|
-| pre-aim fraction (error <5 deg, unseen) | 8.6% | 10.6% |
-| unseen-moving near fraction | 5.9% | 7.8% |
-| longest pre-aim run | 305 ticks | 305 ticks |
-| visible fraction | 0.8% | 1.6% |
-
-- The per-kill timelines look suspicious (crosshair already on the head
-  before the green visibility band), but the control shows the same angle
-  holding and even more unseen-moving proximity. Simple pre-aim metrics
-  are confounded by normal crosshair placement and by approximate
-  visibility.
-- Decision: **not adopted as a detector feature yet**. A credible
-  visibility model needs raycast visibility and a control cohort, not the
-  approximate team-spotted flag.
-- Artifact: `reports/visibility_g161n/`, `reports/visibility_g161n_control/`;
-  script `src/valveguard/scripts/analyze_visibility.py`.
 
 ### XGUARDIAN processed data audit (not usable for fair validation)
 
@@ -873,8 +832,8 @@ Single seed (seed 42):
   1% tail is not cheat-specific. Of 884 champion misses, behavior catches
   70, but the union raises FPR.
 - High-kill/high-headshot subgroup (>=15 kills, >=60% HS): champion recall
-  67.4%, behavior 27.5%. The champion already catches most of these; this
-  fusion would not fix the missed 5E case.
+  67.4%, behavior 27.5%. The champion already catches most of these; the
+  fusion would not fix the remaining high-kill misses.
 - Decision: **not adopted as the default score**. Headshot rate and burst
   patterns are useful as a human-review queue alongside the aim score, not
   as a ranking replacement.
@@ -887,13 +846,15 @@ Single seed (seed 42):
   4-second multikill, burst share, median kill gap, and sniper share.
   These columns are descriptive; the risk score, threshold, and flag are
   unchanged.
-- On the banned 5E case the context is stark: 7 kills, HS 100%,
-  0.9 shots per kill, 4 kills in four seconds, burst 50%. The second
-  player also has HS 100% but 4.3 shots per kill and no burst, so the
-  context separates the two without moving the score.
-- The clean 5E demo shows ordinary human values (HS 38-100%, 1.2-4.9
-  shots per kill, at most 2 in four seconds).
-- Artifact: demo reports `players.png`, `behavior.png`,
+- On `cdata:0` the flagged `Player_3` has HS 96.6%, 1.9 shots per kill,
+  4 kills inside four seconds, and 35.7% burst share, so the context shows
+  why the flag is worth review. The second labelled cheater, `Player_4`,
+  has HS 42.1%, 1.3 shots per kill, and no burst; only the efficiency rule
+  fires, and the player stays in REVIEW.
+- The clean match shows ordinary human values (HS 15-46%, 1.7-6.0 shots per
+  kill, at most 2 in four seconds). One clean player still triggers two
+  reasons, which is why reasons order the queue and never change the flag.
+- Artifact: `reports/demo_dataset/*/players.png`, `behavior.png`,
   `kill_windows.png`, `result.json`.
 
 ### Review queue ordering (review-only)
@@ -905,11 +866,13 @@ Single seed (seed 42):
   move a player across tiers.
 - Reason rules: HS >= 80%, <= 1.5 shots/kill, 4-second multikill >= 3,
   burst >= 30%, sniper headshots, wallbang/smoke >= 20%.
-- Banned 5E case: REVIEW, 4 reasons (HS, efficiency, 4s multikill, burst),
-  queue rank 1. The second player also has HS 100% but only 1 reason and
-  stays below.
-- Clean 5E demo: no FLAG/REVIEW; the queue is ordered by aim score, with
-  reasons shown for context.
+- `cdata:0`: `Player_3` is FLAG with 4 reasons (HS, smoke, 4s multikill,
+  burst) and queue rank 1. `Player_2` (dataset label 0) is REVIEW with 2
+  reasons and ranks above the second labelled cheater, `Player_4`, who has
+  1 reason. Behavior ordering is not a label and can put a clean player
+  ahead inside the review band.
+- `ncdata:36`: no FLAG or REVIEW; all players sit below the human p95 and
+  the queue is ordered by aim score, with one diffuse 4s-multikill reason.
 - Artifact: `review_queue.csv`, `behavior.png`, `result.json`; the
   `behavior.png` table uses short reason codes.
 
@@ -920,11 +883,11 @@ Single seed (seed 42):
   and full reasons, plus `summary.json`.
 - Ordering is identical to the single-demo queue: FLAG first, REVIEW by
   reason count then aim score, below-threshold players by aim score.
-- Two-demo check (clean + banned 5E): banned REVIEW ranks first with four
-  reasons; all below-threshold players across both demos are ordered by
-  aim score, not by behavior reasons.
-- Artifact: `reports/demo_mix/review_queue.csv`, `summary.json` (local;
-  contains demo player identifiers and is not committed).
+- Two-match check (`cdata:0` + `ncdata:36`): the flagged cheater ranks
+  first; the two REVIEW players follow; all below-threshold players across
+  both matches are ordered by aim score, not by behavior reasons.
+- Artifact: `reports/demo_dataset/review_queue.csv`, `summary.json` (CS2CD
+  pseudonyms only).
 
 ### Regression tests for the demo path
 

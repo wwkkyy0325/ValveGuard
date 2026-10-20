@@ -126,7 +126,6 @@ Detailed spec: [`../model-design.md`](../model-design.md)
 - [x] Build 23 raw mouse/recoil/fire channels aligned to cached windows.
 - [x] Train 66-channel wide CNN vs 43-channel baseline on the covered rows.
 - [x] Decide whether raw channels are worth a full pipeline build (no; null at player level).
-- [x] Export a deployable CNN artifact and score one 5E demo end to end.
+- [x] Export a deployable CNN artifact and score CS2CD matches end to end.
 - [ ] Package the CNN champion artifact with threshold and channel metadata.
-- [ ] Human vs bot vs cheater demo comparison harness.
-- [ ] 5E longitudinal pilot per `longitudinal-dataset.md`.
+- [ ] Human vs bot vs cheater demo comparison harness (needs a labelled cohort).

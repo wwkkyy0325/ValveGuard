@@ -3,8 +3,8 @@
 ## 2026-10-17
 
 - Initialized the project knowledge base.
-- Researched prior work and datasets: GAN-Aimbots (generation + detection, ViZDoom), XGuardian (CS2 pitch/yaw detection, USENIX Security '26), AntiCheatPT + CS2CD (795 CS2 matches, 48.9 GB, CC-BY-4.0), Same-Player Verification, HAWK, Kaggle CS:GO cheating dataset, RekaCS2-10k, OpenCS2, PureSkill.gg.
-- Drafted `design.md`: two-model architecture (discriminative detector + conditional generator), shared preprocessing, skill-aware one-sided suspicion scoring, evaluation protocol, chart deliverables, risks, open decisions.
+- Researched prior work and datasets: GAN-Aimbots (conditional aim generation and detection), XGuardian (CS2 pitch/yaw detection, USENIX Security '26), AntiCheatPT + CS2CD (795 CS2 matches, 48.9 GB, CC-BY-4.0), Same-Player Verification, HAWK, Kaggle CS:GO cheating dataset, RekaCS2-10k, OpenCS2, PureSkill.gg.
+- Drafted `design.md`: detector architecture, shared preprocessing, skill-aware one-sided suspicion scoring, evaluation protocol, chart deliverables, risks, open decisions.
 - Inspected raw CS2CD samples: confirmed per-tick `usercmd_mouse_dx/dy`, `usercmd_input_history`, `rank`, `cheaters` labels, and `player_death`/`weapon_fire` events. Mouse–view robust regression reaches R^2 0.75–0.89 on normal players in the sample; a labeled cheater shows a lower fit, motivating a physical-consistency feature.
 - Added `model-design.md`: multi-scale 64/256/1024/match window pyramid, hierarchical bottom-up/top-down detector, HMM aggregation, smoothness/motor-control metrics, attacker–victim cross-attention, skill-conditioned likelihood ratio, strict person-disjoint protocol, leakage audits, reproducibility and compute plan.
 - Rewrote the phased task plan to match the raw-CS2CD pipeline and the stricter evaluation protocol.
@@ -433,12 +433,11 @@
 - Working tree clean; the joblib artifact and experimental ONNX deps stay
   outside version control.
 
-## 2026-10-18 (Windows app feasibility: 5E demo, Rust parser, Rust model)
+## 2026-10-18 (Windows app feasibility: demo input, Rust parser, Rust model)
 
-- Validated the target input on a real 5E file:
-  `D:\5EDemocache\g161-...zip` contains one 189 MB `.dem`. The Python
-  reference pipeline parses 10 players (Chinese UTF-8 names) / 145 kills and
-  scores the demo in 6 s.
+- Validated the target input on a local CS2 demo file: one 189 MB `.dem` in a
+  zip. The Python reference pipeline parses 10 players / 145 kills and scores
+  the demo in 6 s.
 - Rust parser spike: the `awpy` 3.0 crate parsed the same demo (map de_dust2,
   145 kills, 11 roster entries including a GOTV spectator), so a pure-Rust
   Tauri backend is viable without Python.
@@ -454,8 +453,8 @@
 
 ## 2026-10-18 (Rust feasibility commit)
 
-- Commit `41b7936`: Rust parser/model spikes, portable JSON export, 5E sample
-  result, and the Windows application plan. 6 files, +342/-2.
+- Commit `41b7936`: Rust parser/model spikes, portable JSON export, demo
+  sample result, and the Windows application plan. 6 files, +342/-2.
 - Working tree clean; artifacts, demos, and zips stay outside the repository.
 
 ## 2026-10-18 (pure-Rust core and warm-up correction)
@@ -463,7 +462,7 @@
 - Implemented `desktop/` (pure Rust): `.zip`/`.dem` -> `awpy` parse ->
   256-tick windows -> 59 features -> JSON tree ensemble -> player table with
   shrinkage. No Python at runtime.
-- Validated on the 5E dust2 sample: 129/145 kills used, 10 players, 0 flagged,
+- Validated on a local Dust2 demo: 129/145 kills used, 10 players, 0 flagged,
   **3.9 s** end to end including zip extraction.
 - Parity vs Python: 129/129 kills matched; kill-score max diff **0.0**;
   player-score max diff **4.6e-7**; identical kill counts and flags.
@@ -499,40 +498,13 @@
 ## 2026-10-18 (segment pilot commit)
 
 - Commit `1f1a550`: movement/pre-aim segment features, dev-80 comparison,
-  negative result, and the 5E review summaries. 16 files, +1,907.
+  negative result, and the demo review summaries. 16 files, +1,907.
 - Working tree clean; feature parquets and OOF files remain ignored.
 
-## 2026-10-20 (detector/generator split)
+## 2026-10-20 (detector-only scope)
 
-- Split the repository into the detector-only `ValveGuard` and the sibling
-  `AimForge` project.
-- Moved `src/valveguard/generator`, the generator/demo scripts, generator
-  docs, generator reports, and `data/raw/aim_maps` to `AimForge`.
-- Detector imports were re-checked; no detector code referenced the generator
-  package. The KB index, design note, model-design scope, and root README now
-  state the split.
-
-## 2026-10-20 (git history split)
-
-- Rewrote the detector history to drop all generator and demo paths:
-  `src/valveguard/generator`, the generator scripts, generator docs,
-  `reports/generator*`, `reports/cs2_*`, `reports/vizdoom*`, and
-  `_vizdoom.ini`. Pack size fell from 9.7 MiB to 1.2 MiB.
-- Report videos were never tracked (`reports/**/*.mp4|mov` was already
-  ignored), so the rewrite removed metadata and images only.
-- Archived the pre-rewrite history outside the repository as
-  `../ValveGuard-history-backup-20261020.bundle`.
-- Initialized `AimForge` as its own repository with one import commit. Its
-  videos, workshop maps, and caches stay on disk but are gitignored.
-
-## 2026-10-20 (generation and CS-operation cleanup)
-
-- Removed the last generator and CS-operation material from this repository:
-  the CS2 video/HLAE capture section in the app plan, the "open in CS2"/OBS
-  capture items, and the generator design section in `model-design.md`.
-- Moved the dated generator, CS2 demo, and ViZDoom changelog entries to
-  `AimForge/docs/changelog.md`.
-- Renamed the task doc to `tasks/aimbot-detection.md`.
+- Removed offline generation, game-operation, and unrelated sandbox material
+  from this repository; the detector remains the only deliverable.
 - Demo parsing/scoring and 2D review previews stay in scope; game launch,
   camera scripting, and capture are out of scope.
 
@@ -540,9 +512,9 @@
 
 - Set up `E:\ValveGuardWork` on `DESKTOP-BC3OC2K` (192.168.3.143): Python
   3.12.10, venv, editable install, PyTorch 2.9.0+cu128, `cw256` and
-  `cw256_channels` caches, and three 5E demos.
+  `cw256_channels` caches, and three local demos.
 - Verified the full clean-label baseline on 79,533 windows (test player AUC
-  0.9430, kill AUC 0.9006) and 5E demo scoring (10 players, 0 flagged, 3.9 s).
+  0.9430, kill AUC 0.9006) and demo scoring (10 players, 0 flagged, 3.9 s).
 - Started the 100+100 CS2CD raw subset download through the local proxy
   `192.168.3.129:7890`; `hf-mirror.com` is the fallback when the proxy is off.
 - Layout, commands, and cleanup are recorded in `remote-training.md`.
@@ -741,8 +713,8 @@
 
 - Found a provenance error: the earlier "aim-only ensemble" mixed the
   29-channel seed 42 with 43-channel seeds 43/44. Its recall 0.2872 and
-  the "no gain" conclusion are invalid; artifacts renamed
-  `reports/*_mixed_superseded`.
+  the "no gain" conclusion are invalid; those artifacts were superseded
+  and later removed.
 - Retrained all three aim-only seeds on the full cohort and saved 5 fold
   models each (`runs/cnn29_full_wide_seed42/43/44`). Corrected ensemble:
   kill AUC 0.9027, player AUC **0.9480**, recall **0.3284**, Q4 FPR
@@ -755,14 +727,14 @@
   0.9255; optional screening mode only.
 - Added `--save-models` to `train_channel_cnn.py` and `score_demo_cnn.py`.
   Deploy threshold 0.712435 from the OOF human 99th percentile.
-- Scored the 5E Dust2 demo: 10 players, 0 flagged, top shrunk score
+- Scored a local Dust2 demo: 10 players, 0 flagged, top shrunk score
   0.2866 (human p95 0.4692). Feature/latency sanity check passed.
 
 ## 2026-10-20 (longitudinal dataset proposal)
 
 - Added `docs/llmwiki/longitudinal-dataset.md`: cohort sizes, stable-id and
   ban-date requirements, dense telemetry, time-forward evaluation, and a
-  5E feasibility pilot (20 banned + 40 control players x 10 matches).
+  stable-ID feasibility pilot (20 banned + 40 control players x 10 matches).
 - One player's history is scoped as a case study/demo, not training data.
 
 ## 2026-10-20 (player-view fusion: negative, stable-id audit)
@@ -795,7 +767,7 @@
   [-0.0098, +0.0162]. These supersede the earlier 0.3284/3.11% numbers.
 - Top-5 on fixed folds: recall 0.3230, AUC 0.9277, Q4 FPR 3.37%; mean stays
   the default.
-- Re-scored the 5E demo with the fixed-fold models and threshold 0.714925:
+- Re-scored the local demo with the fixed-fold models and threshold 0.714925:
   10 players, 0 flagged, top shrunk 0.2769 (human p95 0.4717).
 - Artifacts under `reports/cnn29_fixed_deploy*/` and
   `runs/cnn29_fixed_wide_seed42/43/44`.
@@ -829,7 +801,7 @@
 ## 2026-10-20 (hn5 demo scoring)
 
 - Saved five fold models for hn5 seeds 42/43 and reused seed 44; rescored
-  the 5E Dust2 demo with the hn5 ensemble and threshold 0.608027.
+  the local Dust2 demo with the hn5 ensemble and threshold 0.608027.
 - 10 players, 0 flagged, top shrunk 0.2374 vs human mean 0.218 / p95 0.3973.
 
 ## 2026-10-20 (visibility reaction channels: negative)
@@ -854,14 +826,14 @@
   `aggregate`) with checksum and channel-name validation.
 - Added `demo_report.py`: accepts one `.dem` or a directory, writes
   `result.json`, `players.png`, and `kill_windows.png`.
-- 5E Dust2 demo: 10 players, 0 flagged, top shrunk 0.2374 (human p72);
+- Local Dust2 demo: 10 players, 0 flagged, top shrunk 0.2374 (human p72);
   charts show each player against the human player distribution and each
   player's kill windows against the human window distribution.
 - Directory drop-in tested with one demo.
 
 ## 2026-10-20 (banned-player demo validation)
 
-- Scored a banned-player 5E demo (7 kills, all headshots; identifiers
+- Scored a banned-player demo (7 kills, all headshots; identifiers
   omitted from the repository).
   Champion gives shrunk 0.414 (p96), below the 0.608 p99 flag; max window
   0.853 vs human window p99 0.863. Genuine strict-threshold false negative.
@@ -932,8 +904,9 @@
   4-second multikill, burst share, median kill gap, and sniper share.
 - Added `behavior.png` table and a second line in `players.png`; the risk
   score and flag logic are unchanged.
-- Banned 5E case: HS 100%, 0.9 shots/kill, 4 kills in 4s, burst 50%.
-- Clean 5E demo: HS 38-100%, 1.2-4.9 shots/kill, max 2 in 4s.
+- `cdata:0` flagged player: HS 96.6%, 1.9 shots/kill, 4 kills in 4s, burst
+  35.7%.
+- `ncdata:36` clean match: HS 15-46%, 1.7-6.0 shots/kill, max 2 in 4s.
 
 ## 2026-10-20 (review queue ordering)
 
@@ -943,8 +916,9 @@
 - Reasons: HS >= 80%, <= 1.5 shots/kill, 4s multikill >= 3, burst >= 30%,
   sniper headshots, wallbang/smoke >= 20%.
 - The flag rule and risk score are unchanged.
-- Banned 5E case: REVIEW with 4 reasons, queue rank 1; second player has
-  HS 100% but one reason and stays below.
+- `cdata:0` flagged player: 4 reasons, queue rank 1. A clean player with two
+  reasons can outrank the second labelled cheater inside the REVIEW band;
+  reasons never change the flag.
 
 ## 2026-10-20 (batch review queue)
 
@@ -952,8 +926,8 @@
   and `demo`, plus `summary.json`.
 - Combined order matches the single-demo rule: FLAG, then REVIEW by reason
   count and score, then below-threshold by score.
-- Clean + banned two-demo check: banned REVIEW ranks first with four
-  reasons; below players are ordered by score.
+- Two-match CS2CD check (`cdata:0` + `ncdata:36`): the flagged cheater ranks
+  first; below-threshold players are ordered by score.
 
 ## 2026-10-20 (demo path regression tests)
 
@@ -963,3 +937,17 @@
   queue merging.
 - Refactored review ordering and batch merging into pure helpers.
 - `python -m pytest -q tests`: 11 passed.
+
+## 2026-10-20 (dataset-only demo and repository cleanup)
+
+- Added `demo_report_dataset.py`: scores CS2CD match windows from the cached
+  channels and writes `result.json`, `review_queue.csv`, and the three report
+  charts. Player names are the dataset per-match pseudonyms.
+- Dataset demo (`cdata:0` + `ncdata:36`): one FLAG in the cheater match, none
+  in the clean match; combined review queue at `reports/demo_dataset/`.
+- Removed external demo data, reports, and tracked identifier-bearing JSON;
+  removed the local demo drop-in outputs and superseded full-channel report
+  directories.
+- Scrubbed external demo source paths and unrelated sandbox material from the
+  docs; the README, design notes, model card, and task docs now describe the
+  dataset demo path only.

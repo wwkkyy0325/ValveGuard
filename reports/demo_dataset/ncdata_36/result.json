@@ -1,0 +1,1428 @@
+{
+  "source": "CS2CD",
+  "match": "ncdata:36",
+  "map": "dust2",
+  "artifact": "valveguard_cnn_v1",
+  "threshold": 0.608027,
+  "human_reference": {
+    "players": 4583,
+    "p95": 0.3972915776955656,
+    "p99": 0.6080266899791817
+  },
+  "players": [
+    {
+      "player": "Player_7",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 1,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 26,
+      "headshot_rate": 0.4615,
+      "headshot_kills": 12,
+      "shots_per_kill": 1.769,
+      "kill_per_shot": 0.366,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.08,
+      "median_kill_gap_s": 70.062,
+      "sniper_share": 0.6923,
+      "wallbang_rate": 0.1923,
+      "behavior_context": "HS 46% \u00b7 1.8 shots/kill \u00b7 multi 2 \u00b7 burst 8%",
+      "mean_score": 0.213195,
+      "max_kill_score": 0.716326,
+      "shrunk_score": 0.227498,
+      "percentile": 67.5,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_1",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 2,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 26,
+      "headshot_rate": 0.1538,
+      "headshot_kills": 4,
+      "shots_per_kill": 2.962,
+      "kill_per_shot": 0.255,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.04,
+      "median_kill_gap_s": 86.219,
+      "sniper_share": 0.4615,
+      "wallbang_rate": 0.0769,
+      "behavior_context": "HS 15% \u00b7 3.0 shots/kill \u00b7 multi 2 \u00b7 burst 4%",
+      "mean_score": 0.200512,
+      "max_kill_score": 0.613081,
+      "shrunk_score": 0.216861,
+      "percentile": 62.1,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_10",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 3,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 16,
+      "headshot_rate": 0.4375,
+      "headshot_kills": 7,
+      "shots_per_kill": 6.0,
+      "kill_per_shot": 0.144,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.0667,
+      "median_kill_gap_s": 96.75,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.125,
+      "behavior_context": "HS 44% \u00b7 6.0 shots/kill \u00b7 multi 2 \u00b7 burst 7%",
+      "mean_score": 0.181609,
+      "max_kill_score": 0.38698,
+      "shrunk_score": 0.210244,
+      "percentile": 58.1,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_9",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 4,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 16,
+      "headshot_rate": 0.375,
+      "headshot_kills": 6,
+      "shots_per_kill": 1.688,
+      "kill_per_shot": 0.381,
+      "max_multikill_4s": 1,
+      "burst_fraction": 0.0,
+      "median_kill_gap_s": 77.422,
+      "sniper_share": 0.4375,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 38% \u00b7 1.7 shots/kill \u00b7 multi 1 \u00b7 burst 0%",
+      "mean_score": 0.156699,
+      "max_kill_score": 0.305431,
+      "shrunk_score": 0.191265,
+      "percentile": 46.6,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_4",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 5,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 23,
+      "headshot_rate": 0.3043,
+      "headshot_kills": 7,
+      "shots_per_kill": 4.826,
+      "kill_per_shot": 0.173,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.0455,
+      "median_kill_gap_s": 58.242,
+      "sniper_share": 0.3913,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 30% \u00b7 4.8 shots/kill \u00b7 multi 2 \u00b7 burst 5%",
+      "mean_score": 0.140938,
+      "max_kill_score": 0.478877,
+      "shrunk_score": 0.169677,
+      "percentile": 31.7,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_2",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 6,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 28,
+      "headshot_rate": 0.4286,
+      "headshot_kills": 12,
+      "shots_per_kill": 5.071,
+      "kill_per_shot": 0.166,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.037,
+      "median_kill_gap_s": 63.844,
+      "sniper_share": 0.0714,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 43% \u00b7 5.1 shots/kill \u00b7 multi 2 \u00b7 burst 4%",
+      "mean_score": 0.145584,
+      "max_kill_score": 0.371601,
+      "shrunk_score": 0.169264,
+      "percentile": 31.4,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_3",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 7,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 20,
+      "headshot_rate": 0.2,
+      "headshot_kills": 4,
+      "shots_per_kill": 6.95,
+      "kill_per_shot": 0.127,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.1053,
+      "median_kill_gap_s": 69.516,
+      "sniper_share": 0.1,
+      "wallbang_rate": 0.05,
+      "behavior_context": "HS 20% \u00b7 7.0 shots/kill \u00b7 multi 2 \u00b7 burst 11%",
+      "mean_score": 0.128605,
+      "max_kill_score": 0.372196,
+      "shrunk_score": 0.163259,
+      "percentile": 27.2,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_5",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 8,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 29,
+      "headshot_rate": 0.6207,
+      "headshot_kills": 18,
+      "shots_per_kill": 4.172,
+      "kill_per_shot": 0.195,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.0714,
+      "median_kill_gap_s": 72.539,
+      "sniper_share": 0.0345,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 62% \u00b7 4.2 shots/kill \u00b7 multi 2 \u00b7 burst 7%",
+      "mean_score": 0.127492,
+      "max_kill_score": 0.46907,
+      "shrunk_score": 0.153137,
+      "percentile": 20.4,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_8",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 9,
+      "review_reasons": [],
+      "review_reason_count": 0,
+      "kills": 26,
+      "headshot_rate": 0.2308,
+      "headshot_kills": 6,
+      "shots_per_kill": 5.962,
+      "kill_per_shot": 0.144,
+      "max_multikill_4s": 2,
+      "burst_fraction": 0.12,
+      "median_kill_gap_s": 63.797,
+      "sniper_share": 0.0769,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 23% \u00b7 6.0 shots/kill \u00b7 multi 2 \u00b7 burst 12%",
+      "mean_score": 0.11157,
+      "max_kill_score": 0.676396,
+      "shrunk_score": 0.142264,
+      "percentile": 13.4,
+      "flagged": false,
+      "reliable": true
+    },
+    {
+      "player": "Player_6",
+      "dataset_label": 0,
+      "tier": "below",
+      "review_rank": 10,
+      "review_reasons": [
+        "4s multikill>=3"
+      ],
+      "review_reason_count": 1,
+      "kills": 22,
+      "headshot_rate": 0.6364,
+      "headshot_kills": 14,
+      "shots_per_kill": 5.818,
+      "kill_per_shot": 0.148,
+      "max_multikill_4s": 3,
+      "burst_fraction": 0.1429,
+      "median_kill_gap_s": 67.766,
+      "sniper_share": 0.0,
+      "wallbang_rate": 0.0,
+      "behavior_context": "HS 64% \u00b7 5.8 shots/kill \u00b7 multi 3 \u00b7 burst 14%",
+      "mean_score": 0.100262,
+      "max_kill_score": 0.385379,
+      "shrunk_score": 0.137598,
+      "percentile": 10.5,
+      "flagged": false,
+      "reliable": true
+    }
+  ],
+  "kills": [
+    {
+      "player": "Player_1",
+      "kill_tick": 9564,
+      "score": 0.320676
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 23496,
+      "score": 0.075936
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 34955,
+      "score": 0.191925
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 43354,
+      "score": 0.161564
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 43815,
+      "score": 0.219957
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 45311,
+      "score": 0.165434
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 46737,
+      "score": 0.250496
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 61717,
+      "score": 0.172553
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 86526,
+      "score": 0.175638
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 97138,
+      "score": 0.126856
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 100336,
+      "score": 0.026434
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 108803,
+      "score": 0.143778
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 118539,
+      "score": 0.076236
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 119538,
+      "score": 0.165993
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 122056,
+      "score": 0.183782
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 126294,
+      "score": 0.099903
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 126909,
+      "score": 0.30482
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 132427,
+      "score": 0.482823
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 137574,
+      "score": 0.104204
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 138022,
+      "score": 0.264997
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 138252,
+      "score": 0.613081
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 149789,
+      "score": 0.122669
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 150391,
+      "score": 0.153711
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 162237,
+      "score": 0.146227
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 169790,
+      "score": 0.40094
+    },
+    {
+      "player": "Player_1",
+      "kill_tick": 175610,
+      "score": 0.062693
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 40778,
+      "score": 0.148017
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 49957,
+      "score": 0.146844
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 50593,
+      "score": 0.119057
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 60937,
+      "score": 0.106168
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 69285,
+      "score": 0.234531
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 71688,
+      "score": 0.340921
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 74577,
+      "score": 0.364228
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 81315,
+      "score": 0.328149
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 82007,
+      "score": 0.077915
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 117016,
+      "score": 0.338804
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 135648,
+      "score": 0.059711
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 137490,
+      "score": 0.029656
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 143682,
+      "score": 0.38698
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 145314,
+      "score": 0.07982
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 145410,
+      "score": 0.100296
+    },
+    {
+      "player": "Player_10",
+      "kill_tick": 171164,
+      "score": 0.044652
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 3464,
+      "score": 0.070229
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 4724,
+      "score": 0.127252
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 5678,
+      "score": 0.371601
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 6132,
+      "score": 0.358517
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 17111,
+      "score": 0.348829
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 17692,
+      "score": 0.073399
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 18255,
+      "score": 0.067657
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 23501,
+      "score": 0.300397
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 29880,
+      "score": 0.08213
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 31463,
+      "score": 0.133467
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 31807,
+      "score": 0.114027
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 35530,
+      "score": 0.063822
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 43133,
+      "score": 0.209486
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 81370,
+      "score": 0.031801
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 85456,
+      "score": 0.167199
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 97453,
+      "score": 0.196973
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 107664,
+      "score": 0.26779
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 107930,
+      "score": 0.053748
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 117012,
+      "score": 0.056952
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 117373,
+      "score": 0.126117
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 131041,
+      "score": 0.106474
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 131130,
+      "score": 0.128858
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 136989,
+      "score": 0.061391
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 144017,
+      "score": 0.039878
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 154039,
+      "score": 0.062077
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 162379,
+      "score": 0.228356
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 163856,
+      "score": 0.08762
+    },
+    {
+      "player": "Player_2",
+      "kill_tick": 165012,
+      "score": 0.140298
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 13144,
+      "score": 0.041471
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 13297,
+      "score": 0.132519
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 31013,
+      "score": 0.122969
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 50762,
+      "score": 0.099838
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 56727,
+      "score": 0.203881
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 61176,
+      "score": 0.024151
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 76600,
+      "score": 0.08445
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 77536,
+      "score": 0.100155
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 81686,
+      "score": 0.047211
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 82182,
+      "score": 0.113173
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 82461,
+      "score": 0.020579
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 89895,
+      "score": 0.06606
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 96562,
+      "score": 0.072425
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 100214,
+      "score": 0.231044
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 101818,
+      "score": 0.293877
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 101966,
+      "score": 0.130525
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 106685,
+      "score": 0.137025
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 157081,
+      "score": 0.036297
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 177319,
+      "score": 0.242244
+    },
+    {
+      "player": "Player_3",
+      "kill_tick": 177583,
+      "score": 0.372196
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 8581,
+      "score": 0.187627
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 9635,
+      "score": 0.03387
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 10156,
+      "score": 0.062529
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 18530,
+      "score": 0.369718
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 19686,
+      "score": 0.129543
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 23022,
+      "score": 0.070957
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 85180,
+      "score": 0.043073
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 97630,
+      "score": 0.053555
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 107018,
+      "score": 0.046783
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 111825,
+      "score": 0.085578
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 112167,
+      "score": 0.077461
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 116788,
+      "score": 0.127658
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 131345,
+      "score": 0.29137
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 131494,
+      "score": 0.088069
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 143500,
+      "score": 0.085068
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 143857,
+      "score": 0.107034
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 144305,
+      "score": 0.27022
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 147785,
+      "score": 0.100649
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 149280,
+      "score": 0.120864
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 149618,
+      "score": 0.09209
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 153593,
+      "score": 0.237215
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 167008,
+      "score": 0.478877
+    },
+    {
+      "player": "Player_4",
+      "kill_tick": 175046,
+      "score": 0.081766
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 2836,
+      "score": 0.318594
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 9074,
+      "score": 0.079991
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 13389,
+      "score": 0.037513
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 14304,
+      "score": 0.078534
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 14829,
+      "score": 0.300582
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 23828,
+      "score": 0.029633
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 28972,
+      "score": 0.46907
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 49250,
+      "score": 0.057251
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 49826,
+      "score": 0.119802
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 50203,
+      "score": 0.029391
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 56301,
+      "score": 0.005621
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 61271,
+      "score": 0.209416
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 61943,
+      "score": 0.027472
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 67879,
+      "score": 0.068639
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 68512,
+      "score": 0.146836
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 68831,
+      "score": 0.227534
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 89484,
+      "score": 0.113171
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 89923,
+      "score": 0.265802
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 92594,
+      "score": 0.108232
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 93361,
+      "score": 0.206425
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 96405,
+      "score": 0.1105
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 122570,
+      "score": 0.27317
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 122620,
+      "score": 0.095675
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 135547,
+      "score": 0.131185
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 153485,
+      "score": 0.037314
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 153722,
+      "score": 0.019113
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 160978,
+      "score": 0.043417
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 169777,
+      "score": 0.03071
+    },
+    {
+      "player": "Player_5",
+      "kill_tick": 177246,
+      "score": 0.056683
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 3299,
+      "score": 0.035005
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 3383,
+      "score": 0.027259
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 3422,
+      "score": 0.099146
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 18829,
+      "score": 0.0575
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 23527,
+      "score": 0.031073
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 24138,
+      "score": 0.096042
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 25866,
+      "score": 0.103545
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 26389,
+      "score": 0.178041
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 37412,
+      "score": 0.385379
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 43721,
+      "score": 0.173544
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 56267,
+      "score": 0.069277
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 56314,
+      "score": 0.081252
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 81819,
+      "score": 0.161776
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 82794,
+      "score": 0.030334
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 85317,
+      "score": 0.030524
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 85761,
+      "score": 0.134271
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 112615,
+      "score": 0.023476
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 116952,
+      "score": 0.034576
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 135281,
+      "score": 0.052367
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 161940,
+      "score": 0.040886
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 163918,
+      "score": 0.309615
+    },
+    {
+      "player": "Player_6",
+      "kill_tick": 176487,
+      "score": 0.050877
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 23712,
+      "score": 0.040558
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 35088,
+      "score": 0.05814
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 35514,
+      "score": 0.116995
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 35639,
+      "score": 0.044836
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 36493,
+      "score": 0.192882
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 40977,
+      "score": 0.183466
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 51569,
+      "score": 0.160972
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 52812,
+      "score": 0.0598
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 56975,
+      "score": 0.085629
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 58191,
+      "score": 0.435526
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 62735,
+      "score": 0.306787
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 64463,
+      "score": 0.716326
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 77604,
+      "score": 0.095238
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 87196,
+      "score": 0.260819
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 102338,
+      "score": 0.023947
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 110830,
+      "score": 0.531793
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 113918,
+      "score": 0.113092
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 117301,
+      "score": 0.416901
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 117933,
+      "score": 0.165637
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 122778,
+      "score": 0.189406
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 122973,
+      "score": 0.196405
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 131260,
+      "score": 0.316354
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 143303,
+      "score": 0.123553
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 161171,
+      "score": 0.330054
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 162056,
+      "score": 0.351363
+    },
+    {
+      "player": "Player_7",
+      "kill_tick": 176831,
+      "score": 0.026589
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 2862,
+      "score": 0.261333
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 13095,
+      "score": 0.052436
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 17515,
+      "score": 0.022196
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 17616,
+      "score": 0.036459
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 31223,
+      "score": 0.0435
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 57743,
+      "score": 0.151073
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 61559,
+      "score": 0.088101
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 67473,
+      "score": 0.323853
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 75740,
+      "score": 0.414976
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 76670,
+      "score": 0.104116
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 80753,
+      "score": 0.039569
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 85500,
+      "score": 0.082351
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 86462,
+      "score": 0.076684
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 93137,
+      "score": 0.072759
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 93260,
+      "score": 0.116598
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 96421,
+      "score": 0.012204
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 100397,
+      "score": 0.024128
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 100397,
+      "score": 0.052854
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 101551,
+      "score": 0.676396
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 105999,
+      "score": 0.038402
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 107850,
+      "score": 0.035413
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 111708,
+      "score": 0.023263
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 122678,
+      "score": 0.036698
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 123336,
+      "score": 0.031834
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 132037,
+      "score": 0.03073
+    },
+    {
+      "player": "Player_8",
+      "kill_tick": 148258,
+      "score": 0.052883
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 42460,
+      "score": 0.160884
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 49128,
+      "score": 0.085601
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 68245,
+      "score": 0.142177
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 71756,
+      "score": 0.027844
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 75666,
+      "score": 0.126068
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 91358,
+      "score": 0.054642
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 100361,
+      "score": 0.164953
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 106910,
+      "score": 0.087771
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 111865,
+      "score": 0.18073
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 137193,
+      "score": 0.142392
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 141514,
+      "score": 0.122375
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 167498,
+      "score": 0.295873
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 169477,
+      "score": 0.305431
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 170821,
+      "score": 0.174011
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 171262,
+      "score": 0.145896
+    },
+    {
+      "player": "Player_9",
+      "kill_tick": 174308,
+      "score": 0.29054
+    }
+  ]
+}

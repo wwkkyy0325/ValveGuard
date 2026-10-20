@@ -1,74 +1,108 @@
 # Model Card — ValveGuard Aim-Assist Detector v1
 
-Status: deployment-oriented artifact, 2026-10-18. Research model, not an
+Status: deployment-oriented artifact, 2026-10-20. Research model, not an
 automatic ban system.
 
 ## Model
 
-- Estimator: `HistGradientBoostingClassifier` (300 iterations, 31 leaves,
-  learning rate 0.05, L2 1.0), 59 handcrafted aim features.
-- Training data: all 79,533 clean CS2CD windows from 793 matches (ncdata label
-  0 plus cheater windows; cdata label-0 excluded). CS2 view data at 64 Hz.
-- Artifact: `artifacts/valveguard_gbdt_v1.joblib` (1.2 MB) plus a JSON sidecar
-  with version, feature order, threshold, prior, and k0.
+- Estimator: wide attention 1D CNN over 256 ticks and 29 aim channels
+  (4 conv blocks at 96/192/256/256, time attention, binary head).
+- Training data: 79,533 clean CS2CD windows from 793 matches (ncdata label 0
+  plus cheater windows; cdata label-0 excluded). CS2 view data at 64 Hz.
+- Fixed match folds from `reports/cv_gbdt/cv_predictions.parquet`; every
+  seed uses the same five folds.
+- Ensemble: 3 seeds (42/43/44) x 5 folds = 15 models, averaged. Negative
+  windows use hard-negative BCE weight `1 + 5 * p^2`.
+- Artifact: `artifacts/valveguard_cnn_v1` (local, not tracked): manifest,
+  channel names, per-seed normalization, fold models, human reference
+  distributions, SHA256 checksums. The loader verifies checksums and selects
+  channels by name.
 - Player score: empirical-Bayes shrinkage of the kill-score mean,
-  `(sum + 5 * prior) / (n + 5)`, prior 0.290, threshold 0.7916 at the training
-  player-level 1% FPR.
+  `(sum + 5 * prior) / (n + 5)`, prior 0.3018746, threshold **0.608027**
+  (OOF human player p99, target FPR 1%).
 
 ## Input contract
 
-One CS2 (Source 2) demo per inference call. Required per-tick fields at 64 Hz:
+Two supported paths:
 
-- attacker/victim `X`, `Y`, `Z`, `pitch`, `yaw`, `health`;
-- `active_weapon_name`, `flash_duration`, `shots_fired`, `is_alive`;
-- `total_rounds_played` (warm-up exclusion);
-- `player_death` events with attacker, victim, tick, headshot, thrusmoke,
-  penetrated, attackerinair;
-- map name in the demo header, one of the 15 maps in `MAP_BOUNDS`.
+1. **CS2CD cache (default demo path).** `(N, 256, 43)` float16 channels plus
+   `channel_names.json`. The artifact selects the 29 aim channels by name and
+   applies per-seed median/IQR normalization. Kill row is 223.
+2. **Arbitrary CS2 demo.** Parse the demo, build the same 256x43 windows, and
+   score them. Required per-tick fields at 64 Hz:
+   - attacker/victim `X`, `Y`, `Z`, `pitch`, `yaw`, `health`;
+   - `active_weapon_name`, `flash_duration`, `shots_fired`, `is_alive`;
+   - `total_rounds_played` (warm-up exclusion);
+   - `player_death` events with attacker, victim, tick, headshot, thrusmoke,
+     penetrated, attackerinair.
 
-Each kill with 223 ticks of history becomes a 256x44 window; fewer than 223
-ticks means the kill is skipped. No labels or raw mouse input are required.
+Each kill with 223 ticks of history becomes a window; fewer than 223 ticks
+means the kill is skipped. No labels or raw mouse input are required.
 
 ## Output contract
 
 ```json
 {
-  "demo": "match.dem",
-  "map": "de_mirage",
-  "model_version": "valveguard-gbdt-2026-10-18",
-  "threshold": 0.7916,
-  "prior": 0.2901,
-  "k0": 5.0,
+  "source": "CS2CD",
+  "match": "cdata:0",
+  "map": "mirage",
+  "artifact": "valveguard_cnn_v1",
+  "threshold": 0.608027,
   "players": [
-    {"steamid": "...", "name": "...", "kills": 18,
-     "mean_score": 0.42, "max_kill_score": 0.81,
-     "shrunk_score": 0.40, "flagged": false, "reliable": true}
-  ]
+    {"player": "Player_3", "dataset_label": 1, "tier": "flag",
+     "review_rank": 1, "kills": 29, "headshot_rate": 0.9655,
+     "shots_per_kill": 1.862, "max_multikill_4s": 4,
+     "burst_fraction": 0.3571, "shrunk_score": 0.708932,
+     "percentile": 99.8, "flagged": true, "reliable": true,
+     "review_reasons": ["HS>=80%", "smoke>=20%", "4s multikill>=3",
+                        "burst>=30%"]}
+  ],
+  "kills": [{"player": "Player_3", "kill_tick": 3496, "score": 0.61}]
 }
 ```
 
-- `shrunk_score` is the decision score; `flagged` is `shrunk_score >= threshold`.
+- `shrunk_score` is the decision score; `flagged` is
+  `shrunk_score >= threshold`.
+- `tier` is `flag`, `review` (human p95-p99 band), or `below`.
 - `reliable` is `kills >= 3`. Treat `flagged && !reliable` as insufficient
-  evidence for action, not as a detection.
+  evidence, not as a detection.
+- `review_reasons` and `review_rank` are review context only. They never
+  change the risk score or the flag.
 - Scores are risk scores, not calibrated probabilities (player ECE ~0.18).
 
-## Metrics (frozen evaluation)
+## Metrics (fixed match folds)
 
-| Setting | Player AUC | Recall@FPR=1% | Notes |
-|---|---|---|---|
-| 5-fold OOF, champion | 0.9331 | 0.1735 | headline |
-| dev 80%, 5-fold | 0.9294 | 0.1475 | development baseline |
-| locked holdout, trained on dev | 0.9384 | 0.3091 | one-shot, CI 0.187-0.523 |
-| dev 80% + shrinkage | 0.9316 | 0.2386 | player-scoring rule |
-| professional demos | -- | 0/70 players flagged | 1,075 kills, 7 demos |
+| Model | Player AUC | Recall@FPR=1% | Q4 FPR | Q4 recall | Kill AUC |
+|---|---|---|---|---|---|
+| Champion: 29ch wide CNN, 3 seeds, hard-neg | **0.9502** | **0.3619** | 3.11% | **39.1%** | **0.9015** |
+| Mean 29ch ensemble, no hard-neg | 0.9500 | 0.3121 | 2.59% | 33.9% | -- |
 
-Rank-stratified Q4 FPR after replication: **3.37%** at the player-level 1%
-cut (386 clean Q4 players), **2.59%** with shrinkage.
+- Champion vs GBDT baseline: Δrecall **+0.1223 [0.0476, 0.1988]**,
+  ΔAUC **+0.0165 [0.0120, 0.0211]**, ΔQ4 FPR +0.0030 [-0.0090, 0.0161].
+- Champion vs the mean ensemble: Δrecall **+0.0459 [0.0048, 0.0883]**,
+  ΔAUC +0.0002 [-0.0014, 0.0016], ΔQ4 FPR +0.0048 [-0.0057, 0.0158].
+- Professional demos (7 demos, 1,075 windows, 70 players): 0/70 players
+  flagged at the 1% operating point.
+- Q4 FPR at the correct player-level 1% cut is 3.11%.
+
+## Demo report
+
+`demo_report_dataset.py` scores one or more CS2CD matches and writes
+`result.json`, `review_queue.csv`, and three charts per match, plus a
+combined queue at the output root.
+
+- `cdata:0` (Mirage, 78 windows): 1 FLAG (`Player_3`, 0.709, p99.8, four
+  behavior reasons). The second labelled cheater is REVIEW at 0.399.
+- `ncdata:36` (Dust2, 232 windows): 0 FLAG / 0 REVIEW; top score 0.227
+  (p67.5).
+- These matches overlap the artifact fold models, so the demo is a path and
+  presentation check, not a held-out evaluation.
 
 ## Intended use
 
-- Post-match review and triage on CS2 demos, with a human analyst.
-- Batch scoring of demos; per-player risk ranking within a demo.
+- Post-match review and triage on CS2 demos or CS2CD windows, with a human
+  analyst.
+- Batch scoring; per-player risk ranking and a review queue.
 
 ## Out of scope
 
@@ -88,32 +122,31 @@ cut (386 clean Q4 players), **2.59%** with shrinkage.
   present but not dominant.
 - Professional players are not flagged, but professional demos are not a
   random sample of the ranked population.
-- The holdout was already used for the frozen evaluation; the shrinkage rule
-  is dev-validated only.
+- Behavior context is descriptive. In `cdata:0` a clean player with two
+  reasons ranks above a labelled cheater inside the REVIEW band.
+- The demonstration matches are in-sample for the fold ensemble; do not quote
+  their scores as generalization metrics.
 
 ## Retraining policy
 
-- **Batch retraining, not incremental.** The full model retrains in 1-2 minutes
-  on CPU; incremental GBDT updates risk catastrophic forgetting for no benefit.
+- **Batch retraining, not incremental.** The full ensemble retrains on the
+  training box; incremental updates risk catastrophic forgetting.
 - Retrain monthly or after a CS2 patch, on the same clean label policy.
-- Before promotion: dev 5-fold metrics, pro-demo specificity (0 players
+- Before promotion: fixed-fold metrics, pro-demo specificity (0 players
   flagged), and a score-distribution drift check against the previous model.
 - Version the artifact; keep the previous version for rollback.
 
 ## Reproduction
 
 ```bash
-# Build the artifact (all clean windows)
-PYTHONPATH=src python -m valveguard.scripts.train_final \
-  --features reports/baseline_clean/summary_features.parquet \
-  --cache data/processed/cw256 \
-  --out artifacts/valveguard_gbdt_v1.joblib
+# Dataset demo: two matches, combined review queue.
+PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
+  --match cdata:0 --match ncdata:36 --out reports/demo_dataset
 
-# Score one demo (~19 s for a 24-round map on CPU)
-PYTHONPATH=src python -m valveguard.scripts.score_demo \
-  --demo match.dem --model artifacts/valveguard_gbdt_v1.joblib \
-  --out result.json
+# Arbitrary CS2 demo through the same artifact.
+PYTHONPATH=src python -m valveguard.scripts.demo_report \
+  --demo match.dem --artifact artifacts/valveguard_cnn_v1 \
+  --out reports/demo_reports
 ```
 
-After `pip install -e .`, the console entry points are `valveguard-train` and
-`valveguard-score`.
+Training, ablations, and bootstrap protocol: `experiments.md` section 20.

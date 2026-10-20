@@ -12,6 +12,7 @@ from valveguard.scripts.demo_report import (
     _combine_review_queues,
     _review_reasons,
 )
+from valveguard.scripts.demo_report_dataset import KILL_ROW, build_frame
 
 
 def test_behavior_context():
@@ -40,6 +41,33 @@ def test_behavior_context():
     assert b["max_multikill_4s"] == 1
     assert b["burst_fraction"] == 0.0
     assert b["headshot_rate"] == 0.0
+
+
+def test_dataset_frame():
+    names = [
+        "attacker_weapon_knife", "attacker_weapon_auto_rifle",
+        "attacker_weapon_semi_rifle", "attacker_weapon_pistol",
+        "attacker_weapon_grenade", "attacker_weapon_smg",
+        "attacker_weapon_shotgun", "is_kill_headshot",
+        "is_kill_through_smoke", "is_kill_wallbang", "attacker_midair",
+        "attacker_shot",
+    ]
+    position = {name: i for i, name in enumerate(names)}
+    channels = np.zeros((2, 256, len(names)), dtype=np.float32)
+    channels[0, KILL_ROW, position["is_kill_headshot"]] = 1.0
+    channels[0, KILL_ROW, position["attacker_weapon_semi_rifle"]] = 1.0
+    channels[0, :KILL_ROW, position["attacker_shot"]] = 1.0
+    rows = pd.DataFrame({
+        "player_name": ["Player_1", "Player_2"],
+        "kill_tick": [1000, 1100],
+        "label": [1, 0],
+    })
+    frame = build_frame(rows, channels, names)
+    assert frame.loc[0, "headshot"] == 1.0
+    assert frame.loc[0, "weapon_class"] == 2
+    assert frame.loc[0, "shots"] == KILL_ROW
+    assert frame.loc[1, "headshot"] == 0.0
+    assert frame.loc[1, "weapon_class"] == 3
 
 
 def test_review_reasons():

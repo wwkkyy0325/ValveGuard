@@ -39,5 +39,5 @@ existing windows first. Only then add new behavioral channels.
 - [x] Fuse the best two views and decide the champion.
       Result: post-hoc view fusion was negative, so no fusion is used.
       Champion is the 3-seed hard-negative (alpha=5) aim-only CNN:
-      recall 0.3619, AUC 0.9502, Q4 FPR 3.11%. The 5E demo re-scored
-      clean (0 flagged, top shrunk 0.2374).
+      recall 0.3619, AUC 0.9502, Q4 FPR 3.11%. The dataset demo (`cdata:0`)
+      flags the labelled cheater and leaves the clean match unflagged.

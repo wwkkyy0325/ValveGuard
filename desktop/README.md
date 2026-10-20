@@ -12,7 +12,7 @@ cargo build --release
 
 ```bash
 ./target/release/valveguard-desktop \
-  --demo "D:/5EDemocache/g161-...zip" \
+  --demo "D:/demos/match.dem" \
   --model ../artifacts/valveguard_gbdt_v1.model.json \
   --out result.json
 ```
@@ -40,7 +40,7 @@ Debug options:
 - JSON tree-ensemble scoring (300 trees, 931 KB).
 - Player aggregation with empirical-Bayes shrinkage.
 
-## Validation (5E dust2 sample, 2026-10-18)
+## Validation (local Dust2 demo, 2026-10-18)
 
 - 129 of 145 kills used (short-history and warm-up kills dropped).
 - 10 players, 0 flagged.

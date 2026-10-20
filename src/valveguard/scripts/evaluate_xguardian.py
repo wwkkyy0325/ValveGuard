@@ -1,4 +1,4 @@
-"""External check on the XGuardian processed CSVs (5EPlay, 96-tick windows)."""
+"""External check on the XGuardian processed CSVs (CS2, 96-tick windows)."""
 from __future__ import annotations
 
 import argparse

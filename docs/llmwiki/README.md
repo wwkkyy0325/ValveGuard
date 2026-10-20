@@ -11,16 +11,18 @@ Start here when resuming work.
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
 | `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |
-| `windows-app.md` | Windows/Tauri app plan, 5E demo handling, and review UX. |
+| `windows-app.md` | Windows/Tauri app plan, demo input handling, and review UX. |
 | `remote-training.md` | LAN training box layout, environment, commands, and cleanup. |
 | `segment-features.md` | Movement/pre-aim segmentation pilot and its negative result. |
 | `next-session.md` | Frozen-state record, executed v2 protocol, and remaining work. |
 | `changelog.md` | Append-only dated record of changes, results, and corrections. |
 | `tasks/aimbot-detection.md` | Task breakdown with checkboxes and verify steps. |
+| `tasks/demo-artifact.md` | Demo report, review queue, packaging, and regression tests. |
 
 ## Conventions
 
-- Living documents are updated in place; `changelog.md` is append-only.
+- Living documents are updated in place; `changelog.md` is append-only, except
+  for privacy and scope cleanups (recorded as their own entry).
 - Numbers that were later corrected keep their original changelog entry and
   gain a correction entry; living docs carry the corrected number.
 - Every experiment writes its artifacts under `reports/<name>/` and is
@@ -28,10 +30,11 @@ Start here when resuming work.
 
 ## Current headline
 
-Aim-only GBDT, 5-fold match-disjoint OOF: player AUC 0.9331,
-recall@FPR=1% 0.1735. Player-score shrinkage (k0=5) raises recall to 0.2288
-and cuts the replicated Q4 FPR from 3.37% to 2.59%; it is dev-validated only
-because the holdout was already spent.
+Aim-only 29-channel wide CNN, 3 seeds x 5 fixed match folds, hard-negative
+BCE alpha=5: player AUC **0.9502**, recall@FPR=1% **0.3619**, Q4 FPR **3.11%**,
+Q4 recall **39.1%**, kill AUC **0.9015**. The packaged artifact is
+`artifacts/valveguard_cnn_v1`; the demo path scores CS2CD match windows and
+writes a player report and review queue under `reports/demo_dataset/`.
 
-The offline aim generator and its CS2/ViZDoom demos were split into the sibling
-project `AimForge` on 2026-10-20. This repository contains the detector only.
+This repository contains the detector only. Demo reports use the CS2CD
+dataset; no external demo data is required.

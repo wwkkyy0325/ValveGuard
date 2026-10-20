@@ -2,7 +2,7 @@
 
 Status: detector-first (2026-10-17)
 
-> **Scope split (2026-10-20):** this repository is detector-only. The conditional generator, its design, and its demos were split into the sibling project `AimForge`.
+> **Scope (2026-10-20):** this repository is detector-only.
 
 This document supersedes the model sketch in `design.md`. It is written to be implementation-ready and paper-grade: every modeling choice has a stated motivation, a verification step, and a leakage/robustness check.
 
@@ -84,7 +84,7 @@ CS2CD anonymizes each match independently: `steamid_to_player = {steamid: f'Play
 - True person-disjoint evaluation is **not verifiable** on CS2CD.
 - Use **match-disjoint 5-fold** (no match in two splits), stratified by cheater presence.
 - Do not claim person-disjoint; state the limitation explicitly.
-- A true person-disjoint check requires a dataset with stable IDs (e.g., XGuardian/5EPlay if IDs persist, self-collected demos with Steam IDs, or the same-player-verification DPER/DPRO datasets).
+- A true person-disjoint check requires a dataset with stable IDs (e.g., XGuardian if IDs persist, self-collected demos with Steam IDs, or the same-player-verification DPER/DPRO datasets).
 - Within a match, player-level aggregation and the HMM are still valid; cross-match self-baseline is not available from CS2CD alone.
 - The test fold is locked: no hyperparameter, threshold, or feature selection on it.
 - Report both kill-level and player-level metrics; player-level is primary.
@@ -313,11 +313,6 @@ This directly answers "single kill vs all kills": one anomalous kill is weak evi
 - **Fusion**: spatial token added to each scale's CLS; cross-attention between attacker/victim; scale attention.
 - **External context**: round phase, economy/buy type, score, player count, bomb state, weapon, opponent skill. Use conditioning; exclude `server`, `match_making_type`, and raw match IDs from features (they can leak label collection).
 - **Player history**: if available, a same-player style embedding from previous matches; otherwise within-match non-kill style only. Never use future matches.
-
-## 8. Model B (moved)
-
-The conditional trajectory generator is no longer part of this repository. Its
-formulation, implementation, and evaluation live in `AimForge`.
 
 ## 9. Training Protocol
 

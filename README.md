@@ -1,7 +1,8 @@
 # ValveGuard
 
-CS2 aim-assist detection from kill-centred view trajectories. Detector only;
-the offline generator/demo work lives in the sibling project `AimForge`.
+CS2 aim-assist detection from kill-centred view trajectories. The repository
+contains the detector, the packaged scoring artifact, and a dataset-backed
+demo report; it does not include game-client or overlay tooling.
 
 ## Data
 
@@ -43,13 +44,15 @@ PYTHONPATH=src .venv/Scripts/python -m valveguard.scripts.run_baseline \
 # Tests.
 python -I -m pytest -q tests
 
-# Build the deployment artifact (1.2 MB) and score a demo.
-PYTHONPATH=src python -m valveguard.scripts.train_final \
-  --features reports/baseline_clean/summary_features.parquet \
-  --cache data/processed/cw256 --out artifacts/valveguard_gbdt_v1.joblib
-PYTHONPATH=src python -m valveguard.scripts.score_demo \
-  --demo match.dem --model artifacts/valveguard_gbdt_v1.joblib \
-  --out result.json
+# Score two CS2CD matches with the packaged CNN artifact and write a report.
+# The artifact bundle is local; rebuild it from the saved fold models.
+PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
+  --match cdata:0 --match ncdata:36 --out reports/demo_dataset
+
+# Optional: score an arbitrary CS2 demo through the same artifact.
+PYTHONPATH=src python -m valveguard.scripts.demo_report \
+  --demo match.dem --artifact artifacts/valveguard_cnn_v1 \
+  --out reports/demo_reports
 ```
 
 Model card: `docs/llmwiki/model-card.md`.
@@ -104,27 +107,21 @@ docs/llmwiki/           design, detailed model spec, task plan, changelog
 - Reported metrics must include the low-FPR operating point; accuracy alone is
   not a deployment criterion.
 
-## Status (v2 checkpoint, 2026-10-17)
+## Status (2026-10-20)
 
-Detector v1 remains the champion; the v2 hypotheses did not beat it:
+Champion: aim-only 29-channel wide CNN, 3 seeds x 5 fixed match folds,
+hard-negative BCE alpha=5. OOF: player AUC **0.9502**, recall@FPR=1%
+**0.3619**, kill AUC **0.9015**, Q4 FPR **3.11%**, Q4 recall **39.1%**.
+Paired bootstrap vs the GBDT baseline: Δrecall +0.1223 [0.0476, 0.1988],
+ΔAUC +0.0165 [0.0120, 0.0211].
 
-- Champion: aim-only GBDT, 5-fold match-disjoint OOF:
-  - player AUC 0.9331, player recall@FPR=1% 0.1735, kill AUC 0.8497.
-- Locked 20% match holdout (158 matches): champion trained on the dev 80%
-  scores player AUC 0.9384, recall@FPR=1% 0.3091 (CI 0.187–0.523).
-- H1 43-channel Transformer on dev 80%: 0.9251 / 0.2297; paired ΔAUC
-  [-0.0153, 0.0057], Δrecall [-0.0071, 0.1809] — not promoted.
-- H2 1024-tick context: no gain (ΔAUC [-0.0055, 0.0078]) — rejected.
-- H3 rank-group DRO: no change — rejected.
-- Professional demos (7 HLTV demos, 1,075 windows, 70 players): 0/70 players
-  flagged at the 1% operating point; adding them as negatives changes nothing.
-- Q4 false positives were first understated by a threshold error, then
-  re-estimated on a larger rank sample: at the correct player-level 1% cut the
-  Q4 FPR is **3.37%** (386 clean Q4 players), reduced to **2.59%** by
-  empirical-Bayes shrinkage. The earlier 19%/13% figures came from a
-  38-42-player subset and were small-sample estimates.
-- Shrinkage of player scores by kill count (k0=5) also raises
-  recall@FPR=1% from 0.1735 to 0.2288 (dev80: 0.1475 -> 0.2386) with
-  non-inferior AUC. The holdout was already spent, so this is dev-validated
-  only.
-- Reports: `reports/REPORT.md` (sections 11-14); figures: `reports/figures/`.
+- Dataset demo: `cdata:0` (Mirage) flags the labelled cheater `Player_3` at
+  0.709 (human p99.8) with four behavior reasons; the second labelled cheater
+  lands in REVIEW at 0.399. `ncdata:36` (Dust2, clean) has 0 FLAG/REVIEW.
+- Demo scores are not held-out metrics: the demonstration matches overlap the
+  artifact fold models. Use the fixed-fold table in `experiments.md` for
+  held-out numbers.
+- Professional demos (7 demos, 1,075 windows, 70 players): 0/70 players
+  flagged at the 1% operating point.
+- Reports: `reports/REPORT.md`; artifact: `artifacts/valveguard_cnn_v1`
+  (local, not tracked).
