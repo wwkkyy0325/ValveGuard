@@ -28,8 +28,9 @@ E:\ValveGuardWork\
   data\processed\pro_windows\
   data\processed\5e_windows\
   data\processed\events_cs2cd\  63 raw event features, 20,252 kill windows
+  data\processed\events_cs2cd_400\  200+200 match event features
   data\raw\5e_sample\        three 5E demos
-  data\raw\cs2cd_subset\     100+100 matches complete; 200+200 in progress
+  data\raw\cs2cd_subset\     200+200 matches (800 files, ~22.9 GB)
   downloads\                 reserved for new datasets
   runs\                      experiment outputs
   logs\                      process logs
