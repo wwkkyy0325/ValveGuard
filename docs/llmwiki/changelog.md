@@ -934,3 +934,14 @@
   score and flag logic are unchanged.
 - Banned 5E case: HS 100%, 0.9 shots/kill, 4 kills in 4s, burst 50%.
 - Clean 5E demo: HS 38-100%, 1.2-4.9 shots/kill, max 2 in 4s.
+
+## 2026-10-20 (review queue ordering)
+
+- Added `review_reasons` and `review_queue.csv` to the demo report.
+- FLAG players first; REVIEW players ordered by behavior reason count, then
+  aim score; below-threshold players by aim score.
+- Reasons: HS >= 80%, <= 1.5 shots/kill, 4s multikill >= 3, burst >= 30%,
+  sniper headshots, wallbang/smoke >= 20%.
+- The flag rule and risk score are unchanged.
+- Banned 5E case: REVIEW with 4 reasons, queue rank 1; second player has
+  HS 100% but one reason and stays below.

@@ -895,3 +895,20 @@ Single seed (seed 42):
   shots per kill, at most 2 in four seconds).
 - Artifact: demo reports `players.png`, `behavior.png`,
   `kill_windows.png`, `result.json`.
+
+### Review queue ordering (review-only)
+
+- Added `review_queue.csv` and a review priority order to the demo report.
+  The flag rule is unchanged: FLAG is still aim score >= human p99.
+- Order: FLAG first; within REVIEW, more behavior reasons first, then aim
+  score; below-threshold players last by aim score. Behavior reasons never
+  move a player across tiers.
+- Reason rules: HS >= 80%, <= 1.5 shots/kill, 4-second multikill >= 3,
+  burst >= 30%, sniper headshots, wallbang/smoke >= 20%.
+- Banned 5E case: REVIEW, 4 reasons (HS, efficiency, 4s multikill, burst),
+  queue rank 1. The second player also has HS 100% but only 1 reason and
+  stays below.
+- Clean 5E demo: no FLAG/REVIEW; the queue is ordered by aim score, with
+  reasons shown for context.
+- Artifact: `review_queue.csv`, `behavior.png`, `result.json`; the
+  `behavior.png` table uses short reason codes.

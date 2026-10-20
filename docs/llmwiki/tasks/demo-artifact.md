@@ -15,6 +15,9 @@ Champion: `artifacts/valveguard_cnn_v1` (aim-only 29-channel wide CNN,
       Verify: 5E Dust2 demo gives 10 players, 0 flags, top shrunk 0.2374.
 - [x] Charts: player-vs-human distribution and per-player kill windows.
       Verify: both PNGs render and the footer explains the axes.
+- [x] Review queue: behavior reasons order REVIEW players; flag unchanged.
+      Verify: banned 5E case ranks first with 4 reasons; clean demo has no
+      FLAG/REVIEW.
 - [ ] ONNX export and desktop loader.
       Verify: PyTorch vs ONNX max abs difference < 1e-5.
 - [ ] `compare_demos.py` human / synthetic / cheater harness.
