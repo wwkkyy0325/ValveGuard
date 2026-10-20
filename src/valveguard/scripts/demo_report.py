@@ -53,6 +53,27 @@ def _tier(score: float, threshold: float, p95: float) -> str:
     return "below"
 
 
+def _review_reasons(row) -> list[str]:
+    reasons = []
+    kills = int(row["kills"])
+    if kills >= 3:
+        if row["headshot_rate"] >= 0.80:
+            reasons.append("HS>=80%")
+        if row["shots_per_kill"] <= 1.5:
+            reasons.append("<=1.5 shots/kill")
+        if row["sniper_share"] >= 0.50 and row["headshot_rate"] >= 0.80:
+            reasons.append("sniper HS")
+        if row["wallbang_rate"] >= 0.20:
+            reasons.append("wallbang>=20%")
+        if row["smoke_rate"] >= 0.20:
+            reasons.append("smoke>=20%")
+    if row["max_multikill_4s"] >= 3:
+        reasons.append("4s multikill>=3")
+    if kills >= 4 and row["burst_fraction"] >= 0.30:
+        reasons.append("burst>=30%")
+    return reasons
+
+
 def _behavior_context(frame: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for player, group in frame.groupby("player_name", sort=False):
@@ -116,7 +137,7 @@ def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
     rows.axvline(threshold, color=FLAG, linestyle="--", linewidth=1.2)
     rows.text(threshold + 0.005, -0.95, "flag threshold = human p99",
               fontsize=7.5, color=FLAG, va="bottom")
-    order = players.sort_values("shrunk_score", ascending=False).reset_index(drop=True)
+    order = players.sort_values("review_rank").reset_index(drop=True)
     for i, row in order.iterrows():
         if row["flagged"]:
             color = FLAG
@@ -127,6 +148,8 @@ def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
         rows.plot([row["shrunk_score"]], [i], "o", color=color, markersize=7,
                   markeredgecolor="white", markeredgewidth=1.2, zorder=3)
         tier = "FLAG" if row["flagged"] else ("REVIEW" if row["shrunk_score"] >= p95 else "")
+        if tier and int(row.get("review_reason_count", 0)):
+            tier = f"{tier} · {int(row['review_reason_count'])} reasons"
         label = (f"{int(row['kills'])} kills  |  {row['shrunk_score']:.3f}"
                  f"  |  p{row['percentile']:.0f}" + (f"  |  {tier}" if tier else ""))
         if "behavior_context" in row and isinstance(row["behavior_context"], str):
@@ -140,8 +163,9 @@ def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
     rows.set_xlim(0, 0.85)
     rows.text(0.86, -0.95, "kills | score | human percentile", fontsize=7,
               color=MUTED, clip_on=False, va="bottom")
-    leader = order.iloc[0]
-    second = float(order.iloc[1]["shrunk_score"]) if len(order) > 1 else 0.0
+    by_score = players.sort_values("shrunk_score", ascending=False).reset_index(drop=True)
+    leader = by_score.iloc[0]
+    second = float(by_score.iloc[1]["shrunk_score"]) if len(by_score) > 1 else 0.0
     gap = float(leader["shrunk_score"]) - second
     rows.text(0.0, -0.95,
               f"top: {_display_name(leader['steamid'], names)}  "
@@ -215,9 +239,18 @@ def _player_panels(players: pd.DataFrame, frame: pd.DataFrame,
 
 def _behavior_table(players: pd.DataFrame, names: dict[str, str],
                     p95: float, out: Path) -> None:
-    order = players.sort_values("shrunk_score", ascending=False).reset_index(drop=True)
-    headers = ["Player", "Score", "Tier", "Kills", "HS%", "Shots/K",
-               "4s max", "Burst%", "Gap s", "Sniper%"]
+    order = players.sort_values("review_rank").reset_index(drop=True)
+    headers = ["#", "Player", "Score", "Tier", "Kills", "HS%", "Shots/K",
+               "4s max", "Burst%", "Gap s", "Sniper%", "Reasons"]
+    reason_codes = {
+        "HS>=80%": "HS",
+        "<=1.5 shots/kill": "eff",
+        "sniper HS": "sniper",
+        "wallbang>=20%": "wall",
+        "smoke>=20%": "smoke",
+        "4s multikill>=3": "multi4",
+        "burst>=30%": "burst",
+    }
     table_rows = []
     for _, row in order.iterrows():
         tier = "FLAG" if row["flagged"] else (
@@ -225,6 +258,7 @@ def _behavior_table(players: pd.DataFrame, names: dict[str, str],
         )
         gap = row["median_kill_gap_s"]
         table_rows.append([
+            str(int(row["review_rank"])),
             _display_name(row["steamid"], names),
             f"{row['shrunk_score']:.3f}",
             tier,
@@ -235,23 +269,28 @@ def _behavior_table(players: pd.DataFrame, names: dict[str, str],
             f"{row['burst_fraction']:.0%}",
             "—" if not np.isfinite(gap) else f"{gap:.1f}",
             f"{row['sniper_share']:.0%}",
+            ", ".join(reason_codes.get(value, value)
+                      for value in row["review_reasons"]) if row["review_reasons"] else "—",
         ])
-    fig, ax = plt.subplots(figsize=(12, 0.45 * len(order) + 1.6))
+    fig, ax = plt.subplots(figsize=(14, 0.45 * len(order) + 1.6))
     ax.axis("off")
     table = ax.table(cellText=table_rows, colLabels=headers, loc="center",
                      cellLoc="center")
     table.auto_set_font_size(False)
     table.set_fontsize(8)
     table.scale(1, 1.45)
+    widths = [0.03, 0.14, 0.06, 0.08, 0.05, 0.05, 0.06, 0.06,
+              0.06, 0.05, 0.07, 0.23]
     for (row, col), cell in table.get_celld().items():
+        cell.set_width(widths[col])
         cell.set_edgecolor("#e8eaed")
         if row == 0:
             cell.set_facecolor("#f1f3f4")
             cell.set_text_props(weight="bold", color=INK)
-        elif col == 2:
-            label = table_rows[row - 1][2]
-            cell.set_text_props(color=FLAG if label == "FLAG"
-                                else (WARN if label == "REVIEW" else MUTED))
+        elif col == 3:
+            label = table_rows[row - 1][3]
+            cell.set_text_props(color=FLAG if label.startswith("FLAG")
+                                else (WARN if label.startswith("REVIEW") else MUTED))
     ax.set_title("Behavior context (review only; not part of the score)",
                  loc="left", fontsize=11, color=INK, pad=12)
     note = (
@@ -259,8 +298,10 @@ def _behavior_table(players: pd.DataFrame, names: dict[str, str],
         "fired per kill (lower is more efficient). 4s max = maximum kills "
         "inside any four-second window. Burst% = share of kills within four "
         "seconds of the previous kill. Gap s = median seconds between kills. "
-        "Sniper% = share of kills with a sniper rifle. These columns are for "
-        "human review only and never change the risk score or the flag."
+        "Sniper% = share of kills with a sniper rifle. Reason codes: HS=headshot "
+        "rate, eff=shots per kill, multi4=4-second multikill, burst=burst share, "
+        "wall=wallbang, smoke=smoke. They only order the review queue and never "
+        "change the risk score or the flag; full text is in review_queue.csv."
     )
     fig.text(0.01, 0.01, textwrap.fill(note, 150), fontsize=7, color=MUTED)
     fig.tight_layout(rect=(0, 0.05, 1, 1))
@@ -288,6 +329,21 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
         float((detector.human_player_scores < value).mean() * 100.0)
         for value in players["shrunk_score"]
     ]
+    players["tier"] = [
+        _tier(float(value), threshold, p95) for value in players["shrunk_score"]
+    ]
+    players["review_reasons"] = players.apply(_review_reasons, axis=1)
+    players["review_reason_count"] = players["review_reasons"].apply(len)
+    tier_rank = {"flag": 0, "review": 1, "below": 2}
+    players["_tier_rank"] = players["tier"].map(tier_rank)
+    players["_reason_sort"] = players["review_reason_count"].where(
+        players["tier"] != "below", 0
+    )
+    players = players.sort_values(
+        ["_tier_rank", "_reason_sort", "shrunk_score"],
+        ascending=[True, False, False],
+    ).reset_index(drop=True)
+    players["review_rank"] = np.arange(1, len(players) + 1)
 
     out.mkdir(parents=True, exist_ok=True)
     reference = {"human_player_scores": detector.human_player_scores,
@@ -306,7 +362,10 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
             {
                 "steamid": row.steamid,
                 "name": row.name,
-                "tier": _tier(float(row.shrunk_score), threshold, p95),
+                "tier": row.tier,
+                "review_rank": int(row.review_rank),
+                "review_reasons": list(row.review_reasons),
+                "review_reason_count": int(row.review_reason_count),
                 "kills": int(row.kills),
                 "headshot_rate": round(float(row.headshot_rate), 4),
                 "headshot_kills": int(row.headshot_kills),
@@ -335,6 +394,14 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
         ],
     }
     (out / "result.json").write_text(json.dumps(result, indent=2))
+    queue = players[[
+        "review_rank", "steamid", "name", "tier", "shrunk_score",
+        "percentile", "kills", "review_reasons",
+    ]].copy()
+    queue["review_reasons"] = queue["review_reasons"].apply(
+        lambda values: "; ".join(values)
+    )
+    queue.to_csv(out / "review_queue.csv", index=False)
     _summary_plot(players, reference, threshold, p95, names, out / "players.png")
     _player_panels(players, frame, reference, names, threshold, p95,
                    out / "kill_windows.png")
