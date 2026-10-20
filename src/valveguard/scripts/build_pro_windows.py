@@ -61,7 +61,9 @@ def demo_windows(path: Path) -> pd.DataFrame:
 
     rows = []
     for _, ev in events.sort_values("tick").iterrows():
-        if pd.isna(ev["attacker_steamid"]) or ev["attacker_steamid"] == ev["user_steamid"]:
+        attacker_id = ev["attacker_steamid"]
+        victim_id = ev["user_steamid"]
+        if pd.isna(attacker_id) or pd.isna(victim_id) or attacker_id == victim_id:
             continue
         if ev["attacker_steamid"] not in by_player or ev["user_steamid"] not in by_player:
             continue
@@ -73,7 +75,10 @@ def demo_windows(path: Path) -> pd.DataFrame:
         ]
         # total_rounds_played is 0 during the whole first round, so it cannot
         # be used to exclude warm-up.  The warm-up flag is explicit.
-        if len(kill_row) == 0 or bool(kill_row["is_warmup_period"].iloc[0]):
+        if len(kill_row) == 0:
+            continue
+        warm = kill_row["is_warmup_period"].iloc[0]
+        if pd.notna(warm) and bool(warm):
             continue
         tick_range = np.arange(kill_tick - KILL_ROW, kill_tick + 33)
         attacker = by_player[ev["attacker_steamid"]]

@@ -85,10 +85,18 @@ def build_window(
     out["attacker_shot"] = np.clip(np.diff(shots, prepend=shots[0]), 0.0, None)
     out["attacker_kill"] = (ticks == kill_tick).astype(float)
 
-    out["is_kill_headshot"] = float(bool(event.get("headshot", False)))
-    out["is_kill_through_smoke"] = float(bool(event.get("thrusmoke", False)))
-    out["is_kill_wallbang"] = float(int(event.get("penetrated", 0)) > 0)
-    out["attacker_midair"] = float(bool(event.get("attackerinair", False)))
+    def flag(name: str) -> float:
+        value = event.get(name, False)
+        return 0.0 if pd.isna(value) else float(bool(value))
+
+    def number(name: str) -> float:
+        value = event.get(name, 0)
+        return 0.0 if pd.isna(value) else float(value)
+
+    out["is_kill_headshot"] = flag("headshot")
+    out["is_kill_through_smoke"] = flag("thrusmoke")
+    out["is_kill_wallbang"] = float(number("penetrated") > 0)
+    out["attacker_midair"] = flag("attackerinair")
 
     wc = a["active_weapon_name"].map(weapon_class).to_numpy()
     for i, col in enumerate(WEAPON_COLUMNS):
