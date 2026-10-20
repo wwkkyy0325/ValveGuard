@@ -601,3 +601,17 @@
   (1,496 files, ~43.5 GB).
 - Built full-cohort event features: 78,202 windows over 701 matches; 93
   missing raw files were skipped. Full pilot and aim-only pilot started.
+
+## 2026-10-20 (full-cohort event replication)
+
+- 700 matches / 67,067 clean windows / 4,947 players (1,284 cheater players).
+- base: kill AUC 0.8794, player AUC 0.9284, recall@FPR1 0.2087.
+- all events: kill AUC 0.9005, player AUC 0.9339, recall 0.2111.
+- aim-only: kill AUC 0.8937, player AUC 0.9295, recall 0.1908.
+- Bootstrap: all vs base Δkill +0.0212 [0.0171, 0.0253], Δplayer AUC
+  +0.0057 [0.0030, 0.0084], Δrecall +0.0072 [-0.0353, 0.0493].
+- Rank/weapon layers: Q4 FPR 3.14% -> 2.86% (all), Q4 recall 24.5% -> 21.4%;
+  sniper FPR ~5.6-6.0%; auto rifle FPR ~0%; pistol recall 4.0% -> 9.7%.
+- Decision: not promoted. Event features improve ranking, not low-FPR recall;
+  Q4 improves slightly but Q2/Q3 regress. Recorded in `experiments.md`
+  section 18; artifacts under `reports/events_pilot_full/`.

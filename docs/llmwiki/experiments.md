@@ -371,3 +371,44 @@ existing OOF kill scores with context weights; no retraining.
   `ablation.json`, `aim_metrics.json`, `aim_bootstrap.json`,
   `event_shortcuts.csv`, `layers.json`, `base_layers/layers.json`,
   `oof.parquet`, `event_features.parquet`).
+
+## 18. Full-cohort event replication (2026-10-20)
+
+- Full raw cohort: 317 cheater-present + 431 clean matches; 78,202 event
+  windows built; clean-label fold input 67,067 windows over 700 matches,
+  4,947 players, 1,284 cheater players.
+- Same 79 base + 63 event features, 5-fold GroupKFold, GBDT.
+
+| Arm | Kill AUC | Player AUC | Recall@FPR1 |
+|---|---|---|---|
+| base | 0.8794 | 0.9284 | 0.2087 |
+| + aim (recoil+fire+mouse) | 0.8937 | 0.9295 | 0.1908 |
+| + all events | **0.9005** | **0.9339** | **0.2111** |
+
+- 500-replicate match-grouped bootstrap:
+  - all vs base: Δkill AUC **+0.0212** [0.0171, 0.0253]; Δplayer AUC
+    **+0.0057** [0.0030, 0.0084]; Δplayer recall +0.0072
+    [-0.0353, +0.0493].
+  - aim vs base: Δkill AUC **+0.0144** [0.0107, 0.0183]; Δplayer AUC
+    +0.0013 [-0.0014, +0.0037]; Δplayer recall -0.0024
+    [-0.0404, +0.0363].
+- The kill and player AUC gains replicate on the full cohort; the low-FPR
+  recall gain does **not**. Aim-only features are a kill-level signal, not a
+  player-level one.
+- Rank/weapon layers (full cohort):
+  - Q4 FPR: base 3.14%, all 2.86%, aim 2.86%; Q4 recall 24.5% / 21.4% / 20.8%.
+    Q4 FPR improves slightly, but Q2/Q3 FPR worsens slightly (Q2 0.89% ->
+    1.24%, Q3 0.75% -> 0.94%).
+  - Sniper: FPR 6.0% / 5.6% / 5.7%, recall 25.5% / 26.5% / 25.9%.
+    Auto rifle: FPR ~0%, recall 0.6% -> 3.1% (all). Pistol: FPR 0.26% ->
+    0.54%, recall 4.0% -> 9.7%.
+  - The sniper group remains the dominant false-positive source; auto-rifle
+    and pistol gains are large in relative terms but small in absolute recall.
+- Decision: **not promoted**. Event features improve ranking but not the
+  primary low-FPR recall; Q4 FPR improves only slightly and Q2/Q3 regress.
+  The next candidates are target-acquisition/first-shot sequence features and
+  a GPU sequence model; GBDT cannot use the 5070 Ti.
+- Artifact: `reports/events_pilot_full/` (`metrics.json`, `bootstrap.json`,
+  `aim_metrics.json`, `aim_bootstrap.json`, `layers_base.json`,
+  `layers_all.json`, `layers_aim.json`, `oof.parquet`,
+  `event_features.parquet`).
