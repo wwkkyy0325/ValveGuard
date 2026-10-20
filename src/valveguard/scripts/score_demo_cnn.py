@@ -9,13 +9,21 @@ import numpy as np
 import pandas as pd
 import torch
 
-from valveguard.features.raw_window import build_window
+from valveguard.features.raw_window import build_window, weapon_class
 from valveguard.features.summarize import per_tick_channels
 from valveguard.scripts.build_pro_windows import KILL_ROW, parse_demo
 from valveguard.scripts.train_channel_cnn import CNN, WideCNN
 
 K0 = 5.0
 PRIOR = 0.3018746014732038
+
+
+def _flag(value) -> float:
+    return 0.0 if pd.isna(value) else float(bool(value))
+
+
+def _number(value) -> float:
+    return 0.0 if pd.isna(value) else float(value)
 
 
 def demo_channels(path: Path) -> tuple[pd.DataFrame, np.ndarray, list[str]]:
@@ -60,6 +68,12 @@ def demo_channels(path: Path) -> tuple[pd.DataFrame, np.ndarray, list[str]]:
             "player_name": str(int(ev["attacker_steamid"])),
             "kill_tick": kill_tick,
             "map": map_name,
+            "headshot": _flag(ev.get("headshot")),
+            "weapon_class": weapon_class(str(ev.get("weapon", ""))),
+            "shots": float(window["attacker_shot"].iloc[:KILL_ROW].sum()),
+            "through_smoke": _flag(ev.get("thrusmoke")),
+            "wallbang": float(_number(ev.get("penetrated")) > 0),
+            "midair": _flag(ev.get("attackerinair")),
         })
         channels.append(matrix)
         names = window_names

@@ -53,10 +53,44 @@ def _tier(score: float, threshold: float, p95: float) -> str:
     return "below"
 
 
+def _behavior_context(frame: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for player, group in frame.groupby("player_name", sort=False):
+        group = group.sort_values("kill_tick")
+        ticks = group["kill_tick"].to_numpy(dtype=float)
+        gaps = np.diff(ticks)
+        max_multi = 1
+        for tick in ticks:
+            max_multi = max(max_multi, int(((ticks >= tick) & (ticks <= tick + 256)).sum()))
+        burst = gaps <= 256 if len(gaps) else np.array([], dtype=bool)
+        kills = len(group)
+        shots = float(group["shots"].sum())
+        hs_rate = float(group["headshot"].mean()) if kills else 0.0
+        burst_frac = float(burst.mean()) if len(burst) else 0.0
+        gap = float(np.median(gaps) / 64.0) if len(gaps) else float("nan")
+        context = (f"HS {hs_rate:.0%} · {((shots + 1) / max(1, kills)):.1f} shots/kill"
+                   f" · multi {max_multi} · burst {burst_frac:.0%}")
+        rows.append({
+            "player_name": player,
+            "headshot_rate": hs_rate,
+            "headshot_kills": int(group["headshot"].sum()),
+            "shots_per_kill": (shots + 1.0) / max(1, kills),
+            "kill_per_shot": kills / (shots + kills),
+            "max_multikill_4s": max_multi,
+            "burst_fraction": burst_frac,
+            "median_kill_gap_s": gap,
+            "sniper_share": float((group["weapon_class"] == 2).mean()),
+            "wallbang_rate": float(group["wallbang"].mean()),
+            "smoke_rate": float(group["through_smoke"].mean()),
+            "behavior_context": context,
+        })
+    return pd.DataFrame(rows)
+
+
 def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
                   p95: float, names: dict[str, str], out: Path) -> None:
     n = len(players)
-    fig = plt.figure(figsize=(10, 2.2 + 0.42 * n))
+    fig = plt.figure(figsize=(12, 2.2 + 0.42 * n))
     grid = fig.add_gridspec(2, 1, height_ratios=[1.0, max(2.0, 0.42 * n)], hspace=0.08)
 
     top = fig.add_subplot(grid[0])
@@ -95,8 +129,10 @@ def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
         tier = "FLAG" if row["flagged"] else ("REVIEW" if row["shrunk_score"] >= p95 else "")
         label = (f"{int(row['kills'])} kills  |  {row['shrunk_score']:.3f}"
                  f"  |  p{row['percentile']:.0f}" + (f"  |  {tier}" if tier else ""))
-        rows.text(0.86, i, label, va="center", fontsize=7.5, clip_on=False,
-                  color=color if tier else MUTED)
+        if "behavior_context" in row and isinstance(row["behavior_context"], str):
+            label += "\n" + str(row["behavior_context"])
+        rows.text(0.86, i, label, va="center", fontsize=6.8, linespacing=1.2,
+                  clip_on=False, color=color if tier else MUTED)
     rows.set_yticks(range(n))
     rows.set_yticklabels([_display_name(s, names) for s in order["steamid"]], fontsize=7.5)
     rows.set_ylim(-1.0, n - 0.3)
@@ -127,7 +163,7 @@ def _summary_plot(players: pd.DataFrame, reference: dict, threshold: float,
     )
     fig.text(0.01, 0.008, textwrap.fill(note, 120), fontsize=7, color=MUTED,
              ha="left", va="bottom")
-    fig.subplots_adjust(left=0.11, right=0.74, top=0.92, bottom=0.20)
+    fig.subplots_adjust(left=0.08, right=0.62, top=0.92, bottom=0.20)
     fig.savefig(out, dpi=180)
     plt.close(fig)
 
@@ -177,6 +213,61 @@ def _player_panels(players: pd.DataFrame, frame: pd.DataFrame,
     plt.close(fig)
 
 
+def _behavior_table(players: pd.DataFrame, names: dict[str, str],
+                    p95: float, out: Path) -> None:
+    order = players.sort_values("shrunk_score", ascending=False).reset_index(drop=True)
+    headers = ["Player", "Score", "Tier", "Kills", "HS%", "Shots/K",
+               "4s max", "Burst%", "Gap s", "Sniper%"]
+    table_rows = []
+    for _, row in order.iterrows():
+        tier = "FLAG" if row["flagged"] else (
+            "REVIEW" if row["shrunk_score"] >= p95 else ""
+        )
+        gap = row["median_kill_gap_s"]
+        table_rows.append([
+            _display_name(row["steamid"], names),
+            f"{row['shrunk_score']:.3f}",
+            tier,
+            str(int(row["kills"])),
+            f"{row['headshot_rate']:.0%}",
+            f"{row['shots_per_kill']:.1f}",
+            str(int(row["max_multikill_4s"])),
+            f"{row['burst_fraction']:.0%}",
+            "—" if not np.isfinite(gap) else f"{gap:.1f}",
+            f"{row['sniper_share']:.0%}",
+        ])
+    fig, ax = plt.subplots(figsize=(12, 0.45 * len(order) + 1.6))
+    ax.axis("off")
+    table = ax.table(cellText=table_rows, colLabels=headers, loc="center",
+                     cellLoc="center")
+    table.auto_set_font_size(False)
+    table.set_fontsize(8)
+    table.scale(1, 1.45)
+    for (row, col), cell in table.get_celld().items():
+        cell.set_edgecolor("#e8eaed")
+        if row == 0:
+            cell.set_facecolor("#f1f3f4")
+            cell.set_text_props(weight="bold", color=INK)
+        elif col == 2:
+            label = table_rows[row - 1][2]
+            cell.set_text_props(color=FLAG if label == "FLAG"
+                                else (WARN if label == "REVIEW" else MUTED))
+    ax.set_title("Behavior context (review only; not part of the score)",
+                 loc="left", fontsize=11, color=INK, pad=12)
+    note = (
+        "HS% = headshot share of this player's kill windows. Shots/K = shots "
+        "fired per kill (lower is more efficient). 4s max = maximum kills "
+        "inside any four-second window. Burst% = share of kills within four "
+        "seconds of the previous kill. Gap s = median seconds between kills. "
+        "Sniper% = share of kills with a sniper rifle. These columns are for "
+        "human review only and never change the risk score or the flag."
+    )
+    fig.text(0.01, 0.01, textwrap.fill(note, 150), fontsize=7, color=MUTED)
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    fig.savefig(out, dpi=180)
+    plt.close(fig)
+
+
 def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
     frame, channels, names = demo_channels(demo)
     if len(frame) == 0:
@@ -184,6 +275,7 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
     scores = detector.score_channels(channels, names)
     frame["score"] = scores
     players = detector.aggregate(frame, scores)
+    players = players.merge(_behavior_context(frame), on="player_name", how="left")
     players = players.rename(columns={"player_name": "steamid"})
     names = _player_names(demo)
     players["name"] = players["steamid"].map(
@@ -216,6 +308,17 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
                 "name": row.name,
                 "tier": _tier(float(row.shrunk_score), threshold, p95),
                 "kills": int(row.kills),
+                "headshot_rate": round(float(row.headshot_rate), 4),
+                "headshot_kills": int(row.headshot_kills),
+                "shots_per_kill": round(float(row.shots_per_kill), 3),
+                "kill_per_shot": round(float(row.kill_per_shot), 3),
+                "max_multikill_4s": int(row.max_multikill_4s),
+                "burst_fraction": round(float(row.burst_fraction), 4),
+                "median_kill_gap_s": None if not np.isfinite(row.median_kill_gap_s)
+                else round(float(row.median_kill_gap_s), 3),
+                "sniper_share": round(float(row.sniper_share), 4),
+                "wallbang_rate": round(float(row.wallbang_rate), 4),
+                "behavior_context": row.behavior_context,
                 "mean_score": round(float(row.mean), 6),
                 "max_kill_score": round(float(row.max_kill_score), 6),
                 "shrunk_score": round(float(row.shrunk_score), 6),
@@ -235,6 +338,7 @@ def run_one(demo: Path, detector, out: Path, threshold: float | None) -> dict:
     _summary_plot(players, reference, threshold, p95, names, out / "players.png")
     _player_panels(players, frame, reference, names, threshold, p95,
                    out / "kill_windows.png")
+    _behavior_table(players, names, p95, out / "behavior.png")
     return {
         "demo": result["demo"], "map": result["map"],
         "players": len(result["players"]),
