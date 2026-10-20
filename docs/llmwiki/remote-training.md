@@ -44,8 +44,11 @@ downloads, and results. Nothing else on the host is needed for the workspace.
 - Core packages match the local venv (numpy 2.5.x, pandas 3.0.6,
   scikit-learn 1.9.1, scipy 1.18.1, pyarrow 26.0.0, demoparser2 0.42.0).
 - PyTorch 2.9.0+cu128; `torch.cuda.is_available()` is true on the RTX 5070 Ti.
-- `HF_ENDPOINT=https://hf-mirror.com` is required for CS2CD downloads because
-  `huggingface.co` times out from this host. PyPI and python.org are reachable.
+- PyPI and python.org are reachable directly. `huggingface.co` times out
+  directly but works through the local proxy `http://192.168.3.129:7890`
+  (the local machine listens on `0.0.0.0:7890`). Set `HTTP_PROXY` and
+  `HTTPS_PROXY` for CS2CD downloads; `HF_ENDPOINT=https://hf-mirror.com` is the
+  fallback.
 
 ## Verified
 
@@ -72,8 +75,10 @@ $vpy = "$root\venv\Scripts\python.exe"
   --model "$root\repo\ValveGuard\artifacts\valveguard_gbdt_v1.joblib" `
   --out "$root\runs\5e_g161_result.json" --include-kills
 
-# CS2CD raw subset through the mirror
-$env:HF_ENDPOINT = 'https://hf-mirror.com'
+# CS2CD raw subset through the local proxy
+$env:HTTP_PROXY = 'http://192.168.3.129:7890'
+$env:HTTPS_PROXY = 'http://192.168.3.129:7890'
+$env:HF_ENDPOINT = 'https://huggingface.co'
 & $vpy "$root\repo\ValveGuard\scripts\download_raw_subset.py" `
   --out "$root\data\raw\cs2cd_subset" --n 100 --workers 4
 ```

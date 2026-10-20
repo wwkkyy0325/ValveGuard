@@ -543,8 +543,8 @@
   `cw256_channels` caches, and three 5E demos.
 - Verified the full clean-label baseline on 79,533 windows (test player AUC
   0.9430, kill AUC 0.9006) and 5E demo scoring (10 players, 0 flagged, 3.9 s).
-- Started the 100+100 CS2CD raw subset download through `hf-mirror.com`;
-  `huggingface.co` is unreachable from the host.
+- Started the 100+100 CS2CD raw subset download through the local proxy
+  `192.168.3.129:7890`; `hf-mirror.com` is the fallback when the proxy is off.
 - Layout, commands, and cleanup are recorded in `remote-training.md`.
 
 ## 2026-10-20 (kill-information weighting)
