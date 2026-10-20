@@ -361,8 +361,13 @@ existing OOF kill scores with context weights; no retraining.
     of this is aim-relevant (fewer shots to kill), but much is role/play-style
     context. A weapon/rank/side-controlled run is required before calling
     these aim features.
+- 400-match rank/weapon layers: base Q4 FPR 2.78% / Q4 recall 14.6%; all events
+  3.33% / 17.9%. Event features trade Q4 precision for recall. Sniper kills
+  carry ~5% FPR in both arms; auto-rifle FPR is near zero. The Q4 regression is
+  a blocker for promotion.
 - Decision: **replicated at kill level, not promoted at player level**. The
   full raw dataset and a context-controlled design are the next requirements.
 - Artifact: `reports/events_pilot_400/` (`metrics.json`, `bootstrap.json`,
   `ablation.json`, `aim_metrics.json`, `aim_bootstrap.json`,
-  `event_shortcuts.csv`, `oof.parquet`, `event_features.parquet`).
+  `event_shortcuts.csv`, `layers.json`, `base_layers/layers.json`,
+  `oof.parquet`, `event_features.parquet`).

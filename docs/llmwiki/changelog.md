@@ -590,6 +590,8 @@
 - Shortcut audit: cheater kills have much lower spray length
   (5.45 -> 1.61), less recoil-yaw variation, lower spotted fraction, and
   higher scope/velocity; part aim, part role/play style.
+- Layer check: base Q4 FPR 2.78% / Q4 recall 14.6%; all events 3.33% / 17.9%.
+  Event features trade Q4 precision for recall; sniper kills carry ~5% FPR.
 - Decision: kill-level signal replicated; player-level low-FPR recall still
   not significant. Not promoted. Recorded in `experiments.md` section 17;
   artifacts under `reports/events_pilot_400/`.

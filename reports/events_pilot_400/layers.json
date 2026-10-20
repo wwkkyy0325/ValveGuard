@@ -1,0 +1,88 @@
+{
+  "score_column": "base_plus_events",
+  "overall_player": {
+    "auc": 0.9188451371010938,
+    "recall_at_fpr1": 0.18399044205495818,
+    "fpr": 0.010176754151044456,
+    "threshold": 0.7375367413006236
+  },
+  "rank_strata": {
+    "Q1 low": {
+      "human_players": 404,
+      "positive_players": 50,
+      "fpr": 0.0024752475247524753,
+      "recall": 0.16
+    },
+    "Q2": {
+      "human_players": 353,
+      "positive_players": 62,
+      "fpr": 0.0084985835694051,
+      "recall": 0.16129032258064516
+    },
+    "Q3": {
+      "human_players": 276,
+      "positive_players": 107,
+      "fpr": 0.014492753623188406,
+      "recall": 0.12149532710280374
+    },
+    "Q4 high": {
+      "human_players": 180,
+      "positive_players": 335,
+      "fpr": 0.03333333333333333,
+      "recall": 0.1791044776119403
+    }
+  },
+  "rank_threshold": 0.7398058213309829,
+  "kill_threshold": 0.9480716715385228,
+  "weapon": {
+    "knife": {
+      "kills": 246,
+      "human_kills": 157,
+      "positive_kills": 89,
+      "recall_at_global_fpr1": 0.0449438202247191,
+      "fpr_at_global_fpr1": 0.0
+    },
+    "auto_rifle": {
+      "kills": 13731,
+      "human_kills": 12060,
+      "positive_kills": 1671,
+      "recall_at_global_fpr1": 0.015559545182525433,
+      "fpr_at_global_fpr1": 0.0001658374792703151
+    },
+    "sniper": {
+      "kills": 11384,
+      "human_kills": 4411,
+      "positive_kills": 6973,
+      "recall_at_global_fpr1": 0.1730962283091926,
+      "fpr_at_global_fpr1": 0.04692813420992972
+    },
+    "pistol": {
+      "kills": 7257,
+      "human_kills": 4732,
+      "positive_kills": 2525,
+      "recall_at_global_fpr1": 0.06297029702970297,
+      "fpr_at_global_fpr1": 0.007185122569737954
+    },
+    "grenade": {
+      "kills": 23,
+      "human_kills": 17,
+      "positive_kills": 6,
+      "recall_at_global_fpr1": 0.0,
+      "fpr_at_global_fpr1": 0.0
+    },
+    "smg": {
+      "kills": 2585,
+      "human_kills": 2409,
+      "positive_kills": 176,
+      "recall_at_global_fpr1": 0.005681818181818182,
+      "fpr_at_global_fpr1": 0.0
+    },
+    "shotgun": {
+      "kills": 588,
+      "human_kills": 520,
+      "positive_kills": 68,
+      "recall_at_global_fpr1": 0.0,
+      "fpr_at_global_fpr1": 0.0019230769230769232
+    }
+  }
+}
