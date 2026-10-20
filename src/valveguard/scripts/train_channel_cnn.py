@@ -63,6 +63,33 @@ class CNN(nn.Module):
         return self.head(pooled).squeeze(1)
 
 
+class WideCNN(nn.Module):
+    def __init__(self, channels: int):
+        super().__init__()
+        self.features = nn.Sequential(
+            nn.Conv1d(channels, 96, 7, padding=3),
+            nn.BatchNorm1d(96), nn.ReLU(), nn.MaxPool1d(2),
+            nn.Conv1d(96, 192, 5, padding=2),
+            nn.BatchNorm1d(192), nn.ReLU(), nn.MaxPool1d(2),
+            nn.Conv1d(192, 256, 3, padding=1),
+            nn.BatchNorm1d(256), nn.ReLU(),
+            nn.Conv1d(256, 256, 3, padding=1),
+            nn.BatchNorm1d(256), nn.ReLU(),
+        )
+        self.attention = nn.Sequential(
+            nn.Linear(256, 128), nn.Tanh(), nn.Linear(128, 1)
+        )
+        self.head = nn.Sequential(
+            nn.Linear(256, 128), nn.ReLU(), nn.Dropout(0.2), nn.Linear(128, 1)
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        h = self.features(x.transpose(1, 2)).transpose(1, 2)
+        weights = torch.softmax(self.attention(h).squeeze(-1), dim=1)
+        pooled = (h * weights.unsqueeze(-1)).sum(dim=1)
+        return self.head(pooled).squeeze(1)
+
+
 def _kill_metrics(labels: np.ndarray, scores: np.ndarray) -> dict:
     human = scores[labels == 0]
     positive = scores[labels == 1]
@@ -109,6 +136,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--folds", type=int, default=5)
+    parser.add_argument("--arch", choices=["cnn", "wide"], default="cnn")
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -159,7 +187,9 @@ def main() -> None:
             [negatives / positives], dtype=torch.float32, device=device
         )
 
-        model = CNN(channels.shape[2]).to(device)
+        model = (WideCNN if args.arch == "wide" else CNN)(
+            channels.shape[2]
+        ).to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
         criterion = nn.BCEWithLogitsLoss(pos_weight=positive_weight)
