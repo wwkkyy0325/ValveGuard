@@ -660,3 +660,16 @@
   remains worse. Not promoted. Next: event-channel CNN and Q4-aware stage.
 - Recorded in `experiments.md` section 20; artifacts under
   `reports/cnn43_ensemble/`.
+
+## 2026-10-20 (wide attention CNN)
+
+- Wider 4-conv + attention pooling, 10 epochs, 5-fold, 43 channels:
+  kill AUC 0.9038, player AUC 0.9488, recall@FPR1 0.2911, Q4 FPR 3.37%,
+  Q4 recall 31.3%.
+- Bootstrap vs GBDT: Δkill **+0.0542** [0.0489, 0.0594]; Δplayer AUC
+  **+0.0151** [0.0104, 0.0200]; Δrecall **+0.0744** **[0.0107, 0.1432]**;
+  ΔQ4 FPR +0.0057 [-0.0084, +0.0205].
+- First sequence model with low-FPR recall CI entirely above zero. Promotion
+  candidate; Q4 point regression is the trade-off. Wide seeds 43/44 training
+  for an ensemble before the champion decision.
+- Recorded in `experiments.md` section 20; artifacts under `reports/cnn43_wide/`.

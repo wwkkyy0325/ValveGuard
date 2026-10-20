@@ -508,3 +508,21 @@ existing OOF kill scores with context weights; no retraining.
   past zero; Q4 FPR stays worse than GBDT. Not promoted.
 - Next: event-channel CNN (recoil / mouse / punch / target error / first-shot
   sequence) and a larger model, then a Q4-aware calibration or second stage.
+
+### Wide attention CNN (seed 42)
+
+- Wider 4-conv model (96/192/256/256) with attention pooling, 10 epochs,
+  5-fold, same 43-channel input.
+- Point: kill AUC 0.9038, player AUC **0.9488**, recall@FPR1 **0.2911**,
+  Q4 FPR 3.37%, Q4 recall 31.3%.
+- 500-replicate paired bootstrap vs GBDT:
+  - Δkill AUC **+0.0542** [0.0489, 0.0594].
+  - Δplayer AUC **+0.0151** [0.0104, 0.0200].
+  - Δplayer recall **+0.0744** **[0.0107, 0.1432]** — the first sequence
+    model whose low-FPR recall CI is entirely above zero.
+  - ΔQ4 FPR +0.0057 [-0.0084, +0.0205] — point regression, not significant.
+- Decision: **promotion candidate**. It passes the recall/AUC rule; the Q4
+  point estimate is worse, so the trade-off is recorded and a wide-seed
+  ensemble plus Q4 mitigation is required before replacing the champion.
+- Artifact: `reports/cnn43/wide_metrics.json`,
+  `reports/cnn43_wide/comparison.json`, `wide_oof.parquet`.

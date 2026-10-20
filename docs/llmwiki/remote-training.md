@@ -80,6 +80,9 @@ downloads, and results. Nothing else on the host is needed for the workspace.
   Q4 FPR 3.11% vs 2.59%. See `experiments.md` section 20.
 - 3-seed CNN ensemble: player AUC 0.9475, recall 0.2794, Q4 FPR 3.11%;
   Δrecall +0.0535 [-0.0056, +0.1174]. Still not promoted.
+- Wide attention CNN: player AUC 0.9488, recall 0.2911, Q4 FPR 3.37%;
+  Δrecall **+0.0744 [0.0107, 0.1432]** — promotion candidate. Wide seeds
+  43/44 training for the ensemble. See `experiments.md` section 20.
 
 ## Commands
 
