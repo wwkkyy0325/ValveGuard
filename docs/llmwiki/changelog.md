@@ -637,3 +637,16 @@
 - Detector imports were re-checked; no detector code referenced the generator
   package. The KB index, design note, model-design scope, and root README now
   state the split.
+
+## 2026-10-20 (git history split)
+
+- Rewrote the detector history to drop all generator and demo paths:
+  `src/valveguard/generator`, the generator scripts, generator docs,
+  `reports/generator*`, `reports/cs2_*`, `reports/vizdoom*`, and
+  `_vizdoom.ini`. Pack size fell from 9.7 MiB to 1.2 MiB.
+- Report videos were never tracked (`reports/**/*.mp4|mov` was already
+  ignored), so the rewrite removed metadata and images only.
+- Archived the pre-rewrite history outside the repository as
+  `../ValveGuard-history-backup-20261020.bundle`.
+- Initialized `AimForge` as its own repository with one import commit. Its
+  videos, workshop maps, and caches stay on disk but are gitignored.
