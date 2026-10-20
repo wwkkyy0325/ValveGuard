@@ -161,9 +161,15 @@ Recommended packaging: Python + a native GUI toolkit (PySide6 or Tkinter),
 frozen with PyInstaller; demoparser2 ships a Windows wheel, so a single
 folder/exe is feasible.
 
-ONNX export was attempted on 2026-10-18. `skl2onnx` 1.20 fails to convert
-this `HistGradientBoostingClassifier` (boolean attribute in
-`TreeEnsembleClassifier`), so ONNX is not the export path.
+ONNX export was attempted on 2026-10-18 for the GBDT model. `skl2onnx`
+1.20 fails to convert this `HistGradientBoostingClassifier` (boolean
+attribute in `TreeEnsembleClassifier`), so the GBDT desktop model keeps the
+JSON tree format.
+
+The CNN champion now has a separate ONNX bundle: 15 fold models,
+per-seed normalization, and sigmoid averaging in one graph. The existing
+demo scripts select it automatically via `load_detector`. See
+`onnx-distribution.md`.
 
 The chosen portable format is a plain JSON tree ensemble
 (`valveguard_gbdt_v1.model.json`, ~931 KB, 300 trees).  A Rust traversal was

@@ -1,6 +1,6 @@
 # Longitudinal Player Dataset
 
-Status: proposal (2026-10-20)
+Status: proposal, not pursued (2026-10-20)
 
 ## Why the current data is not enough
 
@@ -46,6 +46,9 @@ Status: proposal (2026-10-20)
 - Keep the download manual and local; do not automate platform login.
 - No accessible dataset currently provides stable cross-match player ids,
   so this proposal is not on the active path.
+- The project will not collect this cohort or train temporal models on it.
+  It is recorded as future work in the paper; subsequent work is engineering
+  (ONNX distribution, packaging, demo/review integration).
 
 ## Features
 

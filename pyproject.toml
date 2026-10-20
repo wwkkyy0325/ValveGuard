@@ -23,10 +23,12 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest"]
 gpu = ["torch"]
+onnx = ["onnx", "onnxruntime"]
 
 [project.scripts]
 valveguard-train = "valveguard.scripts.train_final:main"
 valveguard-score = "valveguard.scripts.score_demo:main"
+valveguard-export-onnx = "valveguard.scripts.export_onnx:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

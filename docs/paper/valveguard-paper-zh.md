@@ -492,7 +492,32 @@ PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
 - 不用于跨游戏、跨平台的身份追踪；不把分数当作“作弊概率”。
 - 数据集遵循 CS2CD 的 CC-BY-4.0 许可；演示报告只使用数据集伪匿名，不包含真实 SteamID 或昵称。
 
-## 10 复现
+## 10 未来展望
+
+本文能回答的是“给定一局比赛，某个玩家的击杀窗口是否像辅助瞄准”；它不能回答“这个玩家在连续多局中是否持续作弊、是否 toggle、封禁前还能隐藏多久”。后者需要纵向数据，而当前公开数据不满足条件。
+
+### 10.1 现在做不到的事
+
+- CS2CD 每名玩家大约只有一局记录，且玩家 ID 是每局伪匿名（`Player_1..10`），没有稳定的跨局 SteamID。
+- 数据没有封禁日期、没有跨局时间戳、没有非击杀窗口；每个窗口都以一次击杀为中心。
+- 因此无法训练或评估跨局时间模型，无法做真正的 person-disjoint 划分，也无法测量 toggle 行为在局间的持续性、time-to-detection 或封禁前后漂移。
+- 单名玩家的连续历史只能做案例研究，不能提供队列级方差，不能作为训练集。
+
+### 10.2 需要什么样的数据
+
+- 稳定 SteamID64，至少 10 局/人，带比赛时间戳、地图与武器上下文。
+- 玩家级标签与时间：封禁/未封禁、封禁日期、封禁前后比赛；仅有比赛级软标签不够。
+- 完整 demo 或滑动窗口，而不是只保留击杀窗口；toggle 的证据往往在“安静”的非击杀时段。
+- 最小可行队列约为 20 名封禁玩家 + 40 名从未封禁玩家 × 10 局（约 600 个 demo，60 GB 级别），人级划分、时间前向划分、玩家聚类 bootstrap。
+- 采集需要平台许可或伦理审查，并在下载时记录当时的封禁状态；事后封禁列表无法重建“比赛发生时已知的信息”。
+
+### 10.3 边界与后续方向
+
+这条纵向数据与时间模型路线**不在本项目的后续计划内**：我们不打算自行采集跨局队列，也不在此基础上继续训练时间模型。本节把它记录为未来工作，是为了说明当前结论的边界，而不是承诺交付。
+
+后续工作转向工程化：ONNX 分发与校验、artifact 打包、demo 报告与人工复核队列、批处理/桌面集成，以及在新数据到来时把当前窗口模型作为固定的 base scorer 复用。若未来出现合规的纵向队列，可在不改变当前瞄准表示的前提下增加切换点检测或时间聚合；这属于新的数据项目，不属于本文范围。
+
+## 11 复现
 
 环境：Python 3.12，PyTorch 2.9（CUDA 12.8），NumPy/Pandas/scikit-learn。
 
@@ -517,22 +542,23 @@ PYTHONPATH=src python -m valveguard.scripts.make_paper_figures
 | `src/valveguard/scripts/train_channel_cnn.py` | 宽 CNN、固定折、困难负样本损失、模型保存 |
 | `src/valveguard/scripts/demo_report_dataset.py` | 数据集演示报告 |
 | `src/valveguard/scripts/demo_report.py` | 任意 demo 报告与批量队列 |
+| `src/valveguard/scripts/export_onnx.py` | 导出 ONNX 分发包（15 个模型 + 逐种子归一化） |
 | `reports/cnn29_hn5_ensemble_vs_gbdt/comparison.json` | 主比较与 bootstrap |
 | `reports/demo_dataset/` | `cdata:0` 与 `ncdata:36` 的报告、队列与图表 |
 | `src/valveguard/scripts/make_paper_figures.py` | 论文图 1–8 的生成脚本 |
 | `reports/paper_figures/` | 本文图 1–8 |
 
-所有实验记录、负结果和修正见 `docs/llmwiki/experiments.md` 与 `docs/llmwiki/changelog.md`。
+所有实验记录、负结果和修正见 `docs/llmwiki/experiments.md` 与 `docs/llmwiki/changelog.md`。ONNX 分发包把 15 个折模型、逐种子归一化和 sigmoid 平均封装为单个图，PyTorch 与 ONNX 的随机输入最大误差为 2.58e-8，`cdata:0` 实际窗口为 1.27e-7；分发细节见 `onnx-distribution.md`。
 
-### 10.1 数据与代码可用性
+### 11.1 数据与代码可用性
 
 CS2CD `Context_window_256` 为公开数据集，许可为 CC-BY-4.0。本文的代码、配置、演示报告、论文图和任务记录均在本仓库中；`artifacts/valveguard_cnn_v1` 是本地打包产物，不随仓库跟踪，但可由保存的折模型、归一化参数和 manifest 重新构建。演示只使用数据集伪匿名，不包含真实 SteamID 或昵称。
 
-## 11 结论
+## 12 结论
 
 本文给出了一个仅依赖击杀窗口视线轨迹的 CS2 辅助瞄准检测器。通过 29 个纯瞄准通道、宽卷积 + 时间注意力、困难负样本加权 BCE 与玩家级经验贝叶斯收缩，模型在固定比赛折上取得玩家级 AUC 0.9502、1% FPR 下召回 0.3619、Q4 召回 39.1%。相对 GBDT 与普通 CNN 集成，召回提升显著且 AUC 不降；代价是 Q4 FPR 从 2.59% 升到 3.11%。
 
-负结果同样重要：原始鼠标、可见性、玩家级 MIL、行为融合都没有在低 FPR 下稳定超过当前方案。行为信息被保留为人工复核的排序上下文，而不是风险分数。最终系统以数据集窗口为演示来源，输出可追溯的 artifact、玩家报告和复核队列，适合作为后续数据采集与人工复核流程的基线。
+负结果同样重要：原始鼠标、可见性、玩家级 MIL、行为融合都没有在低 FPR 下稳定超过当前方案。行为信息被保留为人工复核的排序上下文，而不是风险分数。最终系统以数据集窗口为演示来源，输出可追溯的 artifact、玩家报告和复核队列，适合作为后续数据采集与人工复核流程的基线。跨局纵向队列与时间模型不在本项目范围内，见第 10 节。
 
 ## 附录 A：符号表
 

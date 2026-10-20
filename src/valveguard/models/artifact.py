@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import torch
 
+from valveguard.models.aggregation import aggregate_players
 from valveguard.scripts.train_channel_cnn import CNN, WideCNN
 
 
@@ -77,26 +78,17 @@ class CNNDetector:
         return scores / total
 
     def aggregate(self, frame: pd.DataFrame, scores: np.ndarray) -> pd.DataFrame:
-        k0 = float(self.aggregation["k0"])
-        prior = float(self.aggregation["prior"])
-        out = frame.assign(score=scores)
-        grouped = out.groupby("player_name", sort=False).agg(
-            kills=("score", "size"),
-            total=("score", "sum"),
-            mean=("score", "mean"),
-            max_kill_score=("score", "max"),
-        ).reset_index()
-        grouped["shrunk_score"] = (
-            grouped["total"] + k0 * prior
-        ) / (grouped["kills"] + k0)
-        grouped["percentile"] = [
-            float((self.human_player_scores < value).mean() * 100.0)
-            for value in grouped["shrunk_score"]
-        ]
-        grouped["flagged"] = grouped["shrunk_score"] >= self.threshold
-        grouped["reliable"] = grouped["kills"] >= 3
-        return grouped.sort_values("shrunk_score", ascending=False).reset_index(drop=True)
+        return aggregate_players(
+            frame, scores, self.aggregation, self.human_player_scores,
+            self.threshold,
+        )
 
 
 def load_detector(path: str | Path, verify: bool = True) -> CNNDetector:
+    """Load a PyTorch or ONNX artifact bundle."""
+    path = Path(path)
+    manifest = json.loads((path / "manifest.json").read_text())
+    if manifest.get("format") == "onnx" or (path / "model.onnx").exists():
+        from valveguard.models.onnx_artifact import ONNXDetector
+        return ONNXDetector(path, verify=verify)
     return CNNDetector(path, verify=verify)

@@ -10,6 +10,7 @@ Start here when resuming work.
 | `label-noise-audit.md` | Audit of the excluded cdata label-0 windows and the residual Q4 false positives. |
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
+| `onnx-distribution.md` | ONNX bundle layout, export, parity check, runtime, and distribution. |
 | `../paper/valveguard-paper-zh.md` | Final bilingual paper (Chinese). |
 | `../paper/valveguard-paper-en.md` | Final bilingual paper (English). |
 | `io-contract.md` | Frozen tensor/feature/score shapes and the application boundary. |

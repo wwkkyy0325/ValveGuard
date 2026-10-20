@@ -17,6 +17,9 @@ automatic ban system.
   channel names, per-seed normalization, fold models, human reference
   distributions, SHA256 checksums. The loader verifies checksums and selects
   channels by name.
+- Portable ONNX bundle: `export_onnx.py` writes a self-contained graph
+  (15 models + normalization + sigmoid average) with checksums. PyTorch vs
+  ONNX parity is 2.58e-8 on random inputs; see `onnx-distribution.md`.
 - Player score: empirical-Bayes shrinkage of the kill-score mean,
   `(sum + 5 * prior) / (n + 5)`, prior 0.3018746, threshold **0.608027**
   (OOF human player p99, target FPR 1%).

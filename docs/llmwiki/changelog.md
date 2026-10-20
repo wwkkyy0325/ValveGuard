@@ -979,3 +979,25 @@
 - Generated `_zh.png` variants for all eight paper figures with Chinese
   titles, axis labels, legends, and annotations; the Chinese paper now
   points to them. English figures are unchanged.
+
+## 2026-10-20 (ONNX distribution bundle)
+
+- Added `export_onnx.py`: exports the 15 fold models, per-seed
+  normalization, and sigmoid averaging into one batch-dynamic ONNX graph
+  (opset 17). Writes manifest, channel names, reference distributions,
+  checksums, README, and an optional zip.
+- Added `models/onnx_artifact.py`; `load_detector` now selects the ONNX
+  loader when the bundle manifest has `format: onnx`.
+- Parity: random channels 2.58e-8, `cdata:0` windows 1.27e-7, demo report
+  tiers/flags identical. Bundle 31.5 MB, zip 28 MB.
+- Added `tests/test_onnx_artifact.py`; full suite 15 passed.
+- Added `onnx-distribution.md`, ONNX optional dependency, and
+  `requirements-onnx.txt`.
+
+## 2026-10-20 (longitudinal work moved to future outlook)
+
+- Added a Future Work and Outlook section to both papers: stable-ID
+  multi-match cohorts are required to study toggling and time-to-detection,
+  but are not available; the project will not collect or model them.
+- Recorded the boundary explicitly: subsequent work is engineering (ONNX
+  distribution, packaging, demo/review integration), not longitudinal data.

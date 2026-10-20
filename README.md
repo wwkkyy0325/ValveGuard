@@ -61,9 +61,19 @@ PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
 PYTHONPATH=src python -m valveguard.scripts.demo_report \
   --demo match.dem --artifact artifacts/valveguard_cnn_v1 \
   --out reports/demo_reports
+
+# Portable ONNX bundle (15 fold models, normalization, checksums).
+pip install -r requirements-onnx.txt
+PYTHONPATH=src python -m valveguard.scripts.export_onnx \
+  --artifact artifacts/valveguard_cnn_v1 \
+  --out artifacts/valveguard_cnn_v1_onnx --zip
+PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
+  --artifact artifacts/valveguard_cnn_v1_onnx \
+  --match cdata:0 --out reports/demo_onnx
 ```
 
 Model card: `docs/llmwiki/model-card.md`.
+ONNX bundle: `docs/llmwiki/onnx-distribution.md`.
 
 ## Layout
 

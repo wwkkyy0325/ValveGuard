@@ -492,7 +492,32 @@ Figure 8 shows two windows as the model sees them: a high-score kill (`Player_3`
 - It is not for cross-game or cross-platform identity tracking, and the score is not a “cheating probability”.
 - The dataset follows CS2CD's CC-BY-4.0 licence. Demo reports use only dataset pseudonyms and contain no real SteamIDs or nicknames.
 
-## 10 Reproducibility
+## 10 Future Work and Outlook
+
+This paper answers a narrow question: given one match, do a player's kill windows look like aim assist? It does not answer whether that player cheats consistently across many matches, toggles, or how long they remain undetected before a ban. Those questions require longitudinal data, which the current public data cannot provide.
+
+### 10.1 What we cannot do now
+
+- CS2CD has roughly one match per player, and player IDs are per-match pseudonyms (`Player_1..10`); there is no stable cross-match SteamID.
+- The data has no ban dates, no cross-match timestamps, and no non-kill windows; every window ends at a kill.
+- As a result, we cannot train or evaluate a cross-match temporal model, perform a true person-disjoint split, or measure whether toggle behaviour persists across matches, time-to-detection, or drift before and after a ban.
+- One player's history supports only a case study. It does not provide cohort-level variance and cannot be used as a training set.
+
+### 10.2 What the data would need
+
+- Stable SteamID64, at least 10 matches per player, with match timestamps and map/weapon context.
+- Player-level labels with time: banned or never banned, ban date, and matches before and after the ban. Match-level soft labels are not enough.
+- Full demos or sliding windows, not only kill windows; evidence of toggling often lies in the quiet, non-kill stretches.
+- A minimal cohort of about 20 banned and 40 never-banned players with 10 matches each (about 600 demos, on the order of 60 GB), with person-disjoint splits, time-forward splits, and player-cluster bootstrap.
+- Collection requires platform permission or ethics review, and the ban status known at download time must be recorded; a later ban list cannot reconstruct what was known when a match was played.
+
+### 10.3 Boundary and next steps
+
+This longitudinal data and temporal-modelling line is **not in the project's future plan**. We do not intend to collect a cross-match cohort ourselves or continue training temporal models on top of it. We record it as future work to delimit the current claims, not as a promised deliverable.
+
+Subsequent work moves to engineering: ONNX distribution and verification, artifact packaging, demo reports and human review queues, batch/desktop integration, and reuse of the current window model as a fixed base scorer when new data arrives. If a compliant longitudinal cohort becomes available, switching-point detection or temporal aggregation could be added without changing the current aim representation; that would be a new data project, outside the scope of this paper.
+
+## 11 Reproducibility
 
 Environment: Python 3.12, PyTorch 2.9 (CUDA 12.8), NumPy/Pandas/scikit-learn.
 
@@ -517,22 +542,23 @@ Key files:
 | `src/valveguard/scripts/train_channel_cnn.py` | Wide CNN, fixed folds, hard-negative loss, model saving |
 | `src/valveguard/scripts/demo_report_dataset.py` | Dataset demo report |
 | `src/valveguard/scripts/demo_report.py` | Arbitrary-demo report and batch queue |
+| `src/valveguard/scripts/export_onnx.py` | ONNX distribution bundle (15 models + per-seed normalization) |
 | `reports/cnn29_hn5_ensemble_vs_gbdt/comparison.json` | Main comparison and bootstrap |
 | `reports/demo_dataset/` | Reports, queues, and charts for `cdata:0` and `ncdata:36` |
 | `src/valveguard/scripts/make_paper_figures.py` | Generator for Figures 1–8 |
 | `reports/paper_figures/` | Figures 1–8 of this paper |
 
-All experiments, negative results, and corrections are recorded in `docs/llmwiki/experiments.md` and `docs/llmwiki/changelog.md`.
+All experiments, negative results, and corrections are recorded in `docs/llmwiki/experiments.md` and `docs/llmwiki/changelog.md`. The ONNX bundle packs the 15 fold models, per-seed normalization, and sigmoid averaging into one graph; PyTorch vs ONNX max error is 2.58e-8 on random inputs and 1.27e-7 on real `cdata:0` windows. Distribution details are in `onnx-distribution.md`.
 
-### 10.1 Data and code availability
+### 11.1 Data and code availability
 
 CS2CD `Context_window_256` is public under CC-BY-4.0. The code, configurations, demo reports, paper figures, and task records are in this repository. `artifacts/valveguard_cnn_v1` is a local packaged artifact and is not tracked, but it can be rebuilt from the saved fold models, normalization parameters, and manifest. The demo uses dataset pseudonyms only and contains no real SteamIDs or nicknames.
 
-## 11 Conclusion
+## 12 Conclusion
 
 We presented a CS2 aim-assist detector that relies only on kill-window view trajectories. With 29 aim-only channels, a wide convolutional network with temporal attention, hard-negative weighted BCE, and player-level empirical-Bayes shrinkage, the model reaches player AUC 0.9502, recall at 1% FPR 0.3619, and Q4 recall 39.1% on fixed match folds. Relative to GBDT and a plain CNN ensemble, the recall gain is significant with no AUC loss; the cost is an increase in Q4 FPR from 2.59% to 3.11%.
 
-The negative results matter as much: raw mouse, visibility, player-level MIL, and behavioural fusion do not reliably beat the current design at low FPR. Behavioural information is retained as review-ordering context, not as a risk score. The final system uses dataset windows as the demo source and produces a traceable artifact, player report, and review queue, suitable as a baseline for further data collection and human-review workflows.
+The negative results matter as much: raw mouse, visibility, player-level MIL, and behavioural fusion do not reliably beat the current design at low FPR. Behavioural information is retained as review-ordering context, not as a risk score. The final system uses dataset windows as the demo source and produces a traceable artifact, player report, and review queue, suitable as a baseline for further data collection and human-review workflows. Cross-match longitudinal cohorts and temporal models are outside this project's scope; see Section 10.
 
 ## Appendix A: Notation
 

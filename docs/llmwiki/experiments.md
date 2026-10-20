@@ -897,3 +897,22 @@ Single seed (seed 42):
   single-demo review ordering, and batch queue merging.
 - Artifact tests skip automatically when `artifacts/valveguard_cnn_v1` is
   absent, so the repository tests do not depend on the local binary bundle.
+
+### ONNX runtime bundle
+
+- `export_onnx.py` wraps the 15 fold models with their per-seed
+  median/IQR normalization and sigmoid averaging, then exports one
+  batch-dynamic graph (opset 17) taking `(N, 256, 29)` and returning
+  `(N,)` kill scores.
+- PyTorch vs ONNX parity: random channels max abs difference `2.58e-8`;
+  `cdata:0` real windows `1.27e-7`; per-kill scores in the demo report
+  differ by at most `1.0e-6`, with identical players, tiers, and flags.
+- Bundle: 31.5 MB `model.onnx`, 28 MB zip, manifest with SHA256 checksums,
+  channel names, human reference distributions, and README.
+- `load_detector` selects the ONNX loader when the bundle manifest says
+  `format: onnx`, so the existing demo scripts need only
+  `--artifact artifacts/valveguard_cnn_v1_onnx`.
+- CPU timing for 78 windows: 401 ms PyTorch vs 520 ms ONNX Runtime. The
+  ONNX path is for portable deployment, not speed on this machine.
+- Tests: `tests/test_onnx_artifact.py` covers load, parity, aggregation,
+  and missing-channel rejection. Full suite: 15 passed.
