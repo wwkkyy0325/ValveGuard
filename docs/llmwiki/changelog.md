@@ -1193,3 +1193,12 @@
 - The release workflow now verifies the committed bundle, zips it, and
   attaches it; the `model-v1` release and model URL variables are gone.
 - Removed the CI placeholder step because the model files are now present.
+
+## 2026-10-21 (v1.0.0 published)
+
+- Pushed tag `v1.0.0`; the Release workflow completed successfully and
+  published the portable zip, model zip, NSIS installer, MSI installer, and
+  `SHA256SUMS.txt`.
+- Verified the downloaded portable zip: `ValveGuard.exe`, the full `model/`
+  directory, README, 40,536,618 bytes, and a SHA256 matching the published
+  checksums.

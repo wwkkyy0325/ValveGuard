@@ -16,8 +16,8 @@ worked example:
 
 Prebuilt binaries are published under
 [Releases](https://github.com/wwkkyy0325/ValveGuard/releases). The git tree
-keeps source, manifests, checksums, and docs; large binaries are not
-committed.
+keeps source, manifests, docs, and the deployed ONNX bundle; packaged zips
+and installers live in Releases.
 
 - `valveguard_cnn_v1_onnx.zip` — CNN champion ONNX bundle (15 fold models,
   normalization, checksums).
