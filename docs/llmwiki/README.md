@@ -11,6 +11,7 @@ Start here when resuming work.
 | `rank-replication.md` | Rank-stratified FPR replication on all dev-80 matches (Q4 3.37%). |
 | `model-card.md` | Deployment model card: input/output contract, metrics, limitations, retraining policy. |
 | `onnx-distribution.md` | ONNX bundle layout, export, parity check, runtime, and distribution. |
+| `review-app.md` | Desktop demo review UI: run, screens, and notes. |
 | `../releases/v1.0.0.md` | Release asset list, SHA256, publishing steps, and checklist. |
 | `../paper/valveguard-paper-zh.md` | Final bilingual paper (Chinese). |
 | `../paper/valveguard-paper-en.md` | Final bilingual paper (English). |

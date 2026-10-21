@@ -1010,3 +1010,177 @@
   the 28 MB ONNX bundle and 1.1 MB desktop zip are release assets.
 - Built `artifacts/valveguard_cnn_v1_onnx.zip` and
   `artifacts/valveguard-desktop-v1-win64.zip` (local, ignored).
+
+## 2026-10-20 (interactive review app and CI)
+
+- Added a Tauri v2 desktop app in `desktop-ui/`: Rust shell, Vite
+  HTML/CSS/JS frontend, native file dialog and drag-drop. Users open a
+  `.dem`/`.zip` or drop it on the window; the app extracts the players,
+  scores with the ONNX bundle, and shows a sortable suspicion table with
+  animated risk bars, reason chips, and per-player detail.
+- Dev frontend is fixed to `127.0.0.1:47183`; production uses the Tauri
+  custom protocol. The Rust core parses the demo, builds the 29 aim channels,
+  and runs the ONNX ensemble with `ort`; no Python at runtime.
+- Detail view explains the tier, percentile, kill count, shrinkage, and
+  every behavior reason; it includes behavior cards, a per-kill sparkline,
+  and a kill table.
+- Refactored `demo_channels` and the pure review helpers out of the torch
+  modules so the desktop scorer runs on the ONNX runtime.
+- Added `.github/workflows/ci.yml`: Python tests, the Rust core build, and
+  the Tauri frontend/backend check on Windows.
+
+## 2026-10-20 (desktop app fixes)
+
+- Removed the interim Python sidecar: parsing, 29-channel building, ONNX
+  inference, aggregation, and UI JSON now run in `valveguard-core`.
+- Added native Tauri drag-and-drop; dropping a `.dem`/`.zip` fills the path
+  and starts analysis.
+- Release Rust scoring on a 392 MB pro demo: **4.5 s** end to end (1.2 s
+  event parse, 1.2 s snapshots, 0.6 s ONNX); debug builds are ~70 s and are
+  not the deployment path.
+- Demo preparation now checks the file magic: a non-zip `.zip` is passed to
+  the demo parser instead of failing with "File is not a zip file".
+- Players in the demo roster with zero valid kill windows are kept as
+  `insufficient` rows (`无窗口`) rather than silently dropping from 10 to 9.
+
+## 2026-10-20 (pure Rust ONNX app)
+
+- Removed Python from the desktop app. `desktop/` is now a library + CLI;
+  `desktop/src/channels.rs` builds the 29 aim channels and `onnx.rs` runs
+  the ONNX ensemble through `ort`. Tauri calls `valveguard-core` directly.
+- Release scoring on a 392 MB demo: 4.5 s (1.2 s events, 2.3 s
+  snapshots/roster, 0.8 s ONNX). The Rust ONNX test passes in 4.2 s.
+- Channel parity: 27/29 match Python at 1e-5; `attacker_vel`/
+  `attacker_speed` differ because awpy exposes `m_vecVelocity` while the
+  training data used a different velocity property. Player scores differ by
+  about 0.01-0.02 and rankings are near-identical, not bit-exact.
+- `shots/kill` is unavailable in the Rust path; the efficiency reason is
+  disabled. Some demos accepted by demoparser2 fail in awpy; the error is
+  surfaced in the UI.
+
+## 2026-10-21 (sidebar layout and processing history)
+
+- Removed the in-app top bar. The window is now a two-column shell: a
+  288 px sidebar and a content region, matching Verse's layout.
+- Sidebar holds the processing-history list, `添加 demo`, the loaded model,
+  and the app version; `关于` opens a dialog with the model version, p99
+  threshold, runtime, dataset, and use boundaries.
+- The first page is one large dashed drop target. Analysis, failure, results,
+  and player detail are separate screens in the content region.
+- Processing history is persisted to `Documents/ValveGuard/records.json`
+  (at most 50 entries) through new `load_records` / `save_record` Tauri
+  commands. A restart restores the list; no record is auto-selected, so the
+  drop target remains the landing page.
+- Fixed sorting for `insufficient` players: they now have an explicit tier
+  rank instead of producing `NaN` comparisons.
+
+## 2026-10-21 (dark theme)
+
+- Switched the desktop UI to a dark-only palette: near-black shell, elevated
+  card surfaces, translucent status colors, and matching table, form, dialog,
+  tooltip, and scrollbar styling. No light theme and no theme switch.
+- The native window is themed dark (`"theme": "Dark"`) and
+  `backgroundColor` is pinned to the shell color so startup does not flash
+  white.
+- Per-kill sparkline and gauge colors were retuned for the dark surface.
+
+## 2026-10-21 (match and player charts)
+
+- Overview screen now leads with a match chart: one horizontal bar per
+  player, sorted by risk score, with human p95/p99 lines and tier colors.
+  It is generated from the current payload, not a static paper image.
+- Player detail now leads with a full per-kill chart (axes, grid, p95/p99
+  lines, gradient area, per-window tooltips) plus window count, mean, and
+  maximum. The old minimal sparkline was replaced.
+- Removed the table's "查看理由" action column; the whole row already opens
+  the detail. Numeric columns are right-aligned and the table uses fixed
+  column widths so it fits the default window.
+- Tightened vertical rhythm across summary cards, chart panels, detail
+  cards, and the kill table.
+
+## 2026-10-21 (interactive match chart)
+
+- Removed the player table from the overview page; the match chart is now
+  the whole page.
+- The chart became the navigation surface: click a row (or Enter/Space on a
+  focused row) to open that player. Rows carry rank, avatar, name, and tier.
+- Added a hover card with score, percentile, window count, headshot rate,
+  mean, maximum, and behavior reasons; the hovered row stays lit while the
+  others dim.
+- Chart polish: gradient bars, per-tier colors, p95/p99 chips and shaded
+  bands, threshold lines, a baseline, an x-axis title, staggered bar and
+  value animations, and tier labels under player names.
+
+## 2026-10-21 (chart legend)
+
+- Added a formal legend below the match chart: `图例` plus FLAG, REVIEW, and
+  BELOW with their score ranges, and a note that the score is a shrunk risk
+  score, not a probability.
+- Unified the tier display case: the backend tier stays `below`, but the UI
+  now renders `BELOW` everywhere (legend, row label, badges, explanations).
+- Matched the FLAG / REVIEW summary-card captions to the legend wording.
+
+## 2026-10-21 (map display names)
+
+- Added a map display map for the UI. Internal codes stay `de_*` / `cs_*`;
+  the interface shows the official Chinese name with the English name as a
+  subtitle (for example `炼狱小镇` / `Inferno`), and shows English only for
+  community maps without an official Chinese name.
+- The raw map code moved to the summary card's hover title instead of being
+  the headline value. The sidebar record line uses the display name too.
+
+## 2026-10-21 (player page redesign)
+
+- Rebuilt the player detail page in the overview's visual language: a
+  summary card with avatar, tier, percentile, evidence badge, score gauge,
+  and a six-cell metric strip; the chart keeps its own legend; "判定依据"
+  is now a structured label/value table instead of prose bullets.
+- The kill-window table now has fixed column widths, centered booleans,
+  right-aligned numerics, a score bar with tier color, zebra rows, and a
+  review/high-risk count in the header.
+- Added a per-window legend under the player chart and made tier badge dots
+  visible.
+
+## 2026-10-21 (player chart hover and kill table layout)
+
+- The per-kill chart is interactive: moving inside the plot snaps to the
+  nearest window, draws a vertical guide and a white ring on the point, and
+  shows a card with window index, score, tick, weapon, and flags.
+- Reworked the kill-window table to percentage column widths (6/12/10/17 %
+  plus five 11 % columns) so every column has a stable, even share of the
+  panel and headers align with their values.
+- Score cells show the score only, colored by threshold band; the progress
+  bar was removed. Tick and score headers/values are right-aligned, boolean
+  columns centered, and the table no longer needs a horizontal scrollbar.
+
+## 2026-10-21 (weapon column alignment)
+
+- Centered the weapon header and cells, and reduced that column from 17 %
+  to 14 %. The five remaining flag/numeric columns now share the leftover
+  width equally, so the gap after the weapon column is symmetric instead of
+  all sitting on one side.
+
+## 2026-10-21 (player chart right edge)
+
+- Reduced the per-kill chart's right padding from 82 to 20 units and moved
+  the p95/p99 labels inside the plot, right-aligned to the plot edge. The
+  plot now reaches the chart frame instead of leaving an empty strip on the
+  right.
+
+## 2026-10-21 (player chart threshold bands)
+
+- Removed the p95/p99 text labels from the per-kill chart. The chart now
+  uses horizontal threshold bands like the overview: amber from p95 to
+  p99, red above p99, with the dashed lines kept. The legend below the
+  chart carries the meaning, so no numbers sit on the plot.
+
+## 2026-10-21 (CI and release workflow)
+
+- CI now runs the Rust core tests in addition to the Python tests and
+  frontend/backend builds.
+- Added a tag-triggered Windows release workflow: it downloads the ONNX
+  bundle, builds NSIS and MSI installers plus the portable zip, writes
+  `SHA256SUMS.txt`, and creates the GitHub Release.
+- The model bundle is fetched from a `model-v1` release asset by default;
+  `VALVEGUARD_MODEL_URL` and `VALVEGUARD_MODEL_SHA256` repository variables
+  can override and pin it.

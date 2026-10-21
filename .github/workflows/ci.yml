@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run tests
+        run: python -I -m pytest -q tests
+      - name: Check frontend syntax
+        run: node --check desktop-ui/src/main.js
+
+  desktop:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build Rust core
+        run: cargo build --release --manifest-path desktop/Cargo.toml
+      - name: Test Rust core
+        run: cargo test --release --manifest-path desktop/Cargo.toml
+
+  tauri:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop-ui/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: desktop-ui
+        run: npm ci
+      - name: Build frontend
+        working-directory: desktop-ui
+        run: npm run build
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Check Tauri backend
+        run: cargo check --manifest-path desktop-ui/src-tauri/Cargo.toml
