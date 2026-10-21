@@ -21,8 +21,8 @@ committed.
 
 - `valveguard_cnn_v1_onnx.zip` — CNN champion ONNX bundle (15 fold models,
   normalization, checksums).
-- `valveguard-desktop-v1-win64.zip` — Rust CLI + GBDT baseline model. The
-  desktop app does not yet use the CNN.
+- `valveguard-desktop-v1-win64.zip` — pure-Rust Tauri review app with the
+  ONNX model; no Python at runtime.
 
 Release notes and SHA256: `docs/releases/v1.0.0.md`.
 
@@ -89,6 +89,26 @@ PYTHONPATH=src python -m valveguard.scripts.demo_report_dataset \
 Model card: `docs/llmwiki/model-card.md`.
 ONNX bundle: `docs/llmwiki/onnx-distribution.md`.
 
+## Review app
+
+Native Tauri desktop window (Rust + WebView2): drag in a demo or pick it
+with the native dialog, extract the players, sort by suspicion, and open a
+per-player explanation and kill-window view. Processing history is kept in
+`Documents/ValveGuard/records.json`.
+
+```bash
+cd desktop-ui
+npm install
+npm run tauri dev
+```
+
+Dev frontend uses `127.0.0.1:47183`; production uses the Tauri custom
+protocol, so no local HTTP port is exposed. The Rust core parses the demo,
+builds the 29 channels, and runs the ONNX ensemble with `ort`; no Python at
+runtime. A 392 MB demo scores in about 4.5 s in release mode. Details:
+`docs/llmwiki/review-app.md`.
+
+
 ## Layout
 
 ```
@@ -98,9 +118,13 @@ src/valveguard/
   features/geometry.py  angles, world positions, target-relative errors
   features/dynamics.py  smoothness / submovement / spectral metrics
   features/summarize.py flat features and per-tick channels
-  models/baseline.py    HistGradientBoosting baseline
+  features/demo_channels.py demo -> 256x43 windows
+  models/artifact.py     PyTorch artifact loader and player aggregation
+  models/onnx_artifact.py torch-free ONNX loader
   metrics.py            AUC/AP/FPR/ECE
   scripts/              CLIs
+desktop/src/            Rust core: awpy, 29 channels, ort, aggregation
+desktop-ui/             Tauri v2 frontend (dev port 47183)
 tests/                  geometry, features, split
 docs/llmwiki/           design, detailed model spec, task plan, changelog
 ```

@@ -1,11 +1,11 @@
 //! Demo ingestion: zip/dem -> kills -> windows -> scores.
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use awpy::{Kill, Parser, PlayerState, Round};
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
-use crate::features::{summarize, Window, KILL_ROW, LEN};
+use crate::features::{KILL_ROW, LEN, Window, summarize};
 use crate::model::Model;
 
 pub struct PlayerRow {
@@ -25,9 +25,14 @@ pub struct KillFeature {
 }
 
 pub struct DebugWindow {
-    pub ax: Vec<f64>, pub ay: Vec<f64>, pub az: Vec<f64>,
-    pub pitch: Vec<f64>, pub yaw: Vec<f64>,
-    pub vx: Vec<f64>, pub vy: Vec<f64>, pub vz: Vec<f64>,
+    pub ax: Vec<f64>,
+    pub ay: Vec<f64>,
+    pub az: Vec<f64>,
+    pub pitch: Vec<f64>,
+    pub yaw: Vec<f64>,
+    pub vx: Vec<f64>,
+    pub vy: Vec<f64>,
+    pub vz: Vec<f64>,
 }
 
 pub struct Analysis {
@@ -39,7 +44,7 @@ pub struct Analysis {
     pub debug_window: Option<DebugWindow>,
 }
 
-fn prepare_demo(input: &Path) -> Result<(PathBuf, Option<PathBuf>)> {
+pub fn prepare_demo(input: &Path) -> Result<(PathBuf, Option<PathBuf>)> {
     let is_zip = input
         .extension()
         .and_then(|e| e.to_str())
@@ -53,8 +58,14 @@ fn prepare_demo(input: &Path) -> Result<(PathBuf, Option<PathBuf>)> {
     let mut archive = zip::ZipArchive::new(file)?;
     for i in 0..archive.len() {
         let mut entry = archive.by_index(i)?;
-        let Some(name) = entry.enclosed_name() else { continue };
-        if name.extension().and_then(|e| e.to_str()).is_some_and(|e| e.eq_ignore_ascii_case("dem")) {
+        let Some(name) = entry.enclosed_name() else {
+            continue;
+        };
+        if name
+            .extension()
+            .and_then(|e| e.to_str())
+            .is_some_and(|e| e.eq_ignore_ascii_case("dem"))
+        {
             let dest = dir.join("match.dem");
             let mut out = std::fs::File::create(&dest)?;
             std::io::copy(&mut entry, &mut out)?;
@@ -64,7 +75,7 @@ fn prepare_demo(input: &Path) -> Result<(PathBuf, Option<PathBuf>)> {
     bail!("no .dem inside {}", input.display());
 }
 
-fn in_live_round(rounds: &[Round], tick: i32) -> bool {
+pub fn in_live_round(rounds: &[Round], tick: i32) -> bool {
     if rounds.is_empty() {
         return true;
     }
@@ -77,12 +88,11 @@ fn in_live_round(rounds: &[Round], tick: i32) -> bool {
     })
 }
 
-fn a_id_unwrap(k: &Kill) -> u64 { k.attacker_steamid.unwrap() }
+pub fn a_id_unwrap(k: &Kill) -> u64 {
+    k.attacker_steamid.unwrap()
+}
 
-fn build_window(
-    kill: &Kill,
-    lookup: &HashMap<(u64, i32), &PlayerState>,
-) -> Option<Window> {
+pub fn build_window(kill: &Kill, lookup: &HashMap<(u64, i32), &PlayerState>) -> Option<Window> {
     let a_id = kill.attacker_steamid?;
     let v_id = kill.victim_steamid?;
     let t0 = kill.tick - KILL_ROW as i32;
@@ -90,10 +100,16 @@ fn build_window(
         return None;
     }
     let mut w = Window {
-        ax: [0.0; LEN], ay: [0.0; LEN], az: [0.0; LEN],
-        pitch: [0.0; LEN], yaw: [0.0; LEN],
-        vx: [0.0; LEN], vy: [0.0; LEN], vz: [0.0; LEN],
+        ax: [0.0; LEN],
+        ay: [0.0; LEN],
+        az: [0.0; LEN],
+        pitch: [0.0; LEN],
+        yaw: [0.0; LEN],
+        vx: [0.0; LEN],
+        vy: [0.0; LEN],
+        vz: [0.0; LEN],
         vhealth: [0.0; LEN],
+        avel: [0.0; LEN],
     };
     for i in 0..LEN {
         let tick = t0 + i as i32;
@@ -108,6 +124,7 @@ fn build_window(
         w.vy[i] = v.y? as f64;
         w.vz[i] = v.z? as f64;
         w.vhealth[i] = v.health as f64;
+        w.avel[i] = a.velocity.unwrap_or(0.0) as f64;
     }
     Some(w)
 }
@@ -167,25 +184,36 @@ pub fn analyze(input: &Path, model: &Model, debug: Option<(u64, i32)>) -> Result
 
     let names: HashMap<u64, (String, Option<String>)> = players
         .iter()
-        .filter_map(|p| p.steamid.map(|s| {
-            (s, (p.name.clone().unwrap_or_default(), p.side.clone()))
-        }))
+        .filter_map(|p| {
+            p.steamid
+                .map(|s| (s, (p.name.clone().unwrap_or_default(), p.side.clone())))
+        })
         .collect();
 
     if model.features.len() != 59 {
-        bail!("model expects {} features, extractor produces 59", model.features.len());
+        bail!(
+            "model expects {} features, extractor produces 59",
+            model.features.len()
+        );
     }
     let mut agg: HashMap<u64, (usize, f64, f64)> = HashMap::new();
     let mut kill_features: Vec<KillFeature> = Vec::new();
     let mut debug_window: Option<DebugWindow> = None;
     let mut used = 0usize;
     for k in &valid {
-        let Some(w) = build_window(k, &lookup) else { continue };
+        let Some(w) = build_window(k, &lookup) else {
+            continue;
+        };
         if debug == Some((a_id_unwrap(k), k.tick)) {
             debug_window = Some(DebugWindow {
-                ax: w.ax.to_vec(), ay: w.ay.to_vec(), az: w.az.to_vec(),
-                pitch: w.pitch.to_vec(), yaw: w.yaw.to_vec(),
-                vx: w.vx.to_vec(), vy: w.vy.to_vec(), vz: w.vz.to_vec(),
+                ax: w.ax.to_vec(),
+                ay: w.ay.to_vec(),
+                az: w.az.to_vec(),
+                pitch: w.pitch.to_vec(),
+                yaw: w.yaw.to_vec(),
+                vx: w.vx.to_vec(),
+                vy: w.vy.to_vec(),
+                vz: w.vz.to_vec(),
             });
         }
         let feats = summarize(&w);
@@ -214,12 +242,21 @@ pub fn analyze(input: &Path, model: &Model, debug: Option<(u64, i32)>) -> Result
                 .filter(|s| !s.is_empty())
                 .unwrap_or_else(|| steamid.to_string());
             PlayerRow {
-                steamid, name, kills: n, mean, max, shrunk,
+                steamid,
+                name,
+                kills: n,
+                mean,
+                max,
+                shrunk,
                 flagged: shrunk >= model.threshold,
             }
         })
         .collect();
-    rows.sort_by(|a, b| b.shrunk.partial_cmp(&a.shrunk).unwrap_or(std::cmp::Ordering::Equal));
+    rows.sort_by(|a, b| {
+        b.shrunk
+            .partial_cmp(&a.shrunk)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
 
     if let Some(dir) = temp {
         let _ = std::fs::remove_dir_all(dir);

@@ -18,6 +18,7 @@ pub struct Window {
     pub vy: [f64; LEN],
     pub vz: [f64; LEN],
     pub vhealth: [f64; LEN],
+    pub avel: [f64; LEN],
 }
 
 fn wrap_deg(x: f64) -> f64 {
@@ -174,7 +175,9 @@ fn sparc(speed: &[f64]) -> f64 {
     let fs = TICK_RATE;
     let mut v = moving_average(speed, 5);
     let m = mean(&v);
-    for x in &mut v { *x -= m; }
+    for x in &mut v {
+        *x -= m;
+    }
     if v.len() < 8 || v.iter().map(|x| x.abs()).fold(0.0, f64::max) < 1e-9 {
         return 0.0;
     }
@@ -193,7 +196,9 @@ fn sparc(speed: &[f64]) -> f64 {
         return 0.0;
     }
     let mx = mags.iter().copied().fold(0.0, f64::max) + 1e-12;
-    for m in &mut mags { *m /= mx; }
+    for m in &mut mags {
+        *m /= mx;
+    }
     let mut total = 0.0;
     for i in 0..freqs.len() - 1 {
         let dw = freqs[i + 1] - freqs[i];
@@ -222,7 +227,12 @@ fn ldlj(yaw: &[f64], pitch: &[f64]) -> f64 {
     let g1y = gradient(pitch, dt);
     let g2y = gradient(&g1y, dt);
     let jy = gradient(&g2y, dt);
-    let integral: f64 = jx.iter().zip(jy.iter()).map(|(a, b)| a * a + b * b).sum::<f64>() * dt;
+    let integral: f64 = jx
+        .iter()
+        .zip(jy.iter())
+        .map(|(a, b)| a * a + b * b)
+        .sum::<f64>()
+        * dt;
     if integral <= 1e-12 {
         return 0.0;
     }
@@ -274,7 +284,9 @@ fn sample_entropy(x: &[f64], m: usize, r_ratio: f64) -> f64 {
                         break;
                     }
                 }
-                if ok { total += 1; }
+                if ok {
+                    total += 1;
+                }
             }
         }
         total
@@ -392,7 +404,9 @@ pub fn summarize(w: &Window) -> Vec<f64> {
     let dyaw = diff_prepend(&yaw);
     let dpitch = diff_prepend(&pitch);
     let mut dyaw_w = [0.0; LEN];
-    for i in 0..n { dyaw_w[i] = wrap_deg(dyaw[i]); }
+    for i in 0..n {
+        dyaw_w[i] = wrap_deg(dyaw[i]);
+    }
     let mut pertick = [0.0; LEN];
     let mut speed = [0.0; LEN];
     for i in 0..n {
@@ -423,15 +437,24 @@ pub fn summarize(w: &Window) -> Vec<f64> {
     let mut settling = f64::NAN;
     let mut cross_idx: Option<usize> = None;
     for i in sl128.clone() {
-        if err[i] < 1.0 { cross_idx = Some(i); break; }
+        if err[i] < 1.0 {
+            cross_idx = Some(i);
+            break;
+        }
     }
     if let Some(ci) = cross_idx {
         reached = 1.0;
         let mut mx: f64 = 0.0;
-        for i in ci..=KILL_ROW { mx = mx.max(err[i]); }
+        for i in ci..=KILL_ROW {
+            mx = mx.max(err[i]);
+        }
         overshoot = (mx - 1.0).max(0.0);
         let mut last_above: Option<usize> = None;
-        for i in ci..=KILL_ROW { if err[i] > 1.0 { last_above = Some(i); } }
+        for i in ci..=KILL_ROW {
+            if err[i] > 1.0 {
+                last_above = Some(i);
+            }
+        }
         settling = match last_above {
             Some(idx) => (KILL_ROW as f64 - idx as f64) / TICK_RATE,
             None => 0.0,
@@ -454,7 +477,9 @@ pub fn summarize(w: &Window) -> Vec<f64> {
     let mut lock_n = 0.0;
     for i in sl16.clone() {
         lock_n += 1.0;
-        if err[i] < 1.0 && speed[i] < 5.0 { lock += 1.0; }
+        if err[i] < 1.0 && speed[i] < 5.0 {
+            lock += 1.0;
+        }
     }
     out[12] = lock / lock_n;
 
@@ -463,13 +488,31 @@ pub fn summarize(w: &Window) -> Vec<f64> {
     let a64: Vec<f64> = sl64.clone().map(|i| accel[i]).collect();
     let j64: Vec<f64> = sl64.clone().map(|i| jerk[i]).collect();
     let d64: Vec<f64> = sl64.clone().map(|i| dist[i]).collect();
-    let st64 = stats(&s64); for k in 0..5 { out[13 + k] = st64[k]; }
-    let st16 = stats(&s16); for k in 0..5 { out[18 + k] = st16[k]; }
-    let at = stats(&a64); for k in 0..5 { out[23 + k] = at[k]; }
-    let jt = stats(&j64); for k in 0..5 { out[28 + k] = jt[k]; }
-    let dt = stats(&d64); for k in 0..5 { out[33 + k] = dt[k]; }
+    let st64 = stats(&s64);
+    for k in 0..5 {
+        out[13 + k] = st64[k];
+    }
+    let st16 = stats(&s16);
+    for k in 0..5 {
+        out[18 + k] = st16[k];
+    }
+    let at = stats(&a64);
+    for k in 0..5 {
+        out[23 + k] = at[k];
+    }
+    let jt = stats(&j64);
+    for k in 0..5 {
+        out[28 + k] = jt[k];
+    }
+    let dt = stats(&d64);
+    for k in 0..5 {
+        out[33 + k] = dt[k];
+    }
     out[38] = dist[KILL_ROW];
-    let t64: Vec<f64> = sl64.clone().map(|i| (i as f64 - KILL_ROW as f64) / TICK_RATE).collect();
+    let t64: Vec<f64> = sl64
+        .clone()
+        .map(|i| (i as f64 - KILL_ROW as f64) / TICK_RATE)
+        .collect();
     out[39] = linear_slope(&t64, &d64);
 
     let y64: Vec<f64> = sl64.clone().map(|i| yaw[i]).collect();
@@ -477,8 +520,13 @@ pub fn summarize(w: &Window) -> Vec<f64> {
     out[40] = path_length(&y64, &p64);
     out[41] = straightness(&y64, &p64);
     let mut curv: Vec<f64> = curvature(&y64, &p64);
-    for c in &mut curv { *c = c.clamp(0.0, 1000.0); }
-    let ct = stats(&curv); for k in 0..5 { out[42 + k] = ct[k]; }
+    for c in &mut curv {
+        *c = c.clamp(0.0, 1000.0);
+    }
+    let ct = stats(&curv);
+    for k in 0..5 {
+        out[42 + k] = ct[k];
+    }
     out[47] = sparc(&s64);
     out[48] = ldlj(&y64, &p64);
     out[49] = psd_slope(&s64);
@@ -488,13 +536,26 @@ pub fn summarize(w: &Window) -> Vec<f64> {
 
     let gvx = gradient(&w.vx, 1.0);
     let gvy = gradient(&w.vy, 1.0);
-    let vs: Vec<f64> = sl64.clone().map(|i| (gvx[i] * TICK_RATE).hypot(gvy[i] * TICK_RATE)).collect();
-    let vt = stats(&vs); for k in 0..5 { out[52 + k] = vt[k]; }
+    let vs: Vec<f64> = sl64
+        .clone()
+        .map(|i| (gvx[i] * TICK_RATE).hypot(gvy[i] * TICK_RATE))
+        .collect();
+    let vt = stats(&vs);
+    for k in 0..5 {
+        out[52 + k] = vt[k];
+    }
 
-    let exp_vel: Vec<f64> = sl128.clone().map(|i| {
-        let d = if i == 0 { 0.0 } else { expected_yaw[i] - expected_yaw[i - 1] };
-        wrap_deg(d) * TICK_RATE
-    }).collect();
+    let exp_vel: Vec<f64> = sl128
+        .clone()
+        .map(|i| {
+            let d = if i == 0 {
+                0.0
+            } else {
+                expected_yaw[i] - expected_yaw[i - 1]
+            };
+            wrap_deg(d) * TICK_RATE
+        })
+        .collect();
     let act_vel: Vec<f64> = sl128.map(|i| dyaw_w[i] * TICK_RATE).collect();
     let (lag, cc) = lead_lag(&act_vel, &exp_vel, 12);
     out[57] = lag;

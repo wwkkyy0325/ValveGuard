@@ -1,9 +1,7 @@
-mod demo;
-mod features;
-mod model;
+use valveguard_core::{demo, model};
 
 use anyhow::{Context, Result};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::PathBuf;
 
 fn arg(name: &str) -> Option<PathBuf> {
@@ -17,11 +15,7 @@ fn arg(name: &str) -> Option<PathBuf> {
 }
 
 fn num(x: f64) -> Value {
-    if x.is_finite() {
-        json!(x)
-    } else {
-        Value::Null
-    }
+    if x.is_finite() { json!(x) } else { Value::Null }
 }
 
 fn main() -> Result<()> {
@@ -53,11 +47,13 @@ fn main() -> Result<()> {
         let rows: Vec<Value> = analysis
             .kill_features
             .iter()
-            .map(|k| json!({
-                "steamid": k.steamid.to_string(),
-                "kill_tick": k.kill_tick,
-                "features": k.features.iter().map(|v| num(*v)).collect::<Vec<_>>(),
-            }))
+            .map(|k| {
+                json!({
+                    "steamid": k.steamid.to_string(),
+                    "kill_tick": k.kill_tick,
+                    "features": k.features.iter().map(|v| num(*v)).collect::<Vec<_>>(),
+                })
+            })
             .collect();
         std::fs::write(&path, serde_json::to_string(&rows)?)
             .with_context(|| format!("write {}", path.display()))?;
@@ -66,16 +62,18 @@ fn main() -> Result<()> {
     let players: Vec<Value> = analysis
         .rows
         .iter()
-        .map(|p| json!({
-            "steamid": p.steamid.to_string(),
-            "name": p.name,
-            "kills": p.kills,
-            "mean_score": p.mean,
-            "max_kill_score": p.max,
-            "shrunk_score": p.shrunk,
-            "flagged": p.flagged,
-            "reliable": p.kills >= 3,
-        }))
+        .map(|p| {
+            json!({
+                "steamid": p.steamid.to_string(),
+                "name": p.name,
+                "kills": p.kills,
+                "mean_score": p.mean,
+                "max_kill_score": p.max,
+                "shrunk_score": p.shrunk,
+                "flagged": p.flagged,
+                "reliable": p.kills >= 3,
+            })
+        })
         .collect();
     let result = json!({
         "demo": input.to_string_lossy(),

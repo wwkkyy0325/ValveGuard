@@ -2,6 +2,11 @@
 
 Pure-Rust demo parser and scorer. No Python at runtime.
 
+> The primary desktop review UI is the Tauri app in `desktop-ui/` (Rust
+> shell + WebView2 frontend), which uses this crate's `channels`/`onnx`
+> modules for the CNN champion. The `valveguard-desktop` CLI binary below is
+> a separate GBDT JSON baseline.
+
 ## Build
 
 ```bash

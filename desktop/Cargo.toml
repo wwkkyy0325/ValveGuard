@@ -3,9 +3,18 @@ name = "valveguard-desktop"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "valveguard_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "valveguard-desktop"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1.0.104"
 awpy = "3.0.0"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 zip = "9.0.4"
+ort = "2.0.0-rc.13"

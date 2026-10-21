@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ValveGuard</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <div id="tooltip" class="tooltip" role="tooltip"></div>
+  <div id="playerTip" class="player-tip" role="tooltip" hidden></div>
+  <div id="killTip" class="kill-tip" role="tooltip" hidden></div>
+  <div id="toast" class="toast" hidden></div>
+  <div id="dropOverlay" class="drop-overlay" hidden>
+    <div class="drop-overlay-box">
+      <p class="t">松开即可分析</p>
+      <p class="s">会把这一局加到左侧的处理记录里</p>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="mark">VG</div>
+        <div>
+          <h1>ValveGuard</h1>
+          <p>对局复核</p>
+        </div>
+      </div>
+
+      <div class="sidebar-scroll">
+        <section class="records">
+          <h2>处理记录</h2>
+          <ul id="recordList" class="record-list"></ul>
+          <p id="recordEmpty" class="sidebar-empty">还没有分析过对局。</p>
+        </section>
+      </div>
+
+      <div class="sidebar-foot">
+        <button class="primary add-btn" id="addBtn" type="button">添加 demo</button>
+        <div class="model-line">
+          <span class="state-dot" id="modelDot"></span>
+          <span id="modelText">模型加载中</span>
+        </div>
+        <div class="version-line">
+          <span id="versionText">ValveGuard</span>
+          <button class="link-btn" id="aboutBtn" type="button">关于</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="emptyScreen" class="screen empty-screen">
+        <button class="dropzone-big" id="dropZone" type="button">
+          <span class="dz-icon">↓</span>
+          <span class="dz-title">把 demo 拖到这里</span>
+          <span class="dz-sub">或者点击选择文件</span>
+          <span class="dz-hint">支持 .dem 与包含单个 demo 的 .zip · 本机解析，不上传</span>
+        </button>
+      </section>
+
+      <section id="workingScreen" class="screen center-screen" hidden>
+        <div class="working-card">
+          <span class="spinner big"></span>
+          <h2>正在分析对局</h2>
+          <p class="file" id="workingFile"></p>
+          <p class="stage" id="workingStage"></p>
+        </div>
+      </section>
+
+      <section id="failedScreen" class="screen center-screen" hidden>
+        <div class="failed-card">
+          <h2>分析失败</h2>
+          <p class="file" id="failedFile"></p>
+          <p class="reason" id="failedReason"></p>
+          <div class="actions">
+            <button class="primary" id="retryBtn" type="button">重试</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="results" class="screen scroll-screen" hidden>
+        <div class="summary-grid" id="summaryGrid"></div>
+
+        <section class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <h2>本局分数总览</h2>
+              <p class="sub" id="overviewSub">按风险分从高到低排列；悬停查看详情，点击进入玩家页。</p>
+            </div>
+          </div>
+          <div class="overview-chart" id="overviewChart"></div>
+          <div class="chart-legend" role="note">
+            <span class="legend-title">图例</span>
+            <span class="lg-item"><i class="dot flag"></i><b>FLAG</b><span>风险分 ≥ 人类 p99</span></span>
+            <span class="lg-item"><i class="dot review"></i><b>REVIEW</b><span>人类 p95–p99 复核带</span></span>
+            <span class="lg-item"><i class="dot below"></i><b>BELOW</b><span>低于人类 p95</span></span>
+            <span class="lg-note">分数为向人类先验收缩后的风险分，不是概率；无有效击杀窗口的玩家不参与评分。</span>
+          </div>
+        </section>
+
+      </section>
+
+      <section id="detail" class="screen scroll-screen" hidden>
+        <button class="back" id="backBtn" type="button">← 返回总览</button>
+
+        <section class="panel player-summary" id="detailHero"></section>
+
+        <section class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <h2>逐击杀分数</h2>
+              <p class="sub">每个点是一个击杀窗口；虚线为人类 p95 与 p99。</p>
+            </div>
+            <div class="chart-stats" id="chartStats"></div>
+          </div>
+          <div class="player-chart" id="sparkWrap"></div>
+          <div class="chart-legend" role="note">
+            <span class="legend-title">图例</span>
+            <span class="lg-item"><i class="dot flag"></i><b>≥ p99</b><span>高风险窗口</span></span>
+            <span class="lg-item"><i class="dot review"></i><b>p95–p99</b><span>复核带窗口</span></span>
+            <span class="lg-item"><i class="dot below"></i><b>&lt; p95</b><span>常规窗口</span></span>
+            <span class="lg-note">横轴为击杀序号（按时间），纵轴为该窗口的风险分；点越高越接近自动标记。</span>
+          </div>
+        </section>
+
+        <div class="detail-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>判定依据</h2>
+                <p class="sub">从风险分到复核队列名次的完整链路。</p>
+              </div>
+            </div>
+            <div class="evidence" id="whyList"></div>
+            <p class="note">行为理由只影响复核队列顺序；风险分与判定仍由瞄准模型决定。</p>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>行为上下文</h2>
+                <p class="sub">只用于解释与排序，不改变分数或判定。</p>
+              </div>
+            </div>
+            <div class="behavior-grid" id="behaviorGrid"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>击杀窗口明细</h2>
+              <p class="sub" id="killSub">按时间顺序列出该玩家的每个有效击杀窗口。</p>
+            </div>
+            <div class="chart-stats" id="killStats"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="kill-table">
+              <colgroup>
+                <col class="k-idx"><col class="k-tick"><col class="k-score"><col class="k-weapon">
+                <col class="k-flag"><col class="k-shots"><col class="k-flag"><col class="k-flag"><col class="k-flag">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th><th class="num">击杀 tick</th><th class="num">窗口分数</th><th class="c">武器</th>
+                  <th class="c">爆头</th><th class="c">射击</th><th class="c">穿烟</th><th class="c">穿墙</th><th class="c">空中</th>
+                </tr>
+              </thead>
+              <tbody id="killsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="aboutDialog" class="about">
+    <div class="about-head">
+      <div>
+        <h2>ValveGuard <span id="aboutVersion"></span></h2>
+        <p>CS2 辅助瞄准离线复核台</p>
+      </div>
+      <button class="close-btn" id="aboutClose" type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="about-body">
+      <dl>
+        <div><dt>模型</dt><dd id="aboutModel">—</dd></div>
+        <div><dt>p99 阈值</dt><dd id="aboutThreshold">—</dd></div>
+        <div><dt>推理</dt><dd>Rust · ONNX Runtime · 15 个折模型集成</dd></div>
+        <div><dt>训练数据</dt><dd>CS2CD · 794 场 / 90,707 个窗口</dd></div>
+        <div><dt>运行方式</dt><dd>本机离线解析，文件不会上传</dd></div>
+      </dl>
+      <h3>怎么读结果</h3>
+      <p>每位玩家有一组 256 tick 的击杀窗口分数；用 k0=5 向人类先验收缩后得到风险分。风险分 ≥ p99 判为 FLAG，p95–p99 为 REVIEW。行为理由只调整复核顺序，不改变分数。</p>
+      <h3>使用边界</h3>
+      <p>研究用复核工具，不用于自动封禁、实时对局或任何在线执法。证据不足的玩家会被保留在名单里，但不应据此采取行动。</p>
+    </div>
+  </dialog>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

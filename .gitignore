@@ -25,3 +25,9 @@ artifacts/
 
 # Rust build output
 desktop/target/
+
+# Tauri desktop UI
+desktop-ui/node_modules/
+desktop-ui/dist/
+desktop-ui/src-tauri/target/
+desktop-ui/src-tauri/gen/
