@@ -1202,3 +1202,17 @@
 - Verified the downloaded portable zip: `ValveGuard.exe`, the full `model/`
   directory, README, 40,536,618 bytes, and a SHA256 matching the published
   checksums.
+
+## 2026-10-21 (installer lifecycle, v1.0.1)
+
+- Added NSIS hooks: uninstall asks whether to delete
+  `Documents/ValveGuard`; silent uninstall keeps records unless
+  `/DELETEUSERDATA` is passed; full cleanup also removes the WebView2 data
+  directory.
+- The uninstall run by the installer during an upgrade uses `_?=` and skips
+  the data prompt, so records survive reinstalls.
+- NSIS installer is explicitly per-user with SimpChinese and English
+  languages; upgrades default to uninstall-before-install.
+- Documented the cosmetic `modern-wizard.bmp` temp error and the MSI /
+  portable alternatives.
+- Bumped the app to 1.0.1.

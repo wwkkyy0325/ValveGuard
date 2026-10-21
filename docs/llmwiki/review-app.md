@@ -149,7 +149,32 @@ graph as the Python artifact.
 
 ## Packaging
 
-`npm run tauri build` builds the WebView2 app. The current build expects
-`artifacts/valveguard_cnn_v1_onnx` next to the repo during development; the
-release bundle will add the ONNX files as Tauri resources. No Python sidecar
-is involved.
+`npm run tauri build` builds the WebView2 app. The ONNX bundle is committed
+under `artifacts/valveguard_cnn_v1_onnx` and is added to the bundle as a
+Tauri resource. No Python sidecar is involved.
+
+The release workflow builds three Windows artifacts: an NSIS installer, an
+MSI, and a portable zip.
+
+### NSIS install and uninstall
+
+- Per-user install (`installMode: currentUser`), SimpChinese and English
+  installer languages.
+- If an older version is present, the installer shows the maintenance page
+  and offers to remove it first; upgrades default to uninstall-before-install.
+- The uninstaller asks whether to also delete the analysis history in
+  `Documents/ValveGuard`. Choosing No keeps the records.
+- Silent uninstall keeps records by default. Pass `/DELETEUSERDATA` to remove
+  them without prompting.
+- The uninstaller also removes the WebView2 data directory
+  `%LOCALAPPDATA%\com.valveguard.review` when the user chooses full cleanup.
+- The MSI leaves `Documents/ValveGuard` untouched; the portable zip has no
+  uninstaller at all.
+
+### NSIS temp bitmap error
+
+If setup reports `Error opening file for writing ...\modern-wizard.bmp` in
+`%TEMP%`, the failing file is the wizard's cosmetic bitmap, not an app file.
+Retry or Ignore usually completes the install. If it persists: clear stale
+`%TEMP%\nsn*.tmp` folders, check free disk space and antivirus blocking, or
+use the MSI / portable zip.
