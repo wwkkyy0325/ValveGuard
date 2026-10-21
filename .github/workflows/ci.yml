@@ -50,5 +50,19 @@ jobs:
         working-directory: desktop-ui
         run: npm run build
       - uses: dtolnay/rust-toolchain@stable
+      - name: Create model placeholders for the config check
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/valveguard_cnn_v1_onnx | Out-Null
+          @(
+            "model.onnx",
+            "manifest.json",
+            "channel_names.json",
+            "human_player_scores.json",
+            "reference.npz",
+            "reference.json"
+          ) | ForEach-Object {
+            New-Item -ItemType File -Force "artifacts/valveguard_cnn_v1_onnx/$_" | Out-Null
+          }
       - name: Check Tauri backend
         run: cargo check --manifest-path desktop-ui/src-tauri/Cargo.toml
