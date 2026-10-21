@@ -1184,3 +1184,12 @@
 - The model bundle is fetched from a `model-v1` release asset by default;
   `VALVEGUARD_MODEL_URL` and `VALVEGUARD_MODEL_SHA256` repository variables
   can override and pin it.
+
+## 2026-10-21 (self-contained releases)
+
+- Committed the unpacked ONNX bundle under `artifacts/valveguard_cnn_v1_onnx/`
+  (about 31 MB) so CI releases need no external model hosting. Packaged
+  zips and training checkpoints remain ignored.
+- The release workflow now verifies the committed bundle, zips it, and
+  attaches it; the `model-v1` release and model URL variables are gone.
+- Removed the CI placeholder step because the model files are now present.

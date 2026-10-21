@@ -9,9 +9,6 @@ on:
       tag:
         description: "Release tag, for example v1.0.0"
         required: true
-      model_url:
-        description: "Optional ONNX bundle zip URL (overrides the repository variable)"
-        required: false
 
 permissions:
   contents: write
@@ -40,32 +37,10 @@ jobs:
             desktop -> target
             desktop-ui/src-tauri -> target
 
-      - name: Fetch ONNX model bundle
+      - name: Verify ONNX model bundle
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          $url = "${{ inputs.model_url }}"
-          if ([string]::IsNullOrWhiteSpace($url)) {
-            $url = "${{ vars.VALVEGUARD_MODEL_URL }}"
-          }
-          if ([string]::IsNullOrWhiteSpace($url)) {
-            $url = "https://github.com/${{ github.repository }}/releases/download/model-v1/valveguard_cnn_v1_onnx.zip"
-          }
-          Write-Host "Model bundle: $url"
-          Invoke-WebRequest -Uri $url -OutFile model.zip
-
-          $expected = "${{ vars.VALVEGUARD_MODEL_SHA256 }}"
-          if (-not [string]::IsNullOrWhiteSpace($expected)) {
-            $actual = (Get-FileHash model.zip -Algorithm SHA256).Hash.ToLower()
-            if ($actual -ne $expected.ToLower()) {
-              throw "Model bundle SHA256 mismatch: $actual"
-            }
-            Write-Host "Model SHA256 verified: $actual"
-          }
-
-          Expand-Archive -Path model.zip -DestinationPath artifacts/valveguard_cnn_v1_onnx -Force
-          Copy-Item model.zip artifacts/valveguard_cnn_v1_onnx.zip -Force
-
           $required = @(
             "model.onnx",
             "manifest.json",
@@ -80,6 +55,8 @@ jobs:
               throw "Model bundle is missing $name"
             }
           }
+          $size = (Get-Item "artifacts/valveguard_cnn_v1_onnx/model.onnx").Length
+          Write-Host "model.onnx: $size bytes"
 
       - name: Install frontend dependencies
         working-directory: desktop-ui
@@ -100,6 +77,12 @@ jobs:
           Copy-Item "artifacts/valveguard_cnn_v1_onnx/*" "$portable/model/"
           Copy-Item "desktop-ui/README.md" "$portable/README.txt"
           Compress-Archive -Path "$portable/*" -DestinationPath "artifacts/valveguard-desktop-v1-win64.zip" -Force
+
+      - name: Package ONNX model bundle
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "artifacts/valveguard_cnn_v1_onnx/*" `
+            -DestinationPath "artifacts/valveguard_cnn_v1_onnx.zip" -Force
 
       - name: Write checksums
         shell: pwsh

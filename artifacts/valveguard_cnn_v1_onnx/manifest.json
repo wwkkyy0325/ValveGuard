@@ -1,0 +1,86 @@
+{
+  "version": "valveguard_cnn_v1_onnx",
+  "created": "2026-10-20",
+  "architecture": "wide",
+  "channels": 29,
+  "channel_names_file": "channel_names.json",
+  "input": {
+    "length": 256,
+    "kill_row": 223,
+    "layout": "43-channel demo layout -> select by name",
+    "tensor": "(N, 256, 29) float32, selected by channel name"
+  },
+  "normalization": {
+    "method": "median_iqr",
+    "embedded": true,
+    "note": "per-seed normalization is inside model.onnx"
+  },
+  "ensemble": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "folds": 5,
+    "hard_neg": 5.0,
+    "models_per_seed": 5
+  },
+  "aggregation": {
+    "method": "shrunk_mean",
+    "k0": 5.0,
+    "prior": 0.3018746014732038
+  },
+  "threshold": {
+    "value": 0.608027,
+    "source": "OOF human player p99",
+    "target_fpr": 0.01
+  },
+  "training": {
+    "fold_source": "reports/cv_gbdt/cv_predictions.parquet",
+    "epochs": 10,
+    "windows": 79533,
+    "players": 5868,
+    "source_runs": [
+      "cnn29_fixed_hn5_seed42_export",
+      "cnn29_fixed_hn5_seed43_export",
+      "cnn29_fixed_hn5_seed44"
+    ]
+  },
+  "metrics": {
+    "kill_auc": 0.901524583832865,
+    "player_auc": 0.9501565165121313,
+    "player_recall_at_fpr1": 0.36186770428015563,
+    "q4_fpr": 0.031088082901554404,
+    "q4_recall": 0.39092872570194387
+  },
+  "reference": {
+    "file": "reference.npz",
+    "summary": "reference.json",
+    "player_scores": "human_player_scores.json"
+  },
+  "format": "onnx",
+  "source_version": "valveguard_cnn_v1",
+  "onnx": {
+    "file": "model.onnx",
+    "opset": 17,
+    "input_name": "channels",
+    "output_name": "scores",
+    "input_shape": [
+      null,
+      256,
+      29
+    ],
+    "output_shape": [
+      null
+    ],
+    "size_bytes": 31457040,
+    "max_abs_diff_vs_torch": 2.5828679417472244e-08
+  },
+  "checksums": {
+    "model.onnx": "da1f6f6a686397ee171aec777fd544f9bd8cb9f3a3cad0dda71c0161690d127c",
+    "channel_names.json": "6d460a24e9ec5333e7f5869ce150116ce2415e50993137dae3c980e5d98a0201",
+    "reference.npz": "272aba451cb4bf80ca845c2356fc913e700cba7cc7841b919cadda58a373a443",
+    "reference.json": "3f87df669340b65ee5d7e5d152138c754893563509902b312918bd145fb86d59",
+    "human_player_scores.json": "f856aa271a700305faf47439600b0ca47c276108f5c85d372194a722c00d16c3"
+  }
+}

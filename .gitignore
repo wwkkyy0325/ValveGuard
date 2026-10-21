@@ -20,8 +20,11 @@ experiments/**/oof/
 # Packaging
 *.egg-info/
 
-# Model artifacts
-artifacts/
+# Model artifacts. The deployed ONNX bundle is versioned so CI releases are
+# self-contained; training checkpoints and packaged zips stay out of git.
+artifacts/*
+!artifacts/valveguard_cnn_v1_onnx/
+!artifacts/valveguard_cnn_v1_onnx/**
 
 # Rust build output
 desktop/target/
