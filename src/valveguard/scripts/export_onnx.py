@@ -159,6 +159,11 @@ def main() -> None:
 
     for name in ("channel_names.json", "reference.npz", "reference.json"):
         shutil.copy2(source / name, out / name)
+    reference = np.load(source / "reference.npz")
+    human_scores = [float(value) for value in reference["human_player_scores"]]
+    (out / "human_player_scores.json").write_text(
+        json.dumps(human_scores)
+    )
     manifest = dict(detector.manifest)
     manifest.pop("checksums", None)
     manifest["version"] = f"{detector.manifest['version']}_onnx"
@@ -189,9 +194,10 @@ def main() -> None:
     manifest["reference"] = {
         "file": "reference.npz",
         "summary": "reference.json",
+        "player_scores": "human_player_scores.json",
     }
     files = ("model.onnx", "channel_names.json", "reference.npz",
-             "reference.json")
+             "reference.json", "human_player_scores.json")
     manifest["checksums"] = {name: _sha256(out / name) for name in files}
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2))
     _write_readme(out)

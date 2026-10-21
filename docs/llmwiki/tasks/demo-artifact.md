@@ -25,9 +25,11 @@ Champion: `artifacts/valveguard_cnn_v1` (aim-only 29-channel wide CNN,
       Verify: PyTorch vs ONNX max abs difference < 1e-5 (random 2.58e-8,
       cdata:0 1.27e-7); demo report tiers and flags identical.
       Bundle: `artifacts/valveguard_cnn_v1_onnx/` + `.zip` (local, ignored).
-- [ ] Desktop ONNX integration. The Rust desktop still uses the GBDT JSON
-      model; wiring the CNN ONNX bundle into Tauri is separate work.
+- [x] Tauri desktop review app: Rust shell, WebView2 frontend, native
+      dialog and drag-drop.
+- [x] Rust ONNX inference: `awpy` parsing, 29-channel builder, `ort`
+      ensemble, aggregation, and UI JSON. No Python at runtime.
 - [ ] `compare_demos.py` human / synthetic / cheater harness.
       Verify: labeled demos produce grouped distributions and a summary table.
 - [x] Regression tests for artifact load, schema, and review ordering.
-      Verify: `python -m pytest -q tests` passes (11 tests).
+      Verify: `python -m pytest -q tests` passes (15 tests), plus the Rust `onnx_demo` test.

@@ -153,13 +153,13 @@ The application owns:
 
 The library owns:
 
-- demo parsing (demoparser2);
+- demo parsing (`awpy` in the Rust app, `demoparser2` in Python scripts);
 - window building and feature extraction;
 - scoring and aggregation.
 
-Recommended packaging: Python + a native GUI toolkit (PySide6 or Tkinter),
-frozen with PyInstaller; demoparser2 ships a Windows wheel, so a single
-folder/exe is feasible.
+Recommended packaging (2026-10-20): Tauri v2 with the Rust core and the
+ONNX bundle as a resource. No Python is needed at runtime. The Python
+CLI remains for artifact export and dataset experiments.
 
 ONNX export was attempted on 2026-10-18 for the GBDT model. `skl2onnx`
 1.20 fails to convert this `HistGradientBoostingClassifier` (boolean

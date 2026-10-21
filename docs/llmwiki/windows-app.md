@@ -1,6 +1,7 @@
 # Windows Application Plan
 
-Status: design validated on a local CS2 demo, 2026-10-18. No app code yet.
+Status: Tauri desktop review app implemented 2026-10-20 (Rust shell,
+WebView2 frontend, awpy + channels + ort). See `review-app.md`.
 
 ## Target input
 
@@ -87,14 +88,15 @@ Port to Rust, in this order, with a Python-Rust golden comparison after each:
 
 Effort estimate: 3-5 days for the feature port, 3-5 days for the Tauri UI.
 
-## Alternatives
+## Alternatives (historical)
 
 - **Python sidecar**: Tauri + bundled PyInstaller worker reuses the exact
   Python pipeline immediately; larger package (~150-250 MB) and slower start.
 - **Pure Rust**: ~10-20 MB app, single process, but requires the feature port.
 
-Given the parser and model spikes are done, pure Rust is technically sound;
-the sidecar is the faster path if time-to-demo matters more than size.
+Pure Rust was chosen and implemented: `desktop/src/channels.rs` builds the 29
+aim channels and `desktop/src/onnx.rs` runs the ONNX ensemble through `ort`.
+The Python sidecar was removed.
 
 ## Rust core status (2026-10-18)
 
