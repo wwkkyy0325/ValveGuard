@@ -170,6 +170,31 @@
             </table>
           </div>
         </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>被击杀记录</h2>
+              <p class="sub">你每次死亡时，击杀者当时的瞄准窗口分数。分数越高说明那次击杀越可疑。</p>
+            </div>
+            <div class="chart-stats" id="deathStats"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="kill-table">
+              <colgroup>
+                <col class="k-idx"><col class="k-tick"><col class="k-score"><col class="k-weapon">
+                <col class="k-flag"><col class="k-shots"><col class="k-flag"><col class="k-flag"><col class="k-flag">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th><th class="num">死亡 tick</th><th class="num">凶手窗口分</th><th>击杀者</th>
+                  <th class="c">武器</th><th class="c">爆头</th><th class="c">穿烟</th><th class="c">穿墙</th><th class="c">空中</th>
+                </tr>
+              </thead>
+              <tbody id="deathsBody"></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
   </div>

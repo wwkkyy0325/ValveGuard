@@ -39,6 +39,8 @@ struct Reference {
 
 struct KillRow {
     steamid: u64,
+    victim_steamid: u64,
+    victim_name: String,
     tick: i32,
     headshot: bool,
     weapon: String,
@@ -363,6 +365,8 @@ pub fn score_demo(input: &Path, onnx_path: &Path) -> Result<Value> {
             windows.push(channel_window);
             rows.push(KillRow {
                 steamid: attacker,
+                victim_steamid: kill.victim_steamid.unwrap(),
+                victim_name: kill.victim_name.clone().unwrap_or_default(),
                 tick: kill.tick,
                 headshot: kill.headshot,
                 weapon: kill.weapon.clone(),
@@ -433,10 +437,13 @@ pub fn score_demo(input: &Path, onnx_path: &Path) -> Result<Value> {
                         "score": kill.score,
                         "headshot": if kill.headshot { 1 } else { 0 },
                         "weapon": weapon_class(&kill.weapon),
+                        "weapon_name": kill.weapon,
                         "shots": null,
                         "smoke": if kill.smoke { 1 } else { 0 },
                         "wallbang": if kill.wallbang { 1 } else { 0 },
                         "midair": if kill.midair { 1 } else { 0 },
+                        "victim_steamid": kill.victim_steamid,
+                        "victim_name": kill.victim_name,
                     })
                 })
                 .collect();

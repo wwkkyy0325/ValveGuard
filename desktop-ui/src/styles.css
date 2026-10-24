@@ -118,8 +118,35 @@ button { cursor: pointer; color: inherit; }
   gap: 2px;
 }
 
+.record {
+  display: flex;
+  align-items: stretch;
+  border-radius: 10px;
+  position: relative;
+}
+
+.record.has-flag {
+  box-shadow: inset 2px 0 0 var(--red);
+}
+
+.record-del {
+  flex: 0 0 auto;
+  width: 22px;
+  margin: 6px 4px 6px 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity .15s, background .15s, color .15s;
+}
+.record:hover .record-del { opacity: 1; }
+.record-del:hover { background: var(--red-soft); color: var(--red); }
+
 .record-main {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 9px 10px;
   border: 0;
   border-radius: 10px;
@@ -829,3 +856,9 @@ tbody tr:last-child td { border-bottom: 0; }
   .ps-metrics > div:nth-child(4) { border-left: 0; }
   .ps-metrics > div:nth-child(n + 4) { border-top: 1px solid rgba(255, 255, 255, .08); }
 }
+
+/* ==== custom: FLAG rows highlight in overview chart ==== */
+.ov-row.flag-row .ov-track { fill: rgba(255,122,122,.08); }
+.ov-row.flag-row .ov-hit { fill: rgba(255,95,109,.07); }
+.ov-row.flag-row:hover .ov-hit { fill: rgba(255,95,109,.14); }
+.ov-row.review-row .ov-hit { fill: rgba(245,181,68,.06); }
