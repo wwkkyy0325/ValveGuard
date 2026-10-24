@@ -10,6 +10,7 @@ const state = {
   records: [],
   activeId: null,
   busy: false,
+  queue: [],
 };
 
 const STAGES = [
@@ -121,6 +122,21 @@ function updateBusy() {
 
 /* ---------- records ---------- */
 
+async function deleteRecord(id) {
+  state.records = state.records.filter((item) => item.id !== id);
+  if (state.activeId === id) {
+    state.activeId = state.records[0]?.id ?? null;
+  }
+  renderRecords();
+  renderScreen();
+  try {
+    await invoke("delete_record", { id });
+  } catch (error) {
+    console.warn("could not delete record", error);
+  }
+  toast("已删除记录");
+}
+
 function renderRecords() {
   $("#recordEmpty").hidden = state.records.length > 0;
   $("#recordList").innerHTML = state.records.map((record) => {
@@ -134,8 +150,9 @@ function renderRecords() {
       : record.status === "failed"
         ? "解析失败"
         : record.stage;
+    const flagCls = record.status === "done" && record.data && record.data.summary.flagged > 0 ? " has-flag" : "";
     return `
-      <li class="record${record.id === state.activeId ? " active" : ""}" data-id="${record.id}">
+      <li class="record${record.id === state.activeId ? " active" : ""}${flagCls}" data-id="${record.id}">
         <button class="record-main" type="button">
           <span class="record-top">
             <span class="record-name" title="${esc(record.path)}">${esc(record.name)}</span>
@@ -143,6 +160,7 @@ function renderRecords() {
           </span>
           <span class="record-sub">${esc(sub)}</span>
         </button>
+        <button class="record-del" type="button" data-del="${record.id}" title="删除此记录">✕</button>
       </li>
     `;
   }).join("");
@@ -299,15 +317,11 @@ async function loadRecords() {
   renderScreen();
 }
 
-async function analyzePath(rawPath) {
-  const path = String(rawPath || "").trim().replace(/^"|"$/g, "");
+async function analyzeOne(path) {
+  path = String(path || "").trim().replace(/^"|"$/g, "");
   if (!path) return;
-  if (state.busy) {
-    toast("正在分析另一局，完成后再添加。");
-    return;
-  }
   const record = {
-    id: String(Date.now()),
+    id: String(Date.now()) + Math.random().toString(36).slice(2, 7),
     path,
     name: baseName(path),
     status: "working",
@@ -322,14 +336,37 @@ async function analyzePath(rawPath) {
   await runRecord(record);
 }
 
+async function pumpQueue() {
+  if (state.busy || state.queue.length === 0) return;
+  const next = state.queue.shift();
+  await analyzeOne(next);
+  pumpQueue();
+}
+
+async function enqueuePaths(paths) {
+  const list = (Array.isArray(paths) ? paths : [paths])
+    .map((p) => String(p || "").trim())
+    .filter(Boolean);
+  if (!list.length) return;
+  state.queue.push(...list);
+  if (state.queue.length > 1) {
+    toast(`已加入队列，前面还有 ${state.queue.length - 1} 个 demo`);
+  }
+  pumpQueue();
+}
+
+async function analyzePath(rawPath) {
+  await enqueuePaths(rawPath);
+}
+
 async function chooseDemo() {
   if (state.busy) return;
   try {
     const selected = await open({
-      multiple: false,
+      multiple: true,
       filters: [{ name: "CS2 demo", extensions: ["dem", "zip"] }],
     });
-    if (selected) await analyzePath(selected);
+    if (selected) await enqueuePaths(selected);
   } catch (error) {
     toast(error?.toString() || "打开文件失败");
   }
@@ -425,7 +462,7 @@ function renderOverviewChart(data) {
     const initial = (player.name || player.steamid || "P").slice(0, 1).toUpperCase();
     const width = hasScore ? Math.max(3, x(player.score) - pad.left) : 0;
     return `
-      <g class="ov-row" data-steamid="${esc(player.steamid)}" tabindex="0" role="button"
+      <g class="ov-row ${key}-row" data-steamid="${esc(player.steamid)}" tabindex="0" role="button"
          aria-label="${esc(player.name)}，风险分 ${hasScore ? num(player.score, 3) : "无"}">
         <rect class="ov-hit" x="6" y="${top + 2}" width="${W - 12}" height="${rowH - 4}" rx="8"/>
         <text class="ov-rank" x="16" y="${cy + 4}">${String(player.rank).padStart(2, "0")}</text>
@@ -932,6 +969,54 @@ function renderDetail(record, player) {
       `;
     }).join("")
     : '<tr><td colspan="9" class="empty-cell">无有效击杀窗口</td></tr>';
+
+  // ---- deaths: every time this player died, the killer's window score ----
+  const mySid = Number(player.steamid);
+  const deaths = [];
+  for (const other of data.players || []) {
+    if (Number(other.steamid) === mySid) continue;
+    for (const k of other.kills || []) {
+      if (Number(k.victim_steamid) === mySid) {
+        deaths.push({
+          tick: k.tick,
+          score: k.score,
+          killer: other.name,
+          killer_tier: other.tier,
+          weapon: k.weapon_name || k.weapon,
+          headshot: k.headshot,
+          smoke: k.smoke,
+          wallbang: k.wallbang,
+          midair: k.midair,
+        });
+      }
+    }
+  }
+  deaths.sort((a, b) => a.tick - b.tick);
+  const deathHigh = deaths.filter((d) => d.score >= data.threshold).length;
+  const deathReview = deaths.filter((d) => d.score >= data.p95 && d.score < data.threshold).length;
+  $("#deathStats").innerHTML = `
+    <span><b>${deaths.length}</b> 次死亡</span>
+    <span><b>${deathHigh}</b> 被高危击杀</span>
+    <span><b>${deathReview}</b> 被复核带击杀</span>
+  `;
+  $("#deathsBody").innerHTML = deaths.length
+    ? deaths.map((d, i) => {
+      const key = d.score >= data.threshold ? "flag" : d.score >= data.p95 ? "review" : "below";
+      return `
+        <tr>
+          <td class="num">${i + 1}</td>
+          <td class="num">${d.tick}</td>
+          <td class="num"><b class="score-num ${key}">${num(d.score, 3)}</b></td>
+          <td>${esc(d.killer)} <span class="badge ${esc(d.killer_tier)}">${esc(d.killer_tier)}</span></td>
+          <td class="c">${esc(d.weapon)}</td>
+          <td class="c">${d.headshot ? '<span class="yes">✓</span>' : '<span class="no">—</span>'}</td>
+          <td class="c">${d.smoke ? '<span class="yes">✓</span>' : '<span class="no">—</span>'}</td>
+          <td class="c">${d.wallbang ? '<span class="yes">✓</span>' : '<span class="no">—</span>'}</td>
+          <td class="c">${d.midair ? '<span class="yes">✓</span>' : '<span class="no">—</span>'}</td>
+        </tr>
+      `;
+    }).join("")
+    : '<tr><td colspan="9" class="empty-cell">本局没有记录到你的死亡（或你是观察者/未参与）</td></tr>';
 }
 
 /* ---------- tooltips ---------- */
@@ -974,6 +1059,12 @@ function setupEvents() {
   $("#dropZone").addEventListener("click", chooseDemo);
 
   $("#recordList").addEventListener("click", (event) => {
+    const delBtn = event.target.closest("[data-del]");
+    if (delBtn) {
+      event.stopPropagation();
+      void deleteRecord(delBtn.dataset.del);
+      return;
+    }
     const row = event.target.closest(".record[data-id]");
     if (row) selectRecord(row.dataset.id);
   });
@@ -1022,8 +1113,8 @@ async function setupDragDrop() {
         setDragging(false);
       } else if (payload.type === "drop") {
         setDragging(false);
-        const path = payload.paths && payload.paths[0];
-        if (path) void analyzePath(path);
+        const paths = payload.paths || [];
+        if (paths.length) void enqueuePaths(paths);
       }
     });
   } catch (error) {

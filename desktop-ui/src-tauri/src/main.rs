@@ -113,6 +113,21 @@ fn save_record(app: tauri::AppHandle, record: Value) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn delete_record(app: tauri::AppHandle, id: String) -> Result<(), String> {
+    let path = records_path(&app)?;
+    if !path.exists() {
+        return Ok(());
+    }
+    let text = fs::read_to_string(&path)
+        .map_err(|error| format!("read {}: {error}", path.display()))?;
+    let mut records: Vec<Value> = serde_json::from_str(&text).unwrap_or_default();
+    records.retain(|item| item.get("id").and_then(Value::as_str) != Some(id.as_str()));
+    let text = serde_json::to_string_pretty(&records)
+        .map_err(|error| format!("encode records: {error}"))?;
+    fs::write(&path, text).map_err(|error| format!("write {}: {error}", path.display()))
+}
+
+#[tauri::command]
 fn health(app: tauri::AppHandle) -> Result<Value, String> {
     let model = model_path(&app);
     let manifest_path = model
@@ -142,7 +157,8 @@ fn main() {
             health,
             score_demo,
             load_records,
-            save_record
+            save_record,
+            delete_record
         ])
         .run(tauri::generate_context!())
         .expect("error while running ValveGuard");
